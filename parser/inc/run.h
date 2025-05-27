@@ -1,16 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   run.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:32:20 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/26 15:40:19 by rha-le           ###   ########.fr       */
+/*   Created: 2025/05/27 15:38:42 by rha-le            #+#    #+#             */
+/*   Updated: 2025/05/27 15:55:48 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int main(int argc, char *argv[])
-{
-	return EXIT_SUCCESS;
-}
+#ifndef RUN_H
+# define RUN_H
+
+# define PROMPT "minishell$ "
+
+int	run_minishell();
+
+#endif // !RUN_H
+

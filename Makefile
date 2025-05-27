@@ -1,9 +1,12 @@
 # config
 NAME	:= minishell
 CC		:= cc
-SRC_DIR	:= src/
-INC_DIR	:= inc/
-OBJ_DIR	:= obj/
+SRC_DIR	:= src
+INC_DIR	:= inc
+OBJ_DIR	:= obj
+
+# Add your modules here
+PARSER_DIR := parser
 
 CFLAGS	:=
 CFLAGS	+= -O2
@@ -12,11 +15,11 @@ CFLAGS	+= -Wextra
 CFLAGS	+= -Werror
 CFLAGS	+= -pedantic
 CFLAGS	+= -Wconversion
-CFLAGS	+= -pthread
 CFLAGS	+= $(ADDFLAGS)
 
 CPPFLAGS	:=
 CPPFLAGS	+= -I$(INC_DIR)
+CPPFLAGS	+= -I$(PARSER_DIR)/$(INC_DIR)
 
 LDFLAGS	:=
 
@@ -44,11 +47,13 @@ ifeq ($(ASAN), 1)
 	LDFLAGS	+= -fsanitize=address
 endif
 
-# sources
+# Sources
 SRC		:=
 
-vpath %.c src/
+# parser
+vpath %.c parser/src/
 SRC		+= main.c
+SRC		+= readline.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))
