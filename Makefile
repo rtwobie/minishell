@@ -65,6 +65,7 @@ SRC		+= readline.c
 
 vpath %.c execution/enviroment
 SRC		+= enviroment.c
+SRC		+= env_utils.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))

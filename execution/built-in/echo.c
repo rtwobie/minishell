@@ -6,10 +6,13 @@
 /*   By: mmagrin <mmagrin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:43:13 by mmagrin           #+#    #+#             */
-/*   Updated: 2025/05/26 18:22:15 by mmagrin          ###   ########.fr       */
+/*   Updated: 2025/05/27 17:15:22 by mmagrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell_exe.h"
 
-
+int	ft_echo(char **args)
+{
+	
+}
