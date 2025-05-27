@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   tokenizer.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:32:20 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/27 19:17:51 by rha-le           ###   ########.fr       */
+/*   Created: 2025/05/27 19:31:13 by rha-le            #+#    #+#             */
+/*   Updated: 2025/05/27 19:31:56 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
+#ifndef TOKENIZER_H
+# define TOKENIZER_H
 
-int main(void)
-{
-	run_minishell();
-}
+char	**tokenize(const char *s);
+
+#endif // !TOKENIZER_H

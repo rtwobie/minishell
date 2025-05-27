@@ -60,6 +60,8 @@ SRC		:=
 vpath %.c parser/src/
 SRC		+= main.c
 SRC		+= readline.c
+SRC		+= tokenizer.c
+SRC		+= parser_utils.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))
