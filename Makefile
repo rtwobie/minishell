@@ -9,6 +9,7 @@ LIBFT		:= libft.a
 
 # Add your modules here
 PARSER_DIR := parser
+EXECUTION_DIR := execution
 
 CFLAGS	:=
 CFLAGS	+= -O2
@@ -16,12 +17,13 @@ CFLAGS	+= -Wall
 CFLAGS	+= -Wextra
 CFLAGS	+= -Werror
 CFLAGS	+= -pedantic
-CFLAGS	+= -Wconversion
+# CFLAGS	+= -Wconversion
 CFLAGS	+= $(ADDFLAGS)
 
 CPPFLAGS	:=
 CPPFLAGS	+= -I$(LIBFT_DIR)
 CPPFLAGS	+= -I$(PARSER_DIR)/$(INC_DIR)
+CPPFLAGS	+= -I$(EXECUTION_DIR)/$(INC_DIR)
 
 LDFLAGS	:=
 LDFLAGS += -L$(LIBFT_DIR)
@@ -60,6 +62,9 @@ SRC		:=
 vpath %.c parser/src/
 SRC		+= main.c
 SRC		+= readline.c
+
+vpath %.c execution/enviroment
+SRC		+= enviroment.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))
