@@ -1,9 +1,11 @@
 # config
-NAME	:= minishell
-CC		:= cc
-SRC_DIR	:= src
-INC_DIR	:= inc
-OBJ_DIR	:= obj
+NAME		:= minishell
+CC			:= cc
+SRC_DIR		:= src
+INC_DIR		:= inc
+OBJ_DIR		:= obj
+LIBFT_DIR	:= libft
+LIBFT		:= libft.a
 
 # Add your modules here
 PARSER_DIR := parser
@@ -18,14 +20,18 @@ CFLAGS	+= -Wconversion
 CFLAGS	+= $(ADDFLAGS)
 
 CPPFLAGS	:=
-CPPFLAGS	+= -I$(INC_DIR)
+CPPFLAGS	+= -I$(LIBFT_DIR)
 CPPFLAGS	+= -I$(PARSER_DIR)/$(INC_DIR)
 
 LDFLAGS	:=
+LDFLAGS += -L$(LIBFT_DIR)
 
-LDLIBS	:= -lreadline
-# LDLIBS	:= -lncurses
-# LDLIBS	:= -ltermcap
+
+LDLIBS	:=
+LDLIBS	+= -lreadline
+LDLIBS	+= -lft
+# LDLIBS	+= -lncurses
+# LDLIBS	+= -ltermcap
 
 ifeq ($(DEBUG), 1)
 	CFLAGS	+= -ggdb3 -O0
@@ -60,7 +66,10 @@ OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(LIBFT_DIR)/$(LIBFT):
+	@make -C $(LIBFT_DIR)
+
+$(NAME): $(LIBFT_DIR)/$(LIBFT) $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) $(LDLIBS) -o $@
 
 $(OBJ_DIR)/%.o:%.c | $(OBJ_DIR)
@@ -70,11 +79,13 @@ $(OBJ_DIR):
 	mkdir -p $@
 
 clean:
+	make -C $(LIBFT_DIR) clean
 	rm -f $(OBJ)
 	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)
+	make -C $(LIBFT_DIR) fclean
 
 re:
 	@make fclean
@@ -83,8 +94,5 @@ re:
 valtest:
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME) $(ARGS)
 
-heltest:
-	valgrind --tool=helgrind ./$(NAME) $(ARGS)
-
 .PHONY: all clean fclean re
-.PHONY: valtest heltest
+.PHONY: valtest
