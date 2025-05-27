@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:38:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/27 15:55:48 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/27 16:02:40 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # define PROMPT "minishell$ "
 
-int	run_minishell();
+int	run_minishell(void);
 
 #endif // !RUN_H
 
