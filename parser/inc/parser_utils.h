@@ -9,9 +9,9 @@
 /*   Updated: 2025/05/27 19:48:36 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef UTILS_H
-# define UTILS_H
+#ifndef PARSER_UTILS_H
+# define PARSER_UTILS_H
 
 void	*free_2d_array(char **ptr);
 
-#endif // !UTILS_H
+#endif // !PARSER_UTILS_H

@@ -59,7 +59,7 @@ SRC		:=
 # parser
 vpath %.c parser/src/
 SRC		+= main.c
-SRC		+= readline.c
+SRC		+= run.c
 SRC		+= tokenizer.c
 SRC		+= parser_utils.c
 

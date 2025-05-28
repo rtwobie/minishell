@@ -13,8 +13,24 @@
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
-typedef struct s_tokens
+enum e_token_type
 {
-	char	*token;
-}	t_tokens;
+	TOKEN_LITERAL,
+//	TOKEN_SINGLE_QUOTES,
+//	TOKEN_DOUBLE_QUOTES,
+	TOKEN_PIPE,
+	TOKEN_REDIRECT_IN,
+	TOKEN_REDIRECT_OUT,
+	TOKEN_HERE_DOC,
+	TOKEN_REDIRECT_OUT_APPEND,
+	TOKEN_ENVIRONMENT_VARIABLES,
+	TOKEN_EXIT_STATUS,
+};
+
+typedef struct s_token
+{
+	enum e_token_type	type;
+	char				*value;
+}	t_token;
+
 #endif // !STRUCTS_H

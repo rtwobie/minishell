@@ -1,18 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   readline.c                                         :+:      :+:    :+:   */
+/*   run.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/27 19:52:14 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/28 19:47:36 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "run.h"
 #include "parser_utils.h"
-#include "tokenizer.h"
 #include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -56,13 +55,16 @@ void print_tokens(char **tokens)
 	printf("Number of Tokens: %i\n", i);
 }
 
+void	read_input(const char *user_input);
+
 static int	_execute_command(const char *user_input)
 {
-	char	**tokens;
-
-	tokens = tokenize(user_input);
-	print_tokens(tokens);
-	free_2d_array(tokens);
+	// Tokenize input
+	// look for cmd
+	// if cmd is built-in give search for built-in function
+	//
+	// free tokens
+	read_input(user_input);
 	return (EXIT_SUCCESS);
 }
 
