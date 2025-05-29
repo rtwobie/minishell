@@ -13,11 +13,20 @@
 #include "libft.h"
 #include <stddef.h>
 
-static int	_skip_whitespace(const char *user_input, size_t	iterator)
+static void	_skip_whitespace(const char *user_input, size_t	*iterator)
 {
-	while (user_input[iterator])
-		++iterator;
-	return (iterator);
+	while (user_input[*iterator] && ft_isspace(user_input[*iterator))
+		++(*iterator);
+}
+
+static void	_create_token(const char *user_input, size_t *iterator, t_token *)
+{
+	size_t	i;
+
+	i = 0;
+	while (user_input[*iterator + i] && ft_isalnum(user_input[*iterator + i])
+		++i;
+
 }
 
 void	read_input(const char *user_input)
@@ -27,6 +36,8 @@ void	read_input(const char *user_input)
 	i = 0
 	while (user_input[i])
 	{
-		_skip_whitespace(user_input, i);
+		_skip_whitespace(user_input, &i);
+		_create_token(user_input, &i);
+		++i;
 	}
 }
