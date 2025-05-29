@@ -13,15 +13,20 @@
 #include "libft.h"
 #include <stddef.h>
 
+static int	_skip_whitespace(const char *user_input, size_t	iterator)
+{
+	while (user_input[iterator])
+		++iterator;
+	return (iterator);
+}
+
 void	read_input(const char *user_input)
 {
-	char	*i;
+	size_t	i;
 
-	i = (char *)user_input;
-	while (*i)
+	i = 0
+	while (user_input[i])
 	{
-		while (*i && ft_isspace(*i))
-			++i;
-		while (*i
+		_skip_whitespace(user_input, i);
 	}
 }
