@@ -7,9 +7,6 @@ OBJ_DIR		:= obj
 LIBFT_DIR	:= libft
 LIBFT		:= libft.a
 
-# Add your modules here
-PARSER_DIR := parser
-
 CFLAGS	:=
 CFLAGS	+= -O2
 CFLAGS	+= -Wall
@@ -21,7 +18,7 @@ CFLAGS	+= $(ADDFLAGS)
 
 CPPFLAGS	:=
 CPPFLAGS	+= -I$(LIBFT_DIR)
-CPPFLAGS	+= -I$(PARSER_DIR)/$(INC_DIR)
+CPPFLAGS	+= -I$(INC_DIR)
 
 LDFLAGS	:=
 LDFLAGS += -L$(LIBFT_DIR)
@@ -57,11 +54,14 @@ endif
 SRC		:=
 
 # parser
-vpath %.c parser/src/
+vpath %.c parser
 SRC		+= main.c
 SRC		+= run.c
 SRC		+= tokenizer.c
 SRC		+= parser_utils.c
+
+vpath %.c data_structure
+SRC		+= tree.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))

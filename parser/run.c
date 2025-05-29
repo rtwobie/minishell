@@ -6,12 +6,11 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/28 19:47:36 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/29 20:45:06 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "run.h"
-#include "parser_utils.h"
 #include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
