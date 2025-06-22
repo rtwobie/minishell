@@ -1,24 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   debug.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 19:46:19 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/27 19:47:37 by rha-le           ###   ########.fr       */
+/*   Created: 2025/05/29 21:24:53 by rha-le            #+#    #+#             */
+/*   Updated: 2025/06/20 15:15:22 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#ifndef DEBUG_H
+# define DEBUG_H
 
-void	*free_2d_array(char **ptr)
-{
-	size_t	i;
+# include "structs.h"
 
-	i = 0;
-	while (ptr[i])
-		free(ptr[i++]);
-	free(ptr);
-	return (NULL);
-}
+char	*token_type_to_string(enum e_token_type type);
+
+#endif // !DEBUG_H

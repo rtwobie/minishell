@@ -6,11 +6,12 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/29 20:45:06 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/20 15:54:27 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "run.h"
+#include "lexer.h"
 #include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -54,8 +55,6 @@ void print_tokens(char **tokens)
 	printf("Number of Tokens: %i\n", i);
 }
 
-void	read_input(const char *user_input);
-
 static int	_execute_command(const char *user_input)
 {
 	// Tokenize input
@@ -63,7 +62,7 @@ static int	_execute_command(const char *user_input)
 	// if cmd is built-in give search for built-in function
 	//
 	// free tokens
-	read_input(user_input);
+	lexer((char *)user_input);
 	return (EXIT_SUCCESS);
 }
 

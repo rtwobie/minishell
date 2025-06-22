@@ -2,7 +2,6 @@
 NAME		:= minishell
 CC			:= cc
 SRC_DIR		:= src
-INC_DIR		:= inc
 OBJ_DIR		:= obj
 LIBFT_DIR	:= libft
 LIBFT		:= libft.a
@@ -12,13 +11,23 @@ CFLAGS	+= -O2
 CFLAGS	+= -Wall
 CFLAGS	+= -Wextra
 CFLAGS	+= -Werror
+CFLAGS	+= -Wno-unused-result
 CFLAGS	+= -pedantic
 CFLAGS	+= -Wconversion
 CFLAGS	+= $(ADDFLAGS)
 
 CPPFLAGS	:=
 CPPFLAGS	+= -I$(LIBFT_DIR)
-CPPFLAGS	+= -I$(INC_DIR)
+CPPFLAGS	+= -I$(SRC_DIR)
+
+#********** Add the path to your headers here ***********#
+# e.g: CPPFLAGS	+= -I$(SRC_DIR)/module/path
+
+
+CPPFLAGS	+= -I$(SRC_DIR)/run
+CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
+
+#********************************************************#
 
 LDFLAGS	:=
 LDFLAGS += -L$(LIBFT_DIR)
@@ -50,18 +59,28 @@ ifeq ($(ASAN), 1)
 	LDFLAGS	+= -fsanitize=address
 endif
 
+
+
+#******* Add your module and your .c files here ********#
+# e.g: vpath %.c $(SRC_DIR)/module/path
+
+
 # Sources
 SRC		:=
 
-# parser
-vpath %.c parser
+vpath %.c $(SRC_DIR)
 SRC		+= main.c
-SRC		+= run.c
-SRC		+= tokenizer.c
-SRC		+= parser_utils.c
 
-vpath %.c data_structure
-SRC		+= tree.c
+# vpath %.c $(SRC_DIR)/debug
+# SRC		+= debug_tokens.c
+
+vpath %.c $(SRC_DIR)/run
+SRC		+= run.c
+
+vpath %.c $(SRC_DIR)/tokenizer
+SRC		+= lexer.c
+
+#*******************************************************#
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))

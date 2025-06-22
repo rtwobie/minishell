@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug.h                                            :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/29 21:24:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/29 21:25:41 by rha-le           ###   ########.fr       */
+/*   Created: 2025/05/29 21:10:42 by rha-le            #+#    #+#             */
+/*   Updated: 2025/06/20 15:15:14 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DEBUG_H
-# define DEBUG_H
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-# include "structs.h"
+// NOTE:	Here are temporary inclusions which will be removed when finished.
+//			The non-conformity to norminette is intended.
+# include "debug/debug.h"
 
-char	*token_type_to_string(enum e_token_type type);
+#endif // !MINISHELL_H
 
-#endif // !DEBUG_H
