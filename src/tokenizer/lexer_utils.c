@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.h                                            :+:      :+:    :+:   */
+/*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/20 15:21:50 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/23 18:02:48 by rha-le           ###   ########.fr       */
+/*   Created: 2025/06/23 17:48:59 by rha-le            #+#    #+#             */
+/*   Updated: 2025/06/23 18:07:49 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LEXER_H
-# define LEXER_H
+int	ft_isoperator(char c)
+{
+	return (c == '|' || c == '>' || c == '<');
+}
 
-void	lexer(char *user_input);
+int ft_isword(char c)
+{
+	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>' || c == '$')
+		return (0);
+	else if (c > 32 && c < 127)
+		return (1);
+	return (0);
+}
 
-#endif // !LEXER_H

@@ -6,20 +6,16 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/21 01:56:10 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/23 19:25:51 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
 #include "libft.h"
-#include "lexer.h"
-
-int	ft_isoperator(char c)
-{
-	return (c == '|' || c == '>' || c == '<');
-}
+#include "lexer_utils.h"
 
 static char	*_skip_whitespace(char *str)
 {
@@ -37,7 +33,7 @@ static void	_print_token(char *str, size_t size)
 	size_t	i;
 
 	i = 0;
-	while (str[i] && i < size)
+	while (str[i] && i <= size)
 	{
 		(void)write(1, &str[i], 1);
 		++i;
@@ -52,59 +48,60 @@ static enum e_state _check_state(char c)
 	state = 0;
 	if (ft_isspace(c))
 		state = WHITESPACE;
+	else if (c == '\'')
+		state = IN_SINGLE_QUOTES;
 	else if (c == '\0')
 		state = END;
-	else if (ft_isoperator(c))
-		state = OPERATOR;
-	else if (ft_isalnum(c))
+	else if (ft_isword(c))
 		state = WORD;
-
 	return (state);
 }
 
-static enum e_state	_update_state(enum e_state *state, enum e_state new_state)
+static void _update_state(enum e_state state[3], char *input, size_t idx, bool lock_state)
 {
-	enum e_state	prev_state;
-
-	prev_state = *state;
-	*state = new_state;
-	return (prev_state);
+	state[0] = state[1];
+	if (lock_state == false)
+		state[1] = _check_state(input[idx]);
+	state[2] = _check_state(input[idx + 1]);
 }
 
 void	lexer(char *user_input)
 {
-	enum e_state	state;
-	enum e_state	prev_state;
+	bool			lock_state;
+	enum e_state	state[3];
 	char			*idx;
 	size_t			i;
 
-	state = START;
+	lock_state = false;
+	state[1] = START;
 	i = 0;
 	idx = _skip_whitespace(user_input);
 	while(1)
 	{
-		prev_state = _update_state(&state, _check_state(user_input[i]));
-		if (prev_state == START)
-			;
-		else if (prev_state == WHITESPACE)
-			idx = &user_input[i];
-		else if (prev_state == OPERATOR)
+		_update_state(state, user_input, i, lock_state);
+		if (state[0] == START)
+			continue ;
+		if (state[1] != state[2])
 		{
-			if (user_input[i] == '>' && user_input[i + 1] == '>')
-				;
-			else
+			if (state[1] == WHITESPACE)
+				idx = &user_input[i + 1];
+			else if (state[2] == IN_SINGLE_QUOTES)
+			{
+				if (!lock_state)
+					lock_state = true;
+				else
+					lock_state = false;
+			}
+			else if (state[1] == WORD)
 			{
 				_print_token(idx, i - (size_t)(idx - user_input));
 				idx = &user_input[i];
 			}
-		}
-		else if (prev_state == WORD && prev_state != state)
-		{
-			_print_token(idx, i - (size_t)(idx - user_input));
-			idx = &user_input[i];
 		}
 		if (!user_input[i])
 			break ;
 		++i;
 	}
 }
+
+// 'slim shady'
