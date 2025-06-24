@@ -17,8 +17,8 @@
 #include <readline/readline.h>
 int main(void)
 {
-	run_minishell();
-	// char *input;
-	// input = readline("lexer test: ");
-	// lexer(input);
+	// run_minishell();
+	char *input;
+	input = readline("lexer test: ");
+	printf("%i\n", lexer(input));
 }

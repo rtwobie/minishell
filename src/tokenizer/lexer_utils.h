@@ -13,12 +13,16 @@
 #ifndef LEXER_UTILS_H
 # define LEXER_UTILS_H
 
+# define ERR_NO_CLOSING_SINGLE_QUOTE "No closing single quote found!"
+# define ERR_NO_CLOSING_DOUBLE_QUOTE "No closing double quote found!"
+
 enum e_state
 {
 	START,
 	WHITESPACE,
 	IN_SINGLE_QUOTES,
 	IN_DOUBLE_QUOTES,
+	IN_OPERATOR,
 	IN_PIPE_OPERATOR,
 	IN_OUTPUT_OPERATOR,
 	IN_INPUT_OPERATOR,

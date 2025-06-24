@@ -13,6 +13,6 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-void	lexer(char *user_input);
+int	lexer(char *user_input);
 
 #endif // !LEXER_H
