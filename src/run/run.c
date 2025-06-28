@@ -6,12 +6,14 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/23 18:04:02 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/26 18:22:35 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "run.h"
 #include "lexer.h"
+#include "token_list.h"
+#include "structs.h"
 #include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -41,28 +43,32 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-
-void print_tokens(char **tokens)
-{
-	int	i;
-
-	i = 0;
-	while (tokens[i])
-	{
-		printf("%s\n", tokens[i]);
-		++i;
-	}
-	printf("Number of Tokens: %i\n", i);
-}
-
 static int	_execute_command(const char *user_input)
 {
+	t_token	*tokens;
+	int		errn;
+
+	tokens = NULL;
+	errn = lexer((char *)user_input, &tokens);
+	if (errn)
+	{
+		printf("errn: %i\n", errn);
+		return (EXIT_FAILURE);
+	}
+	print_tokens(tokens);
 	// Tokenize input
 	// look for cmd
 	// if cmd is built-in give search for built-in function
+
+	// 1. Lexer (your existing `lexer` function) -> creates raw tokens
+	// 2. Expander (new function) -> processes raw tokens for expansions
+	// TODO:	the variable to expend ist delimited by if(ft_alnum())
+	//			find out how to get the expansion -> probably from env
+	//			research/test '$$' what it means and the behaviour
 	//
-	// free tokens
-	lexer((char *)user_input);
+	// 3. Parser -> builds command tree from expanded tokens
+	// 4. Executor -> runs commands
+	free_tokens(&tokens);
 	return (EXIT_SUCCESS);
 }
 

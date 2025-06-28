@@ -6,13 +6,15 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:21:50 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/23 18:02:48 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/26 18:23:06 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
 
-int	lexer(char *user_input);
+# include "structs.h"
+
+int	lexer(char *user_input, t_token **tokens);
 
 #endif // !LEXER_H

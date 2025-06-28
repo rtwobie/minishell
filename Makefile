@@ -26,6 +26,7 @@ CPPFLAGS	+= -I$(SRC_DIR)
 
 CPPFLAGS	+= -I$(SRC_DIR)/run
 CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
+CPPFLAGS	+= -I$(SRC_DIR)/debug
 
 #********************************************************#
 
@@ -71,8 +72,8 @@ SRC		:=
 vpath %.c $(SRC_DIR)
 SRC		+= main.c
 
-# vpath %.c $(SRC_DIR)/debug
-# SRC		+= debug_tokens.c
+vpath %.c $(SRC_DIR)/debug
+SRC		+= debug_tokens.c
 
 vpath %.c $(SRC_DIR)/run
 SRC		+= run.c
@@ -80,6 +81,8 @@ SRC		+= run.c
 vpath %.c $(SRC_DIR)/tokenizer
 SRC		+= lexer.c
 SRC		+= lexer_utils.c
+SRC		+= token.c
+SRC		+= token_list.c
 
 #*******************************************************#
 

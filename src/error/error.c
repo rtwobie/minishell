@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:32:20 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/25 18:50:44 by rha-le           ###   ########.fr       */
+/*   Created: 2025/06/25 17:46:01 by rha-le            #+#    #+#             */
+/*   Updated: 2025/06/25 17:58:29 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
-#include "lexer.h"
+#include <unistd.h>
+#include <stdio.h>
 
-
-#include <readline/readline.h>
-int main(void)
+void	print_errror(char *err)
 {
-	run_minishell();
-	// char *input;
-	// input = readline("lexer test: ");
-	// printf("%i\n", lexer(input));
+	if (err)
+	{
+		while (err)
+			write(stderr, err++, 1);
+		write(stderr, "\n", 1);
+	}
+	else
+		write(stderr, "error\n", 7);
 }

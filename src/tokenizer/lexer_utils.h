@@ -6,15 +6,14 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/23 18:03:14 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/25 18:52:48 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_UTILS_H
 # define LEXER_UTILS_H
 
-# define ERR_NO_CLOSING_SINGLE_QUOTE "No closing single quote found!"
-# define ERR_NO_CLOSING_DOUBLE_QUOTE "No closing double quote found!"
+# define ERR_SYNTAX -1
 
 enum e_state
 {

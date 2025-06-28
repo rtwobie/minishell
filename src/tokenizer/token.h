@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:32:20 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/25 18:50:44 by rha-le           ###   ########.fr       */
+/*   Created: 2025/06/26 18:17:23 by rha-le            #+#    #+#             */
+/*   Updated: 2025/06/26 18:18:08 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
-#include "lexer.h"
+#ifndef TOKEN_H
+# define TOKEN_H
 
+# include <stddef.h>
+# include "structs.h"
 
-#include <readline/readline.h>
-int main(void)
-{
-	run_minishell();
-	// char *input;
-	// input = readline("lexer test: ");
-	// printf("%i\n", lexer(input));
-}
+int	save_token(char *value, size_t size, t_token **tokens);
+
+#endif // !TOKEN_H

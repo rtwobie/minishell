@@ -6,18 +6,19 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/23 19:25:51 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/27 02:29:54 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
-#include <errno.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
 #include "libft.h"
 #include "lexer_utils.h"
+#include "structs.h"
+#include "token.h"
 
 static char	*_skip_whitespace(char *str)
 {
@@ -30,18 +31,19 @@ static char	*_skip_whitespace(char *str)
 	return (str);
 }
 
-static void	_print_token(char *str, size_t size)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i] && i < size + 1)
-	{
-		(void)write(1, &str[i], 1);
-		++i;
-	}
-	(void)write (1, "\n", 1);
-}
+//**** FUNCTION FOR TESTING
+// static void	_print_token(char *str, size_t size)
+// {
+// 	size_t	i;
+//
+// 	i = 0;
+// 	while (str[i] && i < size + 1)
+// 	{
+// 		(void)write(1, &str[i], 1);
+// 		++i;
+// 	}
+// 	(void)write (1, "\n", 1);
+// }
 
 static enum e_state _check_state(char c)
 {
@@ -63,127 +65,110 @@ static enum e_state _check_state(char c)
 	return (state);
 }
 
-static char	*_get_word_tok(char *idx)
+static char	*_get_word_tok(char *idx, t_token **tokens)
 {
 	size_t	i;
 
 	i = 0;
 	while (idx[i] && _check_state(idx[i]) == WORD)
 		++i;
-	_print_token(idx, i - 1);
+	save_token(idx, i, tokens);
 	return (&idx[i]);
 }
 
-static char	*_get_single_quote_tok(char *idx)
+static int	_get_single_quote_tok(char **idx, t_token **tokens)
 {
-	bool	is_closing;
+	char *idx_ptr;
 	size_t	i;
 
 	i = 0;
-	is_closing = false;
-	++idx;
-	while (idx[i])
-	{
-		if (_check_state(idx[i]) == IN_SINGLE_QUOTES)
-		{
-			is_closing = true;
-			break ;
-		}
+	idx_ptr = *idx;
+	++idx_ptr;
+	while (idx_ptr[i] && _check_state(idx_ptr[i]) != IN_SINGLE_QUOTES)
 		++i;
-	}
-	if (i == 0)
-	{
-		printf("CREATING EMPTY STRING\n");
-		++i;
-	}
-	else if (is_closing == true)
-		_print_token(idx, i++ - 1);
+	if (*idx_ptr == '\"')
+		save_token("\0", 1, tokens);
+	else if (idx_ptr[i] != '\0')
+		save_token(*idx, i + 2, tokens);
 	else
-		printf("NO CLOSING SINGLE QUOTE FOUND!\n");
-	return (&idx[i]);
+		return (ERR_SYNTAX);
+	*idx = &idx_ptr[++i];
+	return (EXIT_SUCCESS);
 }
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-static char	*_get_double_quote_tok(char *idx)
+static int	_get_double_quote_tok(char **idx, t_token **tokens)
 {
+	char	*idx_ptr;
 	size_t	i;
 
 	i = 0;
-	++idx;
-	while (idx[i])
-	{
-		if (_check_state(idx[i]) == IN_DOUBLE_QUOTES)
-			break ;
+	idx_ptr = *idx;
+	++idx_ptr;
+	while (idx_ptr[i] && _check_state(idx_ptr[i]) != IN_DOUBLE_QUOTES)
 		++i;
-	}
-	if (i == 0)
-	{
-		printf("CREATING EMPTY STRING\n");
-		++i;
-	}
-	else if (idx[i] != '\0')
-		_print_token(idx, i++ - 1);
+	if (*idx_ptr == '\"')
+		save_token("\0", 1, tokens);
+	else if (idx_ptr[i] != '\0')
+		save_token(*idx, i + 2, tokens);
 	else
-	{
-		printf("NO CLOSING SINGLE QUOTE FOUND!\n");
-		return (NULL);
-	}
-	return (&idx[i]);
+		return (ERR_SYNTAX);
+	*idx = &idx_ptr[++i];
+	return (EXIT_SUCCESS);
 }
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-static char	*_get_pipe_operator_tok(char *idx)
+static char	*_get_pipe_operator_tok(char *idx, t_token **tokens)
 {
-	_print_token(idx, 0);
+	save_token(idx, 1, tokens);
 	return(++idx);
 }
 
-static char	*_get_input_operator_tok(char *idx)
+static char	*_get_input_operator_tok(char *idx, t_token **tokens)
 {
 
 	if (*(idx + 1) == '<')
 	{
-		_print_token(idx, 1);
+		save_token(idx, 2, tokens);
 		idx += 2;
 	}
 	else
 	{
-		_print_token(idx, 0);
+		save_token(idx, 1, tokens);
 		idx += 1;
 	}
 	return(idx);
 }
 
-static char	*_get_output_operator_tok(char *idx)
+static char	*_get_output_operator_tok(char *idx, t_token **tokens)
 {
 	if (*(idx + 1) == '>')
 	{
-		_print_token(idx, 1);
+		save_token(idx, 2, tokens);
 		idx += 2;
 	}
 	else
 	{
-		_print_token(idx, 0);
+		save_token(idx, 1, tokens);
 		idx += 1;
 	}
 	return(idx);
 }
 
-static char	*_get_operator_tok(char *idx)
+static char	*_get_operator_tok(char *idx, t_token **tokens)
 {
 	if (*idx == '|')
-		return (_get_pipe_operator_tok(idx));
+		return (_get_pipe_operator_tok(idx, tokens));
 	if (*idx == '<')
-		return (_get_input_operator_tok(idx));
+		return (_get_input_operator_tok(idx, tokens));
 	if (*idx == '>')
-		return (_get_output_operator_tok(idx));
+		return (_get_output_operator_tok(idx, tokens));
 	return (idx);
 }
 
-int	lexer(char *user_input)
+int	lexer(char *user_input, t_token **tokens)
 {
 	enum e_state	current_state;
 	char			*idx;
+	int				err;
 
 	current_state = START;
 	idx = user_input;
@@ -193,19 +178,17 @@ int	lexer(char *user_input)
 		if (current_state == WHITESPACE)
 			idx = _skip_whitespace(idx);
 		else if (current_state == IN_OPERATOR)
-			idx = _get_operator_tok(idx);
+			idx = _get_operator_tok(idx, tokens);
 		else if (current_state == IN_SINGLE_QUOTES)
-			idx = _get_single_quote_tok(idx);
+			err = _get_single_quote_tok(&idx, tokens);
 		else if (current_state == IN_DOUBLE_QUOTES)
-			idx = _get_double_quote_tok(idx);
+			err = _get_double_quote_tok(&idx, tokens);
 		else if (current_state == WORD)
-			idx = _get_word_tok(idx);
+			idx = _get_word_tok(idx, tokens);
 		else if (current_state == END)
 			break ;
-		if (!idx)
-			return (EXIT_FAILURE);
+		if (err)
+			return (err);
 	}
 	return (EXIT_SUCCESS);
 }
-
-// 'slim shady'
