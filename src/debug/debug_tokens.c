@@ -37,5 +37,9 @@ char	*token_type_to_string(enum e_token_type type)
 		return ("TOKEN_ENVIRONMENT_VARIABLES");
 	else if (type == TOKEN_EXIT_STATUS)
 		return ("TOKEN_EXIT_STATUS");
+	else if (type == TOKEN_SINGLE_QUOTES)
+		return ("TOKEN_SINGLE_QUOTES");
+	else if (type == TOKEN_DOUBLE_QUOTES)
+		return ("TOKEN_DOUBLE_QUOTES");
 	return (NULL);
 }

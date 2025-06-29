@@ -16,7 +16,7 @@
 #include "structs.h"
 #include "token_list.h"
 
-enum e_token_type	_evaluate_token(char *value)
+static enum e_token_type	_get_token_type(char *value)
 {
 	if (!ft_strcmp(value, "exit"))
 		return (TOKEN_EXIT_STATUS);
@@ -30,6 +30,10 @@ enum e_token_type	_evaluate_token(char *value)
 		return (TOKEN_REDIRECT_OUT_APPEND);
 	else if (!ft_strcmp(value, "<<"))
 		return (TOKEN_HERE_DOC);
+	else if (value[0] == '\'')
+		return (TOKEN_SINGLE_QUOTES);
+	else if (value[0] == '\"')
+		return (TOKEN_DOUBLE_QUOTES);
 	return (TOKEN_LITERAL);
 }
 
@@ -41,7 +45,7 @@ int	save_token(char *str, size_t size, t_token **tokens)
 	if (!value)
 		return (EXIT_FAILURE);
 	ft_strlcpy(value, str, size + 1);
-	add_token(tokens, new_token(_evaluate_token(value), value));
+	add_token(tokens, new_token(_get_token_type(value), value));
 	free(value);
 	return (EXIT_SUCCESS);
 }

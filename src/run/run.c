@@ -6,12 +6,12 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/26 18:22:35 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/29 16:55:58 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "run.h"
-#include "lexer.h"
+#include "tokenizer.h"
 #include "token_list.h"
 #include "structs.h"
 #include <signal.h>
@@ -55,10 +55,14 @@ static int	_execute_command(const char *user_input)
 		printf("errn: %i\n", errn);
 		return (EXIT_FAILURE);
 	}
+	errn = expander(&tokens);
+	if (errn)
+	{
+		free_tokens(&tokens);
+		return (EXIT_FAILURE);
+	}
 	print_tokens(tokens);
-	// Tokenize input
-	// look for cmd
-	// if cmd is built-in give search for built-in function
+	// execute();
 
 	// 1. Lexer (your existing `lexer` function) -> creates raw tokens
 	// 2. Expander (new function) -> processes raw tokens for expansions

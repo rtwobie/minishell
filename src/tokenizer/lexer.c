@@ -6,14 +6,13 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/27 02:29:54 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/29 15:45:59 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <unistd.h>
 #include "libft.h"
 #include "lexer_utils.h"

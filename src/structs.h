@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:14:32 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/25 19:40:01 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/29 15:38:09 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 enum e_token_type
 {
 	TOKEN_LITERAL,
-//	TOKEN_SINGLE_QUOTES,
-//	TOKEN_DOUBLE_QUOTES,
+	TOKEN_SINGLE_QUOTES,
+	TOKEN_DOUBLE_QUOTES,
 	TOKEN_PIPE,
 	TOKEN_REDIRECT_IN,
 	TOKEN_REDIRECT_OUT,
@@ -32,7 +32,6 @@ typedef struct s_token
 	enum e_token_type	type;
 	char				*value;
 	struct s_token		*next;
-	struct s_token		*prev;
 }	t_token;
 
 #endif // !STRUCTS_H

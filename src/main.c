@@ -6,19 +6,16 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:32:20 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/25 18:50:44 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/06/29 15:48:46 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "run.h"
-#include "lexer.h"
 
-
-#include <readline/readline.h>
-int main(void)
+int main(int argc, char *argv[], char *envp[])
 {
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	run_minishell();
-	// char *input;
-	// input = readline("lexer test: ");
-	// printf("%i\n", lexer(input));
 }
