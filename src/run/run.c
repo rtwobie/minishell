@@ -62,6 +62,7 @@ static int	_execute_command(const char *user_input)
 		return (EXIT_FAILURE);
 	}
 	print_tokens(tokens);
+	parser(tokens);
 	// execute();
 
 	// 1. Lexer (your existing `lexer` function) -> creates raw tokens

@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer_utils.c                                      :+:      :+:    :+:   */
+/*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/23 17:48:59 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/02 16:19:52 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/01 18:33:35 by rha-le            #+#    #+#             */
+/*   Updated: 2025/07/02 16:19:50 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isoperator(char c)
-{
-	return (c == '|' || c == '>' || c == '<');
-}
+#ifndef PARSER_H
+# define PARSER_H
 
-int ft_isword(char c)
-{
-	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>' || c == '$')
-		return (0);
-	else if (c > 32 && c < 127)
-		return (1);
-	return (0);
-}
+# include "structs.h"
 
+typedef struct s_command
+{
+	char	*program;
+	char	**args;
+	enum	e_token_type output;
+}	t_command;
+
+void	free_args(char **args);
+void	free_cmd(void *command_struct);
+
+#endif // !PARSER_H

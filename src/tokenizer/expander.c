@@ -59,39 +59,39 @@ static int	_reedit(t_token **tokens)
 	return (EXIT_SUCCESS);
 }
 
-static int	_expand(t_token **tokens)
-{
-	t_token *current;
-
-	current = *tokens;
-
-
-	if (current->type == TOKEN_LITERAL || current->type == TOKEN_DOUBLE_QUOTES)
-	{
-		size_t	i;
-
-		i = 0;
-		while (current->value[i])
-		{
-			++i;
-		}
-		// TODO:	get the variable after $
-		//			best approach might be to read str and write new one at the same time
-		//			so first read str for $
-		//			then read again and write
-		//			when $ found then save getenv(variable) into string
-		//			write expandion into the new string
-		//			repeat until end of string
-	}
-
-	return (EXIT_SUCCESS);
-}
+// static int	_expand(t_token **tokens)
+// {
+// 	t_token *current;
+//
+// 	current = *tokens;
+//
+//
+// 	if (current->type == TOKEN_LITERAL || current->type == TOKEN_DOUBLE_QUOTES)
+// 	{
+// 		size_t	i;
+//
+// 		i = 0;
+// 		while (current->value[i])
+// 		{
+// 			++i;
+// 		}
+// 		// TODO:	get the variable after $
+// 		//			best approach might be to read str and write new one at the same time
+// 		//			so first read str for $
+// 		//			then read again and write
+// 		//			when $ found then save getenv(variable) into string
+// 		//			write expandion into the new string
+// 		//			repeat until end of string
+// 	}
+//
+// 	return (EXIT_SUCCESS);
+// }
 
 int	expander(t_token **tokens)
 {
 	if (_reedit(tokens))
 		return (EXIT_FAILURE);
-	if (_expand(tokens))
-		return (EXIT_FAILURE);
+	// if (_expand(tokens))
+	// 	return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

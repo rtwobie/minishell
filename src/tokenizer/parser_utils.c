@@ -1,35 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer_utils.h                                      :+:      :+:    :+:   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/25 18:52:48 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/02 16:13:59 by rha-le            #+#    #+#             */
+/*   Updated: 2025/07/02 16:19:58 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LEXER_UTILS_H
-# define LEXER_UTILS_H
+#include "parser.h"
+#include <stdlib.h>
 
-# define ERR_SYNTAX -1
-
-enum e_state
+void	free_args(char **args)
 {
-	START,
-	WHITESPACE,
-	IN_SINGLE_QUOTES,
-	IN_DOUBLE_QUOTES,
-	IN_OPERATOR,
-	IN_PIPE_OPERATOR,
-	IN_OUTPUT_OPERATOR,
-	IN_INPUT_OPERATOR,
-	WORD,
-	END,
-};
+	size_t	i;
 
-int	ft_isoperator(char c);
-int	ft_isword(char c);
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		++i;
+	}
+	free(args);
+}
 
-#endif // !LEXER_UTILS_H
+void	free_cmd(void	*command_struct)
+{
+	t_command	*cmd;
+
+	cmd = (t_command *)command_struct;
+	free(cmd->program);
+	free_args(cmd->args);
+	free(cmd);
+}

@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/29 15:45:59 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/01 18:33:15 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "libft.h"
-#include "lexer_utils.h"
+#include "lexer.h"
 #include "structs.h"
 #include "token.h"
 
@@ -169,7 +169,7 @@ int	lexer(char *user_input, t_token **tokens)
 	char			*idx;
 	int				err;
 
-	current_state = START;
+	err = 0;
 	idx = user_input;
 	while(1)
 	{

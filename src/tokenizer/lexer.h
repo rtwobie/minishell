@@ -1,26 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer_utils.c                                      :+:      :+:    :+:   */
+/*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/23 17:48:59 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/02 16:19:52 by rha-le           ###   ########.fr       */
+/*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
+/*   Updated: 2025/07/01 18:33:06 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isoperator(char c)
-{
-	return (c == '|' || c == '>' || c == '<');
-}
+#ifndef LEXER_UTILS_H
+# define LEXER_UTILS_H
 
-int ft_isword(char c)
-{
-	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>' || c == '$')
-		return (0);
-	else if (c > 32 && c < 127)
-		return (1);
-	return (0);
-}
+# define ERR_SYNTAX -1
 
+enum e_state
+{
+	START,
+	WHITESPACE,
+	IN_SINGLE_QUOTES,
+	IN_DOUBLE_QUOTES,
+	IN_OPERATOR,
+	IN_PIPE_OPERATOR,
+	IN_OUTPUT_OPERATOR,
+	IN_INPUT_OPERATOR,
+	WORD,
+	END,
+};
+
+int	ft_isoperator(char c);
+int	ft_isword(char c);
+
+#endif // !LEXER_UTILS_H

@@ -17,5 +17,6 @@
 
 int	lexer(char *user_input, t_token **tokens);
 int	expander(t_token **tokens);
+int	parser(t_token *tokens);
 
 #endif // !TOKENIZER_H
