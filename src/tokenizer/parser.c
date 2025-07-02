@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 15:41:08 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/02 16:31:34 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/02 18:35:13 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,28 @@ static char	**_init_args(t_token **tokens)
 	return (args);
 }
 
+static enum  e_output	_set_output(t_token **tokens)
+{
+	t_token	*current;
+
+	current = *tokens;
+	if (!current)
+		return (STD_OUT);
+	if (current->value)
+	{
+		current = current->next;
+		if (!current)
+			return (STD_OUT);
+	}
+	if (current->type == TOKEN_PIPE)
+		return (PIPE_OUT);
+	else if (current->type == TOKEN_REDIRECT_OUT)
+		return (FILE_OUT);
+	else if (current->type == TOKEN_REDIRECT_OUT_APPEND)
+		return (FILE_APPEND_OUT);
+	return (STD_OUT);
+}
+
 static int	_init_cmd(t_list **cmd_list, t_token **tokens)
 {
 	t_token		*current;
@@ -85,7 +107,7 @@ static int	_init_cmd(t_list **cmd_list, t_token **tokens)
 	cmd->program = ft_strdup(current->value);
 	current = current->next;
 	cmd->args = _init_args(&current);
-	cmd->output = 0;
+	cmd->output = _set_output(&current);
 	if (!cmd->program || !cmd->args)
 	{
 		free_cmd(cmd);
@@ -102,6 +124,8 @@ int	parser(t_token *tokens)
 
 	cmd_list = NULL;
 	current = tokens;
+	if (!tokens)
+		return (EXIT_SUCCESS);
 	if (_init_cmd(&cmd_list, &current))
 		return (EXIT_FAILURE);
 	_print_cmd(cmd_list->content);
