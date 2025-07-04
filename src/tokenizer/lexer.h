@@ -6,14 +6,12 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/01 18:33:06 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/04 19:57:07 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_UTILS_H
 # define LEXER_UTILS_H
-
-# define ERR_SYNTAX -1
 
 enum e_state
 {
