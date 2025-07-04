@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "debug.h"
 #include "structs.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,18 +59,4 @@ void	free_tokens(t_token **lst)
 		free(temp);
 	}
 	*lst = NULL;
-}
-
-void	print_tokens(t_token *tokens)
-{
-	t_token *current;
-
-	current = tokens;
-	while (current != NULL)
-	{
-		printf("\033[33m%s\n\033[0m", current->value);
-		printf("\033[36m%s\n\033[0m", token_type_to_string(current->type));
-		printf("\n");
-		current = current->next;
-	}
 }
