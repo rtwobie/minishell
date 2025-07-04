@@ -6,30 +6,16 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 15:41:08 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/02 18:35:13 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/04 17:26:42 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "debug.h"
 #include "libft.h"
 #include "structs.h"
 #include "parser.h"
-
-static void	_print_cmd(t_command *cmd)
-{
-	size_t	i;
-
-	i = 0;
-	printf("executing program: %s\n", cmd->program);
-	printf("with arguments:\n");
-	while (cmd->args[i])
-	{
-		printf("\t%s\n", cmd->args[i]);
-		++i;
-	}
-	printf("to output: %u\n", cmd->output);
-}
 
 static int	_is_operator(enum e_token_type type)
 {
@@ -42,20 +28,25 @@ static int	_is_operator(enum e_token_type type)
 	);
 }
 
-static char	**_init_args(t_token **tokens)
+static int	_count_args(t_token *tokens)
+{
+	int	size;
+
+	size = 0;
+	while (tokens && !_is_operator(tokens->type))
+	{
+		++size;
+		tokens = tokens->next;
+	}
+	return (size);
+}
+
+static char	**_init_args(t_token **tokens, size_t size)
 {
 	char	**args;
 	t_token *current;
 	size_t	i;
-	size_t	size;
 
-	size = 0;
-	current = *tokens;
-	while (current && !_is_operator(current->type))
-	{
-		++size;
-		current = current->next;
-	}
 	args = ft_calloc(size + 1, sizeof(*args));
 	if (!args)
 		return (NULL);
@@ -69,6 +60,7 @@ static char	**_init_args(t_token **tokens)
 		++i;
 		current = current->next;
 	}
+	*tokens = current;
 	args[i] = NULL;
 	return (args);
 }
@@ -105,10 +97,10 @@ static int	_init_cmd(t_list **cmd_list, t_token **tokens)
 	if (!cmd)
 		return (EXIT_FAILURE);
 	cmd->program = ft_strdup(current->value);
-	current = current->next;
-	cmd->args = _init_args(&current);
+	cmd->argc = _count_args(current);
+	cmd->argv = _init_args(&current, (size_t)cmd->argc);
 	cmd->output = _set_output(&current);
-	if (!cmd->program || !cmd->args)
+	if (!cmd->program || !cmd->argv)
 	{
 		free_cmd(cmd);
 		return (EXIT_FAILURE);
@@ -117,19 +109,16 @@ static int	_init_cmd(t_list **cmd_list, t_token **tokens)
 	return (EXIT_SUCCESS);
 }
 
-int	parser(t_token *tokens)
+int	parser(t_list **cmd_list, t_token *tokens)
 {
-	t_token *current;
-	t_list	*cmd_list;
+	t_token	*current;
 
-	cmd_list = NULL;
 	current = tokens;
 	if (!tokens)
 		return (EXIT_SUCCESS);
-	if (_init_cmd(&cmd_list, &current))
+	if (_init_cmd(cmd_list, &current))
 		return (EXIT_FAILURE);
-	_print_cmd(cmd_list->content);
-	ft_lstclear(&cmd_list, free_cmd);
+	print_cmd((*cmd_list)->content);
 	return (EXIT_SUCCESS);
 }
 
