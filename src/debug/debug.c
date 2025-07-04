@@ -56,26 +56,22 @@ char	*token_type_to_string(enum e_token_type type)
 	return (NULL);
 }
 
-void	print_cmd(t_command *cmd)
+char	*output_type_to_string(enum e_output type)
 {
-	size_t	i;
-
-	i = 0;
-	printf("%sexecuting program: %s\n%s", GREEN, cmd->program, END);
-	printf("%s", BLUE);
-	printf("with arguments:\n");
-	while (cmd->argv[i])
-	{
-		printf("\t%s\n", cmd->argv[i]);
-		++i;
-	}
-	printf("%s", END);
-	printf("%sto output: %u\n%s", PURPLE, cmd->output, END);
+	if (type == STD_OUT)
+		return ("STDOUT");
+	else if (type == PIPE_OUT)
+		return ("PIPE");
+	else if (type == FILE_OUT)
+		return ("FILE");
+	else if (type == FILE_APPEND_OUT)
+		return ("FILE_APPEND");
+	return (NULL);
 }
 
 void	print_tokens(t_token *tokens)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = tokens;
 	while (current != NULL)
@@ -85,4 +81,23 @@ void	print_tokens(t_token *tokens)
 		printf("\n");
 		current = current->next;
 	}
+}
+
+void	print_cmd(t_command *cmd)
+{
+	size_t	i;
+
+	i = 0;
+	printf("%sExecuting Program %s...\n%s", GREEN, cmd->program, END);
+	printf("%s[name] %s\n%s", GREEN, cmd->program, END);
+	printf("%s[argc] %i\n%s", CYAN, cmd->argc, END);
+	printf("%s", YELLOW);
+	printf("[argv]\n");
+	while (cmd->argv[i])
+	{
+		printf("  %s\n", cmd->argv[i]);
+		++i;
+	}
+	printf("%s", END);
+	printf("%s[out] %s\n%s", PURPLE, output_type_to_string(cmd->output), END);
 }
