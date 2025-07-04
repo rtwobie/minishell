@@ -13,8 +13,11 @@
 #ifndef DEBUG_H
 # define DEBUG_H
 
+# include "parser.h"
 # include "structs.h"
 
 char	*token_type_to_string(enum e_token_type type);
+void	print_cmd(t_command *cmd);
+void	print_tokens(t_token *tokens);
 
 #endif // !DEBUG_H

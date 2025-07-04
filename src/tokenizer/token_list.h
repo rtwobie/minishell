@@ -19,6 +19,5 @@ t_token	*new_token(enum e_token_type type, char *value);
 t_token	*get_last_token(t_token *lst);
 void	add_token(t_token **lst, t_token *token);
 void	free_tokens(t_token **lst);
-void	print_tokens(t_token *tokens);
 
 #endif // !TOKEN_LIST_H

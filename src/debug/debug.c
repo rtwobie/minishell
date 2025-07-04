@@ -10,8 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "parser.h"
 #include "structs.h"
 #include <stddef.h>
+#include <stdio.h>
+
+#define BLACK "\033[0;30m"
+#define RED "\033[0;31m"
+#define GREEN "\033[0;32m"
+#define YELLOW "\033[0;33m"
+#define BLUE "\033[0;34m"
+#define PURPLE "\033[0;35m"
+#define CYAN "\033[0;36m"
+#define WHITE "\033[0;37m"
+#define END	"\033[0m"
 
 /** Converts the enum to its string literal. (for debugging)
  *
@@ -42,4 +54,35 @@ char	*token_type_to_string(enum e_token_type type)
 	else if (type == TOKEN_DOUBLE_QUOTES)
 		return ("TOKEN_DOUBLE_QUOTES");
 	return (NULL);
+}
+
+void	print_cmd(t_command *cmd)
+{
+	size_t	i;
+
+	i = 0;
+	printf("%sexecuting program: %s\n%s", GREEN, cmd->program, END);
+	printf("%s", BLUE);
+	printf("with arguments:\n");
+	while (cmd->argv[i])
+	{
+		printf("\t%s\n", cmd->argv[i]);
+		++i;
+	}
+	printf("%s", END);
+	printf("%sto output: %u\n%s", PURPLE, cmd->output, END);
+}
+
+void	print_tokens(t_token *tokens)
+{
+	t_token *current;
+
+	current = tokens;
+	while (current != NULL)
+	{
+		printf("%s%s\n%s", YELLOW, current->value, END);
+		printf("%s%s\n%s", CYAN, token_type_to_string(current->type), END);
+		printf("\n");
+		current = current->next;
+	}
 }
