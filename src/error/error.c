@@ -6,21 +6,25 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:46:01 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/25 17:58:29 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/04 19:59:41 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
-#include <stdio.h>
+#include "error.h"
+#include "libft.h"
 
-void	print_errror(char *err)
+char	*_lookup_err(int err)
 {
-	if (err)
-	{
-		while (err)
-			write(stderr, err++, 1);
-		write(stderr, "\n", 1);
-	}
-	else
-		write(stderr, "error\n", 7);
+	if (err == ERR_SYNTAX)
+		return ("syntax error");
+	else if (err == ERR_TOOMANY_ARGS)
+		return ("too many arguments");
+	return ("error");
+}
+
+void	print_error(int err)
+{
+	ft_putstr_fd(_lookup_err(err), STDERR_FILENO);
+	write(STDERR_FILENO, "\n", 1);
 }
