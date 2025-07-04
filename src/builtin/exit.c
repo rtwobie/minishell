@@ -6,25 +6,30 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:59:27 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 17:24:06 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/04 20:00:48 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <readline/readline.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "libft.h"
+#include "parser.h"
+#include "error.h"
 
-void	builtin_exit(char **argv)
+int	builtin_exit(int argc, char **argv, t_list **cmd_list)
 {
 	char	*endptr;
 	int		status;
 	long	val;
 
-
-	if (!argv[0])
+	if (argc == 1)
 	{
 		printf("exit\n");
 		exit(0);
 	}
+	else if (argc > 2)
+		return (ERR_TOOMANY_ARGS);
 	status = 0;
 	val = strtol(argv[0], &endptr, 10); // TODO: CHANGE TO CUSTOM STRTOL
 	if (*endptr == '\0' && val >= 0 && val <= 255)
@@ -32,6 +37,8 @@ void	builtin_exit(char **argv)
 	else
 		status = 2;
 	// TODO: do cleanup
+	ft_lstclear(cmd_list, free_cmd);
+	rl_clear_history();
 	printf("exit\n");
 	exit(status);
 }

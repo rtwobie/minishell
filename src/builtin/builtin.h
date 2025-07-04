@@ -6,13 +6,15 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 17:23:34 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 17:23:59 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/04 20:00:38 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BUILTIN_H
 # define BUILTIN_H
 
-void	builtin_exit(char **argv);
+# include "libft.h"
+
+int	builtin_exit(int argc, char **argv, t_list **cmd_list);
 
 #endif // !BUILTIN_H

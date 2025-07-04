@@ -6,18 +6,22 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/29 16:55:58 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/04 16:50:23 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
-#include "tokenizer.h"
-#include "token_list.h"
-#include "structs.h"
 #include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include "run.h"
+#include "error.h"
+#include "libft.h"
+#include "parser.h"
+#include "tokenizer.h"
+#include "token_list.h"
+#include "structs.h"
+#include "debug.h"
 
 static void	_reset_prompt(void)
 {
@@ -43,27 +47,41 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	_execute_command(const char *user_input)
+static int	_execute_command(char **user_input)
 {
 	t_token	*tokens;
-	int		errn;
+	t_list	*cmd_list;
+	int		err;
 
 	tokens = NULL;
-	errn = lexer((char *)user_input, &tokens);
-	if (errn)
+	cmd_list = NULL;
+	err = lexer((char *)*user_input, &tokens);
+	if (err)
 	{
-		printf("errn: %i\n", errn);
+		print_error(err);
 		return (EXIT_FAILURE);
 	}
-	errn = expander(&tokens);
-	if (errn)
+	free(*user_input);
+	*user_input = NULL;
+	err = expander(&tokens);
+	if (err)
 	{
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
-	print_tokens(tokens);
-	parser(tokens);
-	// execute();
+	// TEST: DEBUG
+		print_tokens(tokens);
+	//
+	if (parser(&cmd_list, tokens))
+		return (EXIT_FAILURE);
+	free_tokens(&tokens);
+	err = executor(&cmd_list);
+	if (err)
+	{
+		ft_lstclear(&cmd_list, free_cmd);
+		print_error(err);
+		return (EXIT_FAILURE);
+	}
 
 	// 1. Lexer (your existing `lexer` function) -> creates raw tokens
 	// 2. Expander (new function) -> processes raw tokens for expansions
@@ -73,7 +91,7 @@ static int	_execute_command(const char *user_input)
 	//
 	// 3. Parser -> builds command tree from expanded tokens
 	// 4. Executor -> runs commands
-	free_tokens(&tokens);
+	ft_lstclear(&cmd_list, free_cmd);
 	return (EXIT_SUCCESS);
 }
 
@@ -93,8 +111,7 @@ int	run_minishell(void)
 
 		if (*user_input)
 			add_history(user_input);
-		// execute command:
-		_execute_command(user_input);
+		_execute_command(&user_input);
 		free(user_input);
 	}
 	rl_clear_history();
