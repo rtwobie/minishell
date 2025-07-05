@@ -33,5 +33,6 @@ void	free_cmd(void	*command_struct)
 	cmd = (t_command *)command_struct;
 	free(cmd->program);
 	free_args(cmd->argv);
+	free(cmd->output_file);
 	free(cmd);
 }
