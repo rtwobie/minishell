@@ -47,24 +47,20 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	_execute_command(char **user_input)
+static int	_execute_command(char **user_input, int *err)
 {
 	t_token	*tokens;
 	t_list	*cmd_list;
-	int		err;
 
 	tokens = NULL;
 	cmd_list = NULL;
-	err = lexer((char *)*user_input, &tokens);
-	if (err)
-	{
-		print_error(err);
+	*err = lexer((char *)*user_input, &tokens);
+	if (*err)
 		return (EXIT_FAILURE);
-	}
 	free(*user_input);
 	*user_input = NULL;
-	err = expander(&tokens);
-	if (err)
+	*err = expander(&tokens);
+	if (*err)
 	{
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
@@ -72,17 +68,22 @@ static int	_execute_command(char **user_input)
 	// TEST: DEBUG
 		print_tokens(tokens);
 	//
-	if (parser(&cmd_list, tokens))
-		return (EXIT_FAILURE);
-	free_tokens(&tokens);
-	err = executor(&cmd_list);
-	if (err)
+	*err = parser(&cmd_list, tokens);
+	if (*err)
 	{
 		ft_lstclear(&cmd_list, free_cmd);
-		print_error(err);
-		return (EXIT_FAILURE);
+		return (*err);
 	}
-
+	free_tokens(&tokens);
+	*err = executor(&cmd_list);
+	if (*err)
+	{
+		ft_lstclear(&cmd_list, free_cmd);
+		return (*err);
+	}
+	ft_lstclear(&cmd_list, free_cmd);
+	return (EXIT_SUCCESS);
+}
 	// 1. Lexer (your existing `lexer` function) -> creates raw tokens
 	// 2. Expander (new function) -> processes raw tokens for expansions
 	// TODO:	the variable to expend ist delimited by if(ft_alnum())
@@ -91,14 +92,14 @@ static int	_execute_command(char **user_input)
 	//
 	// 3. Parser -> builds command tree from expanded tokens
 	// 4. Executor -> runs commands
-	ft_lstclear(&cmd_list, free_cmd);
-	return (EXIT_SUCCESS);
-}
 
 int	run_minishell(void)
 {
-	char *user_input;
-	struct sigaction sa;
+	char				*user_input;
+	int					err;
+	struct sigaction	sa;
+
+	err = 0;
 	_connect_to_signals(&sa);
 	while (1)
 	{
@@ -111,7 +112,8 @@ int	run_minishell(void)
 
 		if (*user_input)
 			add_history(user_input);
-		_execute_command(&user_input);
+		if (_execute_command(&user_input, &err))
+			print_error(err);
 		free(user_input);
 	}
 	rl_clear_history();
