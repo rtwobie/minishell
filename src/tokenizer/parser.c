@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "debug.h"
+#include "error.h"
 #include "libft.h"
 #include "structs.h"
 #include "parser.h"
@@ -87,19 +88,38 @@ static enum  e_output	_set_output(t_token **tokens)
 	return (STD_OUT);
 }
 
+static int	_set_output_file(t_token **tokens, char **output_file)
+{
+	t_token *current;
+
+	current = *tokens;
+	current = current->next;
+	if (!current)
+		return (EXIT_FAILURE);
+	if (!(current->type == TOKEN_LITERAL) && \
+		!(current->type == TOKEN_SINGLE_QUOTES) && \
+		!(current->type == TOKEN_DOUBLE_QUOTES))
+		return (EXIT_FAILURE);
+	*output_file = ft_strdup(current->value);
+	return (EXIT_SUCCESS);
+}
+
 static int	_init_cmd(t_list **cmd_list, t_token **tokens)
 {
 	t_token		*current;
 	t_command	*cmd;
 
 	current = *tokens;
-	cmd = ft_calloc(1 ,sizeof(*cmd));
+	cmd = ft_calloc(1, sizeof(*cmd));
 	if (!cmd)
 		return (EXIT_FAILURE);
 	cmd->program = ft_strdup(current->value);
 	cmd->argc = _count_args(current);
 	cmd->argv = _init_args(&current, (size_t)cmd->argc);
 	cmd->output = _set_output(&current);
+	if (cmd->output == FILE_OUT || cmd->output == FILE_APPEND_OUT)
+		if (_set_output_file(&current, &cmd->output_file))
+			return (ERR_SYNTAX);
 	if (!cmd->program || !cmd->argv)
 	{
 		free_cmd(cmd);
@@ -109,15 +129,16 @@ static int	_init_cmd(t_list **cmd_list, t_token **tokens)
 	return (EXIT_SUCCESS);
 }
 
-int	parser(t_list **cmd_list, t_token *tokens)
+int	parser(t_list **cmd_list, t_token *tokens, int *err)
 {
 	t_token	*current;
 
 	current = tokens;
 	if (!tokens)
 		return (EXIT_SUCCESS);
-	if (_init_cmd(cmd_list, &current))
-		return (EXIT_FAILURE);
+	*err = _init_cmd(cmd_list, &current);
+	if (*err)
+		return (*err);
 	print_cmd((*cmd_list)->content);
 	return (EXIT_SUCCESS);
 }

@@ -27,6 +27,7 @@ typedef struct s_command
 	char			**argv;
 	int				argc;
 	enum e_output	output;
+	char			*output_file;
 }	t_command;
 
 void	free_args(char **args);

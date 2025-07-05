@@ -100,4 +100,6 @@ void	print_cmd(t_command *cmd)
 	}
 	printf("%s", END);
 	printf("%s[out] %s\n%s", PURPLE, output_type_to_string(cmd->output), END);
+	if (cmd->output_file)
+		printf("%s[file] %s\n%s", PURPLE, cmd->output_file, END);
 }
