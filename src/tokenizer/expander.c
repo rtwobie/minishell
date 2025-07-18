@@ -6,13 +6,13 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/29 16:37:21 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 19:56:03 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "libft.h"
-#include "structs.h"
+#include "tokenizer.h"
 
 static int	_is_operator(enum e_token_type type)
 {
