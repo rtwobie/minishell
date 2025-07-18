@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug_tokens.c                                     :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:15:25 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/20 15:15:31 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 15:50:46 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,16 +69,21 @@ char	*output_type_to_string(enum e_output type)
 	return (NULL);
 }
 
-void	print_tokens(t_token *tokens)
+void	print_token(t_token *token)
+{
+	printf("%s%s\n%s", YELLOW, token->value, END);
+	printf("%s%s\n%s", CYAN, token_type_to_string(token->type), END);
+	printf("\n");
+}
+
+void	print_all_tokens(t_token *tokens)
 {
 	t_token	*current;
 
 	current = tokens;
 	while (current != NULL)
 	{
-		printf("%s%s\n%s", YELLOW, current->value, END);
-		printf("%s%s\n%s", CYAN, token_type_to_string(current->type), END);
-		printf("\n");
+		print_token(current);
 		current = current->next;
 	}
 }
