@@ -89,9 +89,6 @@ vpath %.c $(SRC_DIR)/tokenizer
 SRC		+= lexer.c
 SRC		+= lexer_utils.c
 SRC		+= expander.c
-SRC		+= parser.c
-SRC		+= parser_utils.c
-SRC		+= executor.c
 SRC		+= token.c
 SRC		+= token_list.c
 

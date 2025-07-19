@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 19:55:35 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 20:06:57 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,5 @@ int		save_token(char *value, size_t size, t_token **tokens);
 t_token	*new_token(enum e_token_type type, char *value);
 t_token	*get_last_token(t_token *lst);
 void	add_token(t_token **lst, t_token *token);
-void	free_tokens(t_token **lst);
 
 #endif // !TOKENIZER_INTERNAL_H

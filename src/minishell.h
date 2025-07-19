@@ -15,7 +15,9 @@
 
 // NOTE:	Here are temporary inclusions which will be removed when finished.
 //			The non-conformity to norminette is intended.
-# include "debug/debug.h"
+#include "parser.h"
+
+int	parser(t_token *tokens, t_ast_node	*ast);
 
 #endif // !MINISHELL_H
 
