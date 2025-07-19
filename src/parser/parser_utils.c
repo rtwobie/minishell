@@ -1,20 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin.h                                          :+:      :+:    :+:   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/04 17:23:34 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 20:00:38 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/02 16:13:59 by rha-le            #+#    #+#             */
+/*   Updated: 2025/07/18 19:27:37 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTIN_H
-# define BUILTIN_H
+#include "parser.h"
+#include <stdlib.h>
 
-# include "libft.h"
+void	free_args(char **args)
+{
+	size_t	i;
 
-int	builtin_exit(int argc, char **argv);
-
-#endif // !BUILTIN_H
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		++i;
+	}
+	free(args);
+}

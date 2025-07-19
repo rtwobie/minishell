@@ -17,7 +17,7 @@
 #include "parser.h"
 #include "error.h"
 
-int	builtin_exit(int argc, char **argv, t_list **cmd_list)
+int	builtin_exit(int argc, char **argv)
 {
 	char	*endptr;
 	int		status;
@@ -37,7 +37,6 @@ int	builtin_exit(int argc, char **argv, t_list **cmd_list)
 	else
 		status = 2;
 	// TODO: do cleanup
-	ft_lstclear(cmd_list, free_cmd);
 	rl_clear_history();
 	printf("exit\n");
 	exit(status);
