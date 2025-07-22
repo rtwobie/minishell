@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 20:01:04 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 19:56:23 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "libft.h"
-#include "lexer.h"
-#include "structs.h"
-#include "token.h"
+#include "tokenizer_internal.h"
+#include "tokenizer.h"
 #include "error.h"
 
 static char	*_skip_whitespace(char *str)

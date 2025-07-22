@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 16:13:59 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 17:26:30 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 19:27:37 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,4 @@ void	free_args(char **args)
 		++i;
 	}
 	free(args);
-}
-
-void	free_cmd(void	*command_struct)
-{
-	t_command	*cmd;
-
-	cmd = (t_command *)command_struct;
-	free(cmd->program);
-	free_args(cmd->argv);
-	free(cmd);
 }

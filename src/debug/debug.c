@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug_tokens.c                                     :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:15:25 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/20 15:15:31 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 20:00:53 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
-#include "structs.h"
 #include <stddef.h>
 #include <stdio.h>
+#include "tokenizer.h"
+#include "parser.h"
 
 #define BLACK "\033[0;30m"
 #define RED "\033[0;31m"
@@ -69,35 +69,45 @@ char	*output_type_to_string(enum e_output type)
 	return (NULL);
 }
 
-void	print_tokens(t_token *tokens)
+void	print_token(t_token *token)
+{
+	printf("%s%s\n%s", YELLOW, token->value, END);
+	printf("%s%s\n%s", CYAN, token_type_to_string(token->type), END);
+	printf("\n");
+}
+
+void	print_all_tokens(t_token *tokens)
 {
 	t_token	*current;
 
 	current = tokens;
 	while (current != NULL)
 	{
-		printf("%s%s\n%s", YELLOW, current->value, END);
-		printf("%s%s\n%s", CYAN, token_type_to_string(current->type), END);
-		printf("\n");
+		print_token(current);
 		current = current->next;
 	}
 }
 
-void	print_cmd(t_command *cmd)
-{
-	size_t	i;
-
-	i = 0;
-	printf("%sExecuting Program %s...\n%s", GREEN, cmd->program, END);
-	printf("%s[name] %s\n%s", GREEN, cmd->program, END);
-	printf("%s[argc] %i\n%s", CYAN, cmd->argc, END);
-	printf("%s", YELLOW);
-	printf("[argv]\n");
-	while (cmd->argv[i])
-	{
-		printf("  %s\n", cmd->argv[i]);
-		++i;
-	}
-	printf("%s", END);
-	printf("%s[out] %s\n%s", PURPLE, output_type_to_string(cmd->output), END);
-}
+// void	print_cmd(t_command *cmd)
+// {
+// 	size_t	i;
+//
+// 	i = 0;
+// 	printf("%sExecuting Program %s...\n%s", GREEN, cmd->program, END);
+// 	printf("%s[name] %s\n%s", GREEN, cmd->program, END);
+// 	printf("%s[argc] %i\n%s", CYAN, cmd->argc, END);
+// 	printf("%s", YELLOW);
+// 	printf("[argv]\n");
+// 	while (cmd->argv[i])
+// 	{
+// 		printf("  %s\n", cmd->argv[i]);
+// 		++i;
+// 	}
+// 	printf("%s", END);
+// 	printf("%s[out] %s\n%s", PURPLE, output_type_to_string(cmd->output), END);
+// 	if (cmd->output_file)
+// 	{
+// 		printf("%s[file] %s \n%s", PURPLE, cmd->output_file, END);
+// 		printf("  %s[append_mode] %i \n%s", PURPLE, cmd->append_mode, END);
+// 	}
+// }

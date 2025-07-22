@@ -26,6 +26,7 @@ CPPFLAGS	+= -I$(SRC_DIR)
 
 CPPFLAGS	+= -I$(SRC_DIR)/run
 CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
+CPPFLAGS	+= -I$(SRC_DIR)/parser
 CPPFLAGS	+= -I$(SRC_DIR)/builtin
 CPPFLAGS	+= -I$(SRC_DIR)/error
 CPPFLAGS	+= -I$(SRC_DIR)/debug
@@ -88,11 +89,12 @@ vpath %.c $(SRC_DIR)/tokenizer
 SRC		+= lexer.c
 SRC		+= lexer_utils.c
 SRC		+= expander.c
-SRC		+= parser.c
-SRC		+= parser_utils.c
-SRC		+= executor.c
 SRC		+= token.c
 SRC		+= token_list.c
+
+vpath %.c $(SRC_DIR)/parser
+SRC		+= parser.c
+SRC		+= parser_utils.c
 
 vpath %.c $(SRC_DIR)/builtin
 SRC		+= exit.c

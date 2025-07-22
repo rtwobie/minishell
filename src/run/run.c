@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 16:50:23 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/19 16:12:00 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,9 @@
 #include <readline/history.h>
 #include <stdlib.h>
 #include "run.h"
-#include "error.h"
-#include "libft.h"
 #include "parser.h"
+#include "error.h"
 #include "tokenizer.h"
-#include "token_list.h"
-#include "structs.h"
 #include "debug.h"
 
 static void	_reset_prompt(void)
@@ -49,12 +46,12 @@ static void	_connect_to_signals(struct sigaction *sa)
 
 static int	_execute_command(char **user_input)
 {
-	t_token	*tokens;
-	t_list	*cmd_list;
-	int		err;
+	t_token		*tokens;
+	// t_ast_node	*ast;
+	int			err;
 
 	tokens = NULL;
-	cmd_list = NULL;
+	// ast = NULL;
 	err = lexer((char *)*user_input, &tokens);
 	if (err)
 	{
@@ -70,30 +67,23 @@ static int	_execute_command(char **user_input)
 		return (EXIT_FAILURE);
 	}
 	// TEST: DEBUG
-		print_tokens(tokens);
+		print_all_tokens(tokens);
 	//
-	if (parser(&cmd_list, tokens))
-		return (EXIT_FAILURE);
+	// if (parser(tokens, &ast))
+	// 	return (EXIT_FAILURE);
 	free_tokens(&tokens);
-	err = executor(&cmd_list);
-	if (err)
-	{
-		ft_lstclear(&cmd_list, free_cmd);
-		print_error(err);
-		return (EXIT_FAILURE);
-	}
 
-	// 1. Lexer (your existing `lexer` function) -> creates raw tokens
-	// 2. Expander (new function) -> processes raw tokens for expansions
-	// TODO:	the variable to expend ist delimited by if(ft_alnum())
-	//			find out how to get the expansion -> probably from env
-	//			research/test '$$' what it means and the behaviour
-	//
-	// 3. Parser -> builds command tree from expanded tokens
-	// 4. Executor -> runs commands
-	ft_lstclear(&cmd_list, free_cmd);
 	return (EXIT_SUCCESS);
 }
+
+// 1. Lexer (your existing `lexer` function) -> creates raw tokens
+// 2. Expander (new function) -> processes raw tokens for expansions
+// TODO:	the variable to expend ist delimited by if(ft_alnum())
+//			find out how to get the expansion -> probably from env
+//			research/test '$$' what it means and the behaviour
+//
+// 3. Parser -> builds command tree from expanded tokens
+// 4. Executor -> runs commands
 
 int	run_minishell(void)
 {

@@ -15,6 +15,6 @@
 
 # include "libft.h"
 
-int	builtin_exit(int argc, char **argv, t_list **cmd_list);
+int	builtin_exit(int argc, char **argv);
 
 #endif // !BUILTIN_H

@@ -6,15 +6,15 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:17:55 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/26 18:18:11 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 19:56:37 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
 #include <stdlib.h>
 #include "libft.h"
-#include "structs.h"
-#include "token_list.h"
+#include "tokenizer_internal.h"
+#include "tokenizer.h"
 
 static enum e_token_type	_get_token_type(char *value)
 {

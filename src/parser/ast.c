@@ -1,35 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/01 18:33:35 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 17:02:05 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/19 15:38:24 by rha-le            #+#    #+#             */
+/*   Updated: 2025/07/19 15:44:34 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_H
-# define PARSER_H
+#include "libft.h"
+#include "parser_internal.h"
 
-enum e_output
+t_ast_node	*create_ast_node(t_nodetype type, union u_node data)
 {
-	STD_OUT,
-	PIPE_OUT,
-	FILE_OUT,
-	FILE_APPEND_OUT,
-};
+	t_ast_node	*node;
 
-typedef struct s_command
-{
-	char			*program;
-	char			**argv;
-	int				argc;
-	enum e_output	output;
-}	t_command;
-
-void	free_args(char **args);
-void	free_cmd(void *command_struct);
-
-#endif // !PARSER_H
+	node = ft_calloc(1, sizeof(*node));
+	if (!node)
+		return (NULL);
+	node->type = type;
+	node->data.
+}

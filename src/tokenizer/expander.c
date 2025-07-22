@@ -6,24 +6,13 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/29 16:37:21 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/19 18:33:10 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "libft.h"
-#include "structs.h"
-
-static int	_is_operator(enum e_token_type type)
-{
-	return (
-		type == TOKEN_PIPE || \
-		type == TOKEN_REDIRECT_IN || \
-		type == TOKEN_REDIRECT_OUT || \
-		type == TOKEN_HERE_DOC || \
-		type == TOKEN_REDIRECT_OUT_APPEND
-	);
-}
+#include "tokenizer.h"
 
 static int	_reedit(t_token **tokens)
 {
@@ -33,12 +22,7 @@ static int	_reedit(t_token **tokens)
 	current = *tokens;
 	while (current)
 	{
-		if (_is_operator(current->type))
-		{
-			free(current->value);
-			current->value = NULL;
-		}
-		else if (current->type == TOKEN_SINGLE_QUOTES)
+		if (current->type == TOKEN_SINGLE_QUOTES)
 		{
 			new_value = ft_strtrim(current->value, "\'");
 			if (!new_value)
@@ -91,7 +75,7 @@ int	expander(t_token **tokens)
 {
 	if (_reedit(tokens))
 		return (EXIT_FAILURE);
-	// if (_expand(tokens))
-	// 	return (EXIT_FAILURE);
+	// expand variables
+	// condense TOKEN_SINGLE_QUOTES and TOKEN_DOUBLE_QUOTES to TOKEN_LITERAL
 	return (EXIT_SUCCESS);
 }

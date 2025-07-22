@@ -6,14 +6,14 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 19:41:21 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/25 20:16:58 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/18 19:56:45 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "structs.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "libft.h"
+#include "tokenizer.h"
 
 t_token	*new_token(enum e_token_type type, char *value)
 {
