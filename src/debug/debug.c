@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:15:25 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 20:00:53 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/22 19:52:15 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,27 +87,3 @@ void	print_all_tokens(t_token *tokens)
 		current = current->next;
 	}
 }
-
-// void	print_cmd(t_command *cmd)
-// {
-// 	size_t	i;
-//
-// 	i = 0;
-// 	printf("%sExecuting Program %s...\n%s", GREEN, cmd->program, END);
-// 	printf("%s[name] %s\n%s", GREEN, cmd->program, END);
-// 	printf("%s[argc] %i\n%s", CYAN, cmd->argc, END);
-// 	printf("%s", YELLOW);
-// 	printf("[argv]\n");
-// 	while (cmd->argv[i])
-// 	{
-// 		printf("  %s\n", cmd->argv[i]);
-// 		++i;
-// 	}
-// 	printf("%s", END);
-// 	printf("%s[out] %s\n%s", PURPLE, output_type_to_string(cmd->output), END);
-// 	if (cmd->output_file)
-// 	{
-// 		printf("%s[file] %s \n%s", PURPLE, cmd->output_file, END);
-// 		printf("  %s[append_mode] %i \n%s", PURPLE, cmd->append_mode, END);
-// 	}
-// }

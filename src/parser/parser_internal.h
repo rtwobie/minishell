@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:33:35 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/19 17:58:22 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/22 19:52:24 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ struct s_ast_node
 };
 
 void	free_args(char **args);
-void	free_cmd(void *command_struct);
+
+//ast.c
+t_ast_node	*_create_ast_node(t_nodetype type, void *data);
+
 
 #endif // !PARSER_INTERNAL_H
 

@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 15:41:08 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/19 19:29:12 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/22 19:47:23 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,24 +113,25 @@ static t_ast_node	*_parse_command(t_token **token_ptr)
 	return (node);
 }
 
-// static t_ast_node	*_create_pipe_node(t_ast_node *left_node, t_ast_node *right_node)
-// {
-// 	t_ast_node	*pipe_node;
-//
-// 	pipe_node = ft_calloc(1, sizeof(*pipe_node));
-// 	if (!pipe_node)
-// 		return (NULL);
-// 	return (pipe_node);
-// }
+static t_pipe_node	*_init_pipe_data(t_ast_node *left_node, t_ast_node *right_node)
+{
+	t_pipe_node	*pipe;
+
+	pipe = ft_calloc(1, sizeof(*pipe));
+	if (!pipe)
+		return (NULL);
+	pipe->left = left_node;
+	pipe->right = right_node;
+	return (pipe);
+}
 
 static t_ast_node	*_parse_pipeline(t_token **token_ptr)
 {
-	// t_ast_node	*pipe_node;
 	t_ast_node	*left_node;
 	t_ast_node	*right_node;
+	t_ast_node	*pipe_node;
 	t_pipe_node	*pipe_data;
 
-	(void)pipe_data;
 	left_node = _parse_command(token_ptr);
 	if (!left_node)
 		return (NULL);
@@ -138,16 +139,31 @@ static t_ast_node	*_parse_pipeline(t_token **token_ptr)
 	{
 		if (!match(token_ptr, TOKEN_PIPE))
 		{
-			//cleanup_nodes()
+			cleanup_ast(left_node);
 			return (NULL);
 		}
 		right_node = _parse_pipeline(token_ptr);
 		if (!right_node)
 		{
-			//cleanup_nodes()
+			cleanup_ast(left_node);
 			return (NULL);
 		}
-		// pipe_node = _create_pipe_node(left_node, right_node);
+		pipe_data = _init_pipe_data(left_node, right_node);
+		if (!pipe_data)
+		{
+			cleanup_ast(left_node);
+			cleanup_ast(right_node);
+			return (NULL);
+		}
+		pipe_node = _create_ast_node(NODE_TYPE_PIPE, pipe_data);
+		if (!pipe_node)
+		{
+			cleanup_ast(left_node);
+			cleanup_ast(right_node);
+			free(pipe_data);
+			return (NULL);
+		}
+		left_node = pipe_node;
 	}
 	return (left_node);
 }
