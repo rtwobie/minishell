@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 20:06:54 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/19 16:12:00 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@ static void	_connect_to_signals(struct sigaction *sa)
 
 static int	_execute_command(char **user_input)
 {
-	t_token	*tokens;
-	t_ast_node *ast;
-	int		err;
+	t_token		*tokens;
+	// t_ast_node	*ast;
+	int			err;
 
 	tokens = NULL;
-	ast = NULL;
+	// ast = NULL;
 	err = lexer((char *)*user_input, &tokens);
 	if (err)
 	{
@@ -69,8 +69,8 @@ static int	_execute_command(char **user_input)
 	// TEST: DEBUG
 		print_all_tokens(tokens);
 	//
-	if (parser(tokens, ast))
-		return (EXIT_FAILURE);
+	// if (parser(tokens, &ast))
+	// 	return (EXIT_FAILURE);
 	free_tokens(&tokens);
 
 	return (EXIT_SUCCESS);

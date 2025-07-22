@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:33:35 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 19:59:54 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/19 17:58:22 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ struct s_pipe_node
 //
 union u_node
 {
-	struct s_command_node	command_node;
-	struct s_pipe_node		pipe_node;
+	struct s_command_node	*command_node;
+	struct s_pipe_node		*pipe_node;
 };
 
 struct s_ast_node
