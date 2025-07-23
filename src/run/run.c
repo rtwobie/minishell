@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/22 19:48:01 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/23 17:53:37 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,13 @@ static int	_execute_command(char **user_input)
 	// TEST: DEBUG
 		print_all_tokens(tokens);
 	if (parser(tokens, &ast))
+	{
+		print_error(1);
+		free_tokens(&tokens);
 		return (EXIT_FAILURE);
+	}
 	cleanup_ast(ast);
 	free_tokens(&tokens);
-
 	return (EXIT_SUCCESS);
 }
 
