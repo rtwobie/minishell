@@ -77,7 +77,8 @@ vpath %.c $(SRC_DIR)
 SRC		+= main.c
 
 vpath %.c $(SRC_DIR)/debug
-SRC		+= debug.c
+SRC		+= debug_token.c
+SRC		+= debug_ast.c
 
 vpath %.c $(SRC_DIR)/error
 SRC		+= error.c
@@ -96,7 +97,6 @@ vpath %.c $(SRC_DIR)/parser
 SRC		+= ast.c
 SRC		+= cleanup.c
 SRC		+= parser.c
-SRC		+= parser_utils.c
 
 vpath %.c $(SRC_DIR)/builtin
 SRC		+= exit.c
