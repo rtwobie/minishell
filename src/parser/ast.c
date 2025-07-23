@@ -6,11 +6,12 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 15:38:24 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/22 19:44:52 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/23 16:09:25 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "parser.h"
 #include "parser_internal.h"
 
 t_ast_node	*_create_ast_node(t_nodetype type, void *data)

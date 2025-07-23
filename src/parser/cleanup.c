@@ -6,13 +6,25 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 18:06:58 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/22 19:28:51 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/23 16:13:26 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "parser_internal.h"
 #include "parser.h"
+
+void	free_args(char **args)
+{
+	size_t	i;
+
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		++i;
+	}
+	free(args);
+}
 
 void	free_command_node(t_command_node *node)
 {

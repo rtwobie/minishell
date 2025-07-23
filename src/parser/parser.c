@@ -6,12 +6,13 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 15:41:08 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/22 19:47:23 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/23 16:47:24 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "debug.h"
 #include "libft.h"
 #include "tokenizer.h"
 #include "parser_internal.h"
@@ -142,7 +143,7 @@ static t_ast_node	*_parse_pipeline(t_token **token_ptr)
 			cleanup_ast(left_node);
 			return (NULL);
 		}
-		right_node = _parse_pipeline(token_ptr);
+		right_node = _parse_command(token_ptr);
 		if (!right_node)
 		{
 			cleanup_ast(left_node);
@@ -175,5 +176,6 @@ int	parser(t_token *tokens, t_ast_node	**ast)
 	*ast = _parse_pipeline(&tokens);
 	if (!*ast)
 		return (EXIT_FAILURE);
+	print_ast(*ast, 0);
 	return (EXIT_SUCCESS);
 }
