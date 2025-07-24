@@ -64,6 +64,7 @@ static int	_execute_command(char **user_input)
 	err = expander(&tokens);
 	if (err)
 	{
+		print_error(err);
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
