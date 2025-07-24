@@ -13,6 +13,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
+#include "libft.h"
 # include "tokenizer.h"
 
 typedef struct s_ast_node			t_ast_node;
@@ -38,6 +39,13 @@ typedef enum e_nodetype
 struct s_command_node
 {
 	char	**program_argv;
+	t_list	*redir;
+};
+
+struct s_redirection_node
+{
+	enum e_token_type	type;
+	char				*filename;
 };
 
 struct s_pipe_node
@@ -46,18 +54,10 @@ struct s_pipe_node
 	t_ast_node	*right;
 };
 
-struct s_redirection_node
-{
-	enum e_token_type	type;
-	t_ast_node			*left;
-	char				*filename;
-};
-
 union u_node
 {
 	struct s_command_node		*command_node;
 	struct s_pipe_node			*pipe_node;
-	struct s_redirection_node	*redirection_node;
 };
 
 struct s_ast_node
@@ -70,6 +70,7 @@ struct s_ast_node
 int		parser(t_token *tokens, t_ast_node	**ast);
 
 //cleanup.c
+void	free_redir(void *content);
 void	free_args(char **args);
 void	free_command_node(t_command_node *node);
 void	cleanup_ast(t_ast_node *ast);

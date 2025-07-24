@@ -26,8 +26,18 @@ void	free_args(char **args)
 	free(args);
 }
 
+void	free_redir(void *content)
+{
+	t_redirection_node	*redir;
+
+	redir = (t_redirection_node *)content;
+	free(redir->filename);
+	free(redir);
+}
+
 void	free_command_node(t_command_node *node)
 {
+	ft_lstclear(&node->redir, free_redir);
 	free_args(node->program_argv);
 	free(node);
 }
