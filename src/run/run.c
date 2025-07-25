@@ -76,7 +76,7 @@ static int	_execute_command(char **user_input)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
-	cleanup_ast(ast);
+	cleanup_ast(&ast);
 	free_tokens(&tokens);
 	return (EXIT_SUCCESS);
 }

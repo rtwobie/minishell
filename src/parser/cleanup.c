@@ -42,20 +42,21 @@ void	free_command_node(t_command_node *node)
 	free(node);
 }
 
-void	cleanup_ast(t_ast_node *ast)
+void	cleanup_ast(t_ast_node **ast)
 {
-	if (!ast)
+	if (!*ast)
 		return ;
-	if (ast->type == NODE_TYPE_COMMAND)
-		free_command_node(ast->data.command_node);
-	else if (ast->type == NODE_TYPE_PIPE)
+	if ((*ast)->type == NODE_TYPE_COMMAND)
+		free_command_node((*ast)->data.command_node);
+	else if ((*ast)->type == NODE_TYPE_PIPE)
 	{
-		if (ast->data.pipe_node)
+		if ((*ast)->data.pipe_node)
 		{
-			cleanup_ast(ast->data.pipe_node->left);
-			cleanup_ast(ast->data.pipe_node->right);
-			free(ast->data.pipe_node);
+			cleanup_ast(&(*ast)->data.pipe_node->left);
+			cleanup_ast(&(*ast)->data.pipe_node->right);
+			free((*ast)->data.pipe_node);
 		}
+
 	}
-	free(ast);
+	free(*ast);
 }
