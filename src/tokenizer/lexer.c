@@ -30,20 +30,6 @@ static char	*_skip_whitespace(char *str)
 	return (str);
 }
 
-//**** FUNCTION FOR TESTING
-// static void	_print_token(char *str, size_t size)
-// {
-// 	size_t	i;
-//
-// 	i = 0;
-// 	while (str[i] && i < size + 1)
-// 	{
-// 		(void)write(1, &str[i], 1);
-// 		++i;
-// 	}
-// 	(void)write (1, "\n", 1);
-// }
-
 static enum e_state _check_state(char c)
 {
 	enum e_state state;

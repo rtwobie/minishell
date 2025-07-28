@@ -22,6 +22,36 @@ static void print_indent(int level) {
     }
 }
 
+static void _print_redir_node(void *content)
+{
+	t_redirection_node	*data;
+
+	data = (t_redirection_node *)content;
+	printf("  %s, %s\n", token_type_to_string(data->type), data->filename);
+}
+
+static void	_print_redir(t_list **lst, int level)
+{
+	t_list	*current;
+
+	current = *lst;
+	printf("%s[redirects]\n", GREEN);
+	if (!current)
+	{
+		print_indent(level);
+		printf("  (null)\n");
+		printf("%s\n", END);
+		return ;
+	}
+	while (current)
+	{
+		print_indent(level);
+		_print_redir_node(current->content);
+		current = current->next;
+	}
+	printf("%s\n", END);
+}
+
 void	print_command_node(t_command_node *cmd, int level)
 {
 	size_t	i;
@@ -31,27 +61,26 @@ void	print_command_node(t_command_node *cmd, int level)
 	printf("%s[program] %s\n%s", CYAN, cmd->program_argv[0], END);
     print_indent(level);
 	printf("%s[argv]\n%s", CYAN, END);
-    print_indent(level);
 	while (cmd->program_argv[i])
 	{
 		print_indent(level);
 		printf("%s  %s\n%s", CYAN, cmd->program_argv[i], END);
 		++i;
 	}
+	print_indent(level);
+	_print_redir(&cmd->redir, level);
 }
 
 void print_ast(t_ast_node *ast, int level) // Added 'level' parameter
 {
-    if (!ast) {
-        return; // Important: handle NULL nodes gracefully
-    }
-
-    if (ast->type == NODE_TYPE_COMMAND) {
-        if (ast->data.command_node && ast->data.command_node->program_argv) {
+    if (!ast)
+        return;
+    if (ast->type == NODE_TYPE_COMMAND)
+	{
+        if (ast->data.command_node && ast->data.command_node->program_argv)
 			print_command_node(ast->data.command_node, level);
-        } else {
+        else
              printf("(Empty Command)\n");
-        }
     } else if (ast->type == NODE_TYPE_PIPE) {
         print_indent(level);
         printf("[PIPE]\n");
