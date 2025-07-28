@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/07/28 14:14:48 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/07/28 15:24:55 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	execute_command(t_command_node *com_nd)
 	char	*program;
 
 	program = ft_strjoin("/bin/", com_nd->program_argv[0]);
-	execvp(program, com_nd->program_argv);
+	execve(program, com_nd->program_argv, NULL);
 }
 
 void	redirect_io(int input_fd, int output_fd)
