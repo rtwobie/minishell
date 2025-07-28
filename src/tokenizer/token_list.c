@@ -47,6 +47,12 @@ void	add_token(t_token **lst, t_token *token)
 		get_last_token(*lst)->next = token;
 }
 
+void	free_token(t_token *token)
+{
+		free(token->value);
+		free(token);
+}
+
 void	free_tokens(t_token **lst)
 {
 	t_token	*temp;
@@ -55,8 +61,7 @@ void	free_tokens(t_token **lst)
 	{
 		temp = *lst;
 		*lst = temp->next;
-		free(temp->value);
-		free(temp);
+		free_token(temp);
 	}
 	*lst = NULL;
 }
