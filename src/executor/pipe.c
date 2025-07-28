@@ -6,13 +6,21 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/07/28 15:24:55 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/07/28 17:22:01 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipe.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include "parser.h"
+#include "executor.h"
+#include "libft.h"
 
-void	execute_command(t_command_node *com_nd)
+static void	_execute_command(t_command_node *com_nd)
 {
 	char	*program;
 
@@ -20,7 +28,7 @@ void	execute_command(t_command_node *com_nd)
 	execve(program, com_nd->program_argv, NULL);
 }
 
-void	redirect_io(int input_fd, int output_fd)
+static void	_redirect_io(int input_fd, int output_fd)
 {
 	if (input_fd != STDIN_FILENO)
 	{
@@ -38,7 +46,7 @@ void	redirect_io(int input_fd, int output_fd)
 		close(output_fd);
 }
 
-void	execute_node(t_ast_node *node, int input_fd, int output_fd)
+static void	_execute_node(t_ast_node *node, int input_fd, int output_fd)
 {
 	pid_t	pid;
 	int		pipefd[2];
@@ -50,8 +58,8 @@ void	execute_node(t_ast_node *node, int input_fd, int output_fd)
 		pid = fork();
 		if (pid == 0)
 		{
-			redirect_io(input_fd, output_fd);
-			execute_command(node->data.command_node);
+			_redirect_io(input_fd, output_fd);
+			_execute_command(node->data.command_node);
 			exit(127);
 		}
 		if (pid > 0)
@@ -60,17 +68,17 @@ void	execute_node(t_ast_node *node, int input_fd, int output_fd)
 	else if (node->type == NODE_TYPE_PIPE)
 	{
 		pipe(pipefd);
-		execute_node(node->data.pipe_node->left, input_fd, pipefd[1]);
+		_execute_node(node->data.pipe_node->left, input_fd, pipefd[1]);
 		close(pipefd[1]);
-		execute_node(node->data.pipe_node->right, pipefd[0], output_fd);
+		_execute_node(node->data.pipe_node->right, pipefd[0], output_fd);
 		close(pipefd[0]);
 	}
 }
 
-int	main_pipe(t_ast_node **tree)
+int	executor(t_ast_node **tree)
 {
 	if (!tree || !*tree)
 		return (-1);
-	execute_node(*tree, STDIN_FILENO, STDOUT_FILENO);
+	_execute_node(*tree, STDIN_FILENO, STDOUT_FILENO);
 	return (0);
 }
