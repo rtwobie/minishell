@@ -27,6 +27,7 @@ CPPFLAGS	+= -I$(SRC_DIR)
 CPPFLAGS	+= -I$(SRC_DIR)/run
 CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
 CPPFLAGS	+= -I$(SRC_DIR)/parser
+CPPFLAGS	+= -I$(SRC_DIR)/pipe
 CPPFLAGS	+= -I$(SRC_DIR)/builtin
 CPPFLAGS	+= -I$(SRC_DIR)/error
 CPPFLAGS	+= -I$(SRC_DIR)/debug
@@ -97,6 +98,9 @@ vpath %.c $(SRC_DIR)/parser
 SRC		+= ast.c
 SRC		+= cleanup.c
 SRC		+= parser.c
+
+vpath %.c $(SRC_DIR)/pipe
+SRC		+= pipe.c
 
 vpath %.c $(SRC_DIR)/builtin
 SRC		+= exit.c

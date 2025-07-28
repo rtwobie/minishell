@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include "run.h"
 #include "parser.h"
+#include "pipe.h"
 #include "error.h"
 #include "tokenizer.h"
 #include "debug.h"
@@ -76,6 +77,7 @@ static int	_execute_command(char **user_input)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
+	main_pipe(&ast);
 	cleanup_ast(&ast);
 	free_tokens(&tokens);
 	return (EXIT_SUCCESS);
