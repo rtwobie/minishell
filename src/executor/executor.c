@@ -26,25 +26,8 @@ static void	_execute_command(t_command_node *com_nd)
 	char	*program;
 
 	program = ft_strjoin("/bin/", com_nd->program_argv[0]);
-	execve(program, com_nd->program_argv, NULL);
-}
-
-void	_redirect_io(int input_fd, int output_fd)
-{
-	if (input_fd != STDIN_FILENO)
-	{
-		if (dup2(input_fd, STDIN_FILENO) == -1)
-			perror("error duplicating input\n"); // or better an errno
-	}
-	if (output_fd != STDOUT_FILENO)
-	{
-		if (dup2(output_fd, STDOUT_FILENO) == -1)
-			perror("error duplicating output\n"); // or better an errno
-	}
-	if (input_fd != STDIN_FILENO)
-		close(input_fd);
-	if (output_fd != STDOUT_FILENO)
-		close(output_fd);
+	if (execve(program, com_nd->program_argv, NULL))
+		perror(com_nd->program_argv[0]);
 }
 
 static void	_execute_node(t_ast_node *node, int input_fd, int output_fd)
@@ -59,8 +42,7 @@ static void	_execute_node(t_ast_node *node, int input_fd, int output_fd)
 		pid = fork();
 		if (pid == 0)
 		{
-			_redirect_io1(node->data.command_node, input_fd, output_fd);
-			// _redirect_io(input_fd, output_fd);
+			_redirect_io(node->data.command_node, input_fd, output_fd);
 			_execute_command(node->data.command_node);
 			exit(127);
 		}

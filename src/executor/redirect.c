@@ -32,12 +32,13 @@ static void	_open_redirect_in(t_redirection_node *redir_data)
 	if (dup2(fd_in, STDIN_FILENO) == -1)
 	{
 		close(fd_in);
-		perror("dup2");
+		perror("dup2 in failed");
 		exit(EXIT_FAILURE);
 	}
 	close(fd_in);
 }
 
+// TODO: heredoc
 static int	_set_input(t_list *redir, int input_fd)
 {
 	t_list	*current;
@@ -46,7 +47,7 @@ static int	_set_input(t_list *redir, int input_fd)
 	{
 		if (dup2(input_fd, STDIN_FILENO) == -1)
 		{
-			perror("error duplicating input");
+			perror("dup2 in failed");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -80,7 +81,7 @@ static void	_open_redirect_out(t_redirection_node *redir_data)
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
-		perror("dup2");
+		perror("dup2 out failed");
 		exit(EXIT_FAILURE);
 	}
 	close(fd);
@@ -88,13 +89,13 @@ static void	_open_redirect_out(t_redirection_node *redir_data)
 
 static int	_set_output(t_list *redir, int output_fd)
 {
-	t_list *current;
+	t_list	*current;
 
 	if (output_fd != STDOUT_FILENO)
 	{
 		if (dup2(output_fd, STDOUT_FILENO) == -1)
 		{
-			perror("dup2 failed");
+			perror("dup2 out failed");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -110,7 +111,7 @@ static int	_set_output(t_list *redir, int output_fd)
 	return (EXIT_SUCCESS);
 }
 
-void	_redirect_io1(t_command_node *cmd, int input_fd, int output_fd)
+void	_redirect_io(t_command_node *cmd, int input_fd, int output_fd)
 {
 	_set_input(cmd->redir, input_fd);
 	_set_output(cmd->redir, output_fd);
@@ -119,4 +120,3 @@ void	_redirect_io1(t_command_node *cmd, int input_fd, int output_fd)
 	if (output_fd != STDOUT_FILENO)
 		close(output_fd);
 }
-

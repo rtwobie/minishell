@@ -33,6 +33,6 @@ typedef struct s_pid
 	int		output_fd;
 }	t_pid;
 
-void	_redirect_io1(t_command_node *cmd, int input_fd, int output_fd);
+void	_redirect_io(t_command_node *cmd, int input_fd, int output_fd);
 
 #endif // !EXECUTOR_INTERNAL_H
