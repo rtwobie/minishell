@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/23 17:53:37 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/28 22:54:30 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include "run.h"
 #include "parser.h"
-#include "pipe.h"
+#include "executor.h"
 #include "error.h"
 #include "tokenizer.h"
 #include "debug.h"
@@ -77,7 +77,7 @@ static int	_execute_command(char **user_input)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
-	main_pipe(&ast);
+	executor(&ast);
 	cleanup_ast(&ast);
 	free_tokens(&tokens);
 	return (EXIT_SUCCESS);
