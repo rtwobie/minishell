@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe.c                                             :+:      :+:    :+:   */
+/*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/07/28 17:22:01 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/28 23:58:39 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include "parser.h"
+#include "executor_internal.h"
 #include "executor.h"
 #include "libft.h"
 
@@ -28,7 +29,7 @@ static void	_execute_command(t_command_node *com_nd)
 	execve(program, com_nd->program_argv, NULL);
 }
 
-static void	_redirect_io(int input_fd, int output_fd)
+void	_redirect_io(int input_fd, int output_fd)
 {
 	if (input_fd != STDIN_FILENO)
 	{
@@ -58,7 +59,8 @@ static void	_execute_node(t_ast_node *node, int input_fd, int output_fd)
 		pid = fork();
 		if (pid == 0)
 		{
-			_redirect_io(input_fd, output_fd);
+			_redirect_io1(node->data.command_node, input_fd, output_fd);
+			// _redirect_io(input_fd, output_fd);
 			_execute_command(node->data.command_node);
 			exit(127);
 		}
@@ -78,7 +80,7 @@ static void	_execute_node(t_ast_node *node, int input_fd, int output_fd)
 int	executor(t_ast_node **tree)
 {
 	if (!tree || !*tree)
-		return (-1);
+		return (EXIT_FAILURE);
 	_execute_node(*tree, STDIN_FILENO, STDOUT_FILENO);
-	return (0);
+	return (EXIT_SUCCESS);
 }
