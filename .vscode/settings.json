@@ -10,6 +10,8 @@
         "${workspaceFolder}/src/builtin",
         "${workspaceFolder}/src/error",
         "${workspaceFolder}/src/debug",
+		"${workspaceFolder}/src/pipe",
+		"${workspaceFolder}/src/envvar",
         "${workspaceFolder}/libft"
     ],
     "C_Cpp.default.defines": [],

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 19:56:23 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/30 13:27:28 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "tokenizer_internal.h"
 #include "tokenizer.h"
 #include "error.h"
+#include "pipe.h"
 
 static char	*_skip_whitespace(char *str)
 {
@@ -37,6 +38,8 @@ static enum e_state _check_state(char c)
 	state = 0;
 	if (ft_isspace(c))
 		state = WHITESPACE;
+	else if (c == '$')
+		state = DOLLARS;
 	else if (c == '\'')
 		state = IN_SINGLE_QUOTES;
 	else if (c == '\"')
@@ -48,6 +51,44 @@ static enum e_state _check_state(char c)
 	else if (ft_isword(c))
 		state = WORD;
 	return (state);
+}
+
+char	*_use_getent(char *idx, size_t i)
+{
+	char	*join;
+	char	*temp;
+
+	join = getenv(ft_substr(idx, 0, i));
+	if (!join)
+		perror("ENV VAR not found");
+	temp = ft_substr(idx, i, ft_strlen(idx));
+	idx = ft_strjoin(join, temp);
+	free(temp);
+	return (idx);
+}
+
+int	_get_env_tok(char **idx, t_token **tokens)
+{
+	size_t		i;
+
+	i = 0;
+	if (++(*idx) && **idx == '{')
+	{
+		while (*idx[i] && *idx[i] != '}')
+			++i;
+		if (!*idx[i])
+			perror("Syntax error in env_tok");
+		else
+			*idx = _use_getent(++(*idx), i);
+	}
+	else
+	{
+		while (*idx[i] >= 'A' && *idx[i] <= 'Z')
+			i++;
+		*idx = _use_getent(*idx, i);
+	}
+	save_token(*idx, ft_strlen(*idx), tokens);
+	return (EXIT_SUCCESS);
 }
 
 static char	*_get_word_tok(char *idx, t_token **tokens)
@@ -162,6 +203,8 @@ int	lexer(char *user_input, t_token **tokens)
 		current_state = _check_state(*idx);
 		if (current_state == WHITESPACE)
 			idx = _skip_whitespace(idx);
+		else if (current_state == DOLLARS) //--------------NEW
+			err = _get_env_tok(&idx, tokens);
 		else if (current_state == IN_OPERATOR)
 			idx = _get_operator_tok(idx, tokens);
 		else if (current_state == IN_SINGLE_QUOTES)

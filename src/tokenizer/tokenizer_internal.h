@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_internal.h                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 20:06:57 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/30 11:39:03 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ enum e_state
 {
 	START,
 	WHITESPACE,
+	DOLLARS, //----------------NEW
 	IN_SINGLE_QUOTES,
 	IN_DOUBLE_QUOTES,
 	IN_OPERATOR,

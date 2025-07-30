@@ -28,6 +28,7 @@ CPPFLAGS	+= -I$(SRC_DIR)/run
 CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
 CPPFLAGS	+= -I$(SRC_DIR)/parser
 CPPFLAGS	+= -I$(SRC_DIR)/pipe
+CPPFLAGS	+= -I$(SRC_DIR)/envvar
 CPPFLAGS	+= -I$(SRC_DIR)/builtin
 CPPFLAGS	+= -I$(SRC_DIR)/error
 CPPFLAGS	+= -I$(SRC_DIR)/debug
@@ -101,6 +102,11 @@ SRC		+= parser.c
 
 vpath %.c $(SRC_DIR)/pipe
 SRC		+= pipe.c
+
+#new envvar
+
+vpath %.c $(SRC_DIR)/envvar
+SRC		+= envvar.c
 
 vpath %.c $(SRC_DIR)/builtin
 SRC		+= exit.c
