@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:13:10 by fgorlich          #+#    #+#             */
-/*   Updated: 2025/07/28 14:13:26 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/07/31 11:11:58 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include "parser.h"
-# include "pipe.h"
 # include "libft.h"
 
 // typedef struct s_pid

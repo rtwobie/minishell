@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 17:48:59 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 19:56:51 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/30 15:39:16 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_isoperator(char c)
 
 int ft_isword(char c)
 {
-	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>' || c == '$')
+	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>')
 		return (0);
 	else if (c > 32 && c < 127)
 		return (1);

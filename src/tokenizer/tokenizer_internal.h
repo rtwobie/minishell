@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/30 11:39:03 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/07/31 13:04:08 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ enum e_state
 {
 	START,
 	WHITESPACE,
-	DOLLARS, //----------------NEW
 	IN_SINGLE_QUOTES,
 	IN_DOUBLE_QUOTES,
 	IN_OPERATOR,
@@ -30,6 +29,9 @@ enum e_state
 	WORD,
 	END,
 };
+
+// lexer.c
+enum e_state	_check_state(char c);
 
 // lexer_utils.c
 int		ft_isoperator(char c);

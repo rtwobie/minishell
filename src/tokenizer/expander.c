@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/29 22:10:31 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/07/30 16:42:55 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static int	_expand(t_token **tokens)
 	while (current)
 	{
 		// EXPANSION CODE HERE
-		envvar(tokens);
+		envvar(&current);
 		if (current->type == TOKEN_SINGLE_QUOTES || \
 			current->type == TOKEN_DOUBLE_QUOTES)
 				current->type = TOKEN_LITERAL;
