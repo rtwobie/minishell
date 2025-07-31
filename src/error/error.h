@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:53:50 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/04 19:57:47 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/31 15:10:59 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 // ****************************** //
 
 void	print_error(int err);
+void	print_err(int err, char *location, char *strerror);
 
 #endif // !ERROR_H
 
