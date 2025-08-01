@@ -6,14 +6,17 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 19:56:23 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/31 15:23:35 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <unistd.h>
+#include <errno.h>
+
 #include "libft.h"
 #include "tokenizer_internal.h"
 #include "tokenizer.h"
@@ -173,7 +176,7 @@ int	lexer(char *user_input, t_token **tokens)
 		else if (current_state == END)
 			break ;
 		if (err)
-			return (err);
+			return (print_err(err, "lexer"), err);
 	}
 	return (EXIT_SUCCESS);
 }
