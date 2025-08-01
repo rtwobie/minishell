@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/31 12:58:30 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/08/01 21:49:10 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static void	_signal_handler(int sig, siginfo_t *info, void *context)
 
 static void	_connect_to_signals(struct sigaction *sa)
 {
-	sigemptyset(&sa->sa_mask);
 	sa->sa_flags = SA_SIGINFO;
 	sa->sa_sigaction = _signal_handler;
 	sigaction(SIGINT, sa, NULL);
@@ -95,9 +94,9 @@ static int	_execute_command(char **user_input)
 
 int	run_minishell(void)
 {
-	char				*user_input;
-
-	_connect_to_signals();
+	char *user_input;
+	struct sigaction sa;
+	_connect_to_signals(&sa);
 	while (1)
 	{
 		user_input = readline(PROMPT);
