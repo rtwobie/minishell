@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/28 22:54:30 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/31 15:28:12 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include "run.h"
 #include "parser.h"
+#include "heredoc.h"
 #include "executor.h"
 #include "error.h"
 #include "tokenizer.h"
@@ -46,7 +47,7 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	_execute_command(char **user_input)
+static int	_execute_command(char **user_input, char **envp)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
@@ -54,12 +55,8 @@ static int	_execute_command(char **user_input)
 
 	tokens = NULL;
 	ast = NULL;
-	err = lexer((char *)*user_input, &tokens);
-	if (err)
-	{
-		print_error(err);
+	if (lexer((char *)*user_input, &tokens))
 		return (EXIT_FAILURE);
-	}
 	free(*user_input);
 	*user_input = NULL;
 	err = expander(&tokens);
@@ -77,7 +74,8 @@ static int	_execute_command(char **user_input)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
-	executor(&ast);
+	// heredoc_test(&tokens);
+	executor(&ast, envp);
 	cleanup_ast(&ast);
 	free_tokens(&tokens);
 	return (EXIT_SUCCESS);
@@ -92,7 +90,7 @@ static int	_execute_command(char **user_input)
 // 3. Parser -> builds command tree from expanded tokens
 // 4. Executor -> runs commands
 
-int	run_minishell(void)
+int	run_minishell(char **envp)
 {
 	char *user_input;
 	struct sigaction sa;
@@ -108,7 +106,7 @@ int	run_minishell(void)
 
 		if (*user_input)
 			add_history(user_input);
-		_execute_command(&user_input);
+		_execute_command(&user_input, envp);
 		free(user_input);
 	}
 	rl_clear_history();

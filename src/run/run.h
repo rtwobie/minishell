@@ -15,6 +15,6 @@
 
 # define PROMPT "minishell$ "
 
-int	run_minishell(void);
+int	run_minishell(char **envp);
 
 #endif // !RUN_H
