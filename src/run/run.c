@@ -55,7 +55,7 @@ static int	_execute_command(char **user_input, char **envp)
 
 	tokens = NULL;
 	ast = NULL;
-	if (lexer((char *)*user_input, &tokens))
+	if (lexer(*user_input, &tokens))
 		return (EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
@@ -75,9 +75,9 @@ static int	_execute_command(char **user_input, char **envp)
 		return (EXIT_FAILURE);
 	}
 	// heredoc_test(&tokens);
+	free_tokens(&tokens);
 	executor(&ast, envp);
 	cleanup_ast(&ast);
-	free_tokens(&tokens);
 	return (EXIT_SUCCESS);
 }
 
