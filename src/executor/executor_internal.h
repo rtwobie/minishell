@@ -34,7 +34,8 @@ typedef struct s_pid
 	int		output_fd;
 }	t_pid;
 
-void	_redirect_io(t_command_node *cmd, int input_fd, int output_fd);
+// redirect.c
+int	redirect_io(t_command_node *cmd, int input_fd, int output_fd);
 
 // search_program.c
 char	*search_program(char *program);

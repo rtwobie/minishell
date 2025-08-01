@@ -28,7 +28,8 @@
 // TODO: understand getenv()
 // TODO: understand execve() specifically the 3 param
 
-static int	_execute_simple_command(t_command_node *cmd, int fd_in, int fd_out)
+static int	_execute_simple_command(t_ast_node **tree, t_command_node *cmd,
+int fd_in, int fd_out)
 {
 	pid_t	pid;
 	char	*program;
@@ -45,12 +46,10 @@ static int	_execute_simple_command(t_command_node *cmd, int fd_in, int fd_out)
 		return (EXIT_FAILURE);
 	else if (pid == 0)
 	{
-		_redirect_io(cmd, fd_in, fd_out);
+		if (redirect_io(cmd, fd_in, fd_out))
+			(free(program), cleanup_ast(tree), exit(EXIT_FAILURE));
 		if (execve(program, cmd->program_argv, NULL))
-		{
-			free(program);
-			exit(127);
-		}
+			(free(program), cleanup_ast(tree), exit(127));
 	}
 	else if (pid > 0)
 		waitpid(pid, NULL, 0);
@@ -82,8 +81,8 @@ int	executor(t_ast_node **tree, char **envp)
 	if (!tree || !*tree)
 		return (EXIT_FAILURE);
 	t_command_node *cmd = (t_command_node *)(*tree)->data.command_node;
-	_execute_simple_command(cmd, STDIN_FILENO, STDOUT_FILENO);
+	if (_execute_simple_command(tree, cmd, STDIN_FILENO, STDOUT_FILENO))
+		return (EXIT_FAILURE);
 	// _execute_node(*tree, STDIN_FILENO, STDOUT_FILENO);
-
 	return (EXIT_SUCCESS);
 }

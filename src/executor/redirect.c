@@ -17,17 +17,17 @@
 #include "libft.h"
 #include "parser.h"
 
-static void	_open_redirect_in(t_redirection_node *redir_data)
+static int _open_redirect_in(t_redirection_node *redir_data)
 {
 	int	fd_in;
 
 	if (redir_data->type != TOKEN_REDIRECT_IN)
-		return ;
+		return (EXIT_SUCCESS);
 	fd_in = open(redir_data->filename, O_RDONLY);
 	if (fd_in == -1)
 	{
 		perror(redir_data->filename);
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	if (dup2(fd_in, STDIN_FILENO) == -1)
 	{
@@ -36,6 +36,7 @@ static void	_open_redirect_in(t_redirection_node *redir_data)
 		exit(EXIT_FAILURE);
 	}
 	close(fd_in);
+	return (EXIT_SUCCESS);
 }
 
 // TODO: heredoc
@@ -48,7 +49,7 @@ static int	_set_input(t_list *redir, int input_fd)
 		if (dup2(input_fd, STDIN_FILENO) == -1)
 		{
 			perror("dup2 in failed");
-			exit(EXIT_FAILURE);
+			return (EXIT_FAILURE);
 		}
 	}
 	if (redir)
@@ -56,7 +57,8 @@ static int	_set_input(t_list *redir, int input_fd)
 		current = redir;
 		while (current)
 		{
-			_open_redirect_in((t_redirection_node *)current->content);
+			if (_open_redirect_in((t_redirection_node *)current->content))
+				return (EXIT_FAILURE);
 			current = current->next;
 		}
 	}
@@ -111,12 +113,20 @@ static int	_set_output(t_list *redir, int output_fd)
 	return (EXIT_SUCCESS);
 }
 
-void	_redirect_io(t_command_node *cmd, int input_fd, int output_fd)
+int	redirect_io(t_command_node *cmd, int input_fd, int output_fd)
 {
-	_set_input(cmd->redir, input_fd);
+	if (_set_input(cmd->redir, input_fd))
+	{
+		if (input_fd != STDIN_FILENO)
+			close(input_fd);
+		if (output_fd != STDOUT_FILENO)
+			close(output_fd);
+		return (EXIT_FAILURE);
+	}
 	_set_output(cmd->redir, output_fd);
 	if (input_fd != STDIN_FILENO)
 		close(input_fd);
 	if (output_fd != STDOUT_FILENO)
 		close(output_fd);
+	return (EXIT_SUCCESS);
 }
