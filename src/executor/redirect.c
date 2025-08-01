@@ -17,7 +17,7 @@
 #include "libft.h"
 #include "parser.h"
 
-static int _open_redirect_in(t_redirection_node *redir_data)
+static int	_open_redirect_in(t_redirection_node *redir_data)
 {
 	int	fd_in;
 

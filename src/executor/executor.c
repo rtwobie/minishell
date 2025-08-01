@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <readline/readline.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -21,14 +22,7 @@
 #include "executor_internal.h"
 #include "executor.h"
 
-// TODO: search for cmd first then fork
-// TODO: case: `$ argument/` -> throw error "Is a directory" (from errno)
-//				or "Not a directory"
-// TODO: case: `$ argument/path` -> find absolut/relative path
-// TODO: understand getenv()
-// TODO: understand execve() specifically the 3 param
-
-static int	_execute_simple_command(t_ast_node **tree, t_command_node *cmd,
+static int	_execute_simple_cmd(t_ast_node **tree, t_command_node *cmd,
 int fd_in, int fd_out)
 {
 	pid_t	pid;
@@ -47,42 +41,44 @@ int fd_in, int fd_out)
 	else if (pid == 0)
 	{
 		if (redirect_io(cmd, fd_in, fd_out))
-			(free(program), cleanup_ast(tree), exit(EXIT_FAILURE));
+			(free(program), cleanup_ast(tree), rl_clear_history(), exit(1));
 		if (execve(program, cmd->program_argv, NULL))
-			(free(program), cleanup_ast(tree), exit(127));
+			(free(program), cleanup_ast(tree), rl_clear_history(), exit(127));
 	}
 	else if (pid > 0)
 		waitpid(pid, NULL, 0);
 	return (free(program), EXIT_SUCCESS);
 }
 
-// static int	_execute_node(t_ast_node *node, int fd_in, int fd_out)
-// {
-// 	int		pipefd[2];
-//
-// 	if (node == NULL)
-// 		return (EXIT_FAILURE);
-// 	if (node->type == NODE_TYPE_COMMAND)
-// 		_execute_simple_command(node->data.command_node, fd_in, fd_out);
-// 	else if (node->type == NODE_TYPE_PIPE)
-// 	{
-// 		pipe(pipefd);
-// 		_execute_node(node->data.pipe_node->left, fd_in, pipefd[1]);
-// 		close(pipefd[1]);
-// 		_execute_node(node->data.pipe_node->right, pipefd[0], fd_out);
-// 		close(pipefd[0]);
-// 	}
-// 	return (EXIT_SUCCESS);
-// }
+static int	_execute_node(t_ast_node **tree, t_ast_node *node,
+int fd_in, int fd_out)
+{
+	int		pipefd[2];
+
+	if (node == NULL)
+		return (EXIT_FAILURE);
+	if (node->type == NODE_TYPE_COMMAND)
+	{
+		if (_execute_simple_cmd(tree, node->data.command_node, fd_in, fd_out))
+			return (EXIT_FAILURE);
+	}
+	else if (node->type == NODE_TYPE_PIPE)
+	{
+		pipe(pipefd);
+		_execute_node(tree, node->data.pipe_node->left, fd_in, pipefd[1]);
+		close(pipefd[1]);
+		_execute_node(tree, node->data.pipe_node->right, pipefd[0], fd_out);
+		close(pipefd[0]);
+	}
+	return (EXIT_SUCCESS);
+}
 
 int	executor(t_ast_node **tree, char **envp)
 {
 	(void)envp;
 	if (!tree || !*tree)
 		return (EXIT_FAILURE);
-	t_command_node *cmd = (t_command_node *)(*tree)->data.command_node;
-	if (_execute_simple_command(tree, cmd, STDIN_FILENO, STDOUT_FILENO))
+	if (_execute_node(tree, *tree, STDIN_FILENO, STDOUT_FILENO))
 		return (EXIT_FAILURE);
-	// _execute_node(*tree, STDIN_FILENO, STDOUT_FILENO);
 	return (EXIT_SUCCESS);
 }
