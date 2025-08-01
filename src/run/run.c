@@ -40,6 +40,7 @@ static void	_signal_handler(int sig, siginfo_t *info, void *context)
 
 static void	_connect_to_signals(struct sigaction *sa)
 {
+	sigemptyset(&sa->sa_mask);
 	sa->sa_flags = SA_SIGINFO;
 	sa->sa_sigaction = _signal_handler;
 	sigaction(SIGINT, sa, NULL);
@@ -94,9 +95,9 @@ static int	_execute_command(char **user_input)
 
 int	run_minishell(void)
 {
-	char *user_input;
-	struct sigaction sa;
-	_connect_to_signals(&sa);
+	char				*user_input;
+
+	_connect_to_signals();
 	while (1)
 	{
 		user_input = readline(PROMPT);

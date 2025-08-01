@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/30 16:42:55 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/08/01 20:48:04 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,19 +85,29 @@ static int	_condense_redirection(t_token **tokens)
 static int	_expand(t_token **tokens)
 {
 	t_token *current;
+	t_token *prev;
 
 	current = *tokens;
-
+	prev = current;
 	while (current)
 	{
 		// EXPANSION CODE HERE
-		envvar(&current);
+		if (envvar(&current) == EXIT_FAILURE)
+		{
+			if (!*current->value)
+			{
+				prev->next = current->next; // not ideal
+				free_token(current);
+				current = prev->next;
+			}
+			continue ;
+		}
 		if (current->type == TOKEN_SINGLE_QUOTES || \
 			current->type == TOKEN_DOUBLE_QUOTES)
 				current->type = TOKEN_LITERAL;
+		prev = current;
 		current = current->next;
 	}
-
 	return (EXIT_SUCCESS);
 }
 
