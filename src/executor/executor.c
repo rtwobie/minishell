@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/07/28 23:58:39 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/31 19:03:12 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,53 +16,74 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+
 #include "parser.h"
 #include "executor_internal.h"
 #include "executor.h"
-#include "libft.h"
 
-static void	_execute_command(t_command_node *com_nd)
-{
-	char	*program;
+// TODO: search for cmd first then fork
+// TODO: case: `$ argument/` -> throw error "Is a directory" (from errno)
+//				or "Not a directory"
+// TODO: case: `$ argument/path` -> find absolut/relative path
+// TODO: understand getenv()
+// TODO: understand execve() specifically the 3 param
 
-	program = ft_strjoin("/bin/", com_nd->program_argv[0]);
-	if (execve(program, com_nd->program_argv, NULL))
-		perror(com_nd->program_argv[0]);
-}
-
-static void	_execute_node(t_ast_node *node, int input_fd, int output_fd)
+static int	_execute_simple_command(t_command_node *cmd, int fd_in, int fd_out)
 {
 	pid_t	pid;
-	int		pipefd[2];
+	char	*program;
 
-	if (node == NULL)
-		return ;
-	if (node->type == NODE_TYPE_COMMAND)
+	program = NULL;
+	if (cmd->program_argv[0])
 	{
-		pid = fork();
-		if (pid == 0)
+		program = search_program(cmd->program_argv[0]);
+		if (!program)
+			return (EXIT_FAILURE);
+	}
+	pid = fork();
+	if (pid == -1)
+		return (EXIT_FAILURE);
+	else if (pid == 0)
+	{
+		_redirect_io(cmd, fd_in, fd_out);
+		if (execve(program, cmd->program_argv, NULL))
 		{
-			_redirect_io(node->data.command_node, input_fd, output_fd);
-			_execute_command(node->data.command_node);
+			free(program);
 			exit(127);
 		}
-		if (pid > 0)
-			waitpid(pid, NULL, 0);
 	}
-	else if (node->type == NODE_TYPE_PIPE)
-	{
-		pipe(pipefd);
-		_execute_node(node->data.pipe_node->left, input_fd, pipefd[1]);
-		close(pipefd[1]);
-		_execute_node(node->data.pipe_node->right, pipefd[0], output_fd);
-		close(pipefd[0]);
-	}
+	else if (pid > 0)
+		waitpid(pid, NULL, 0);
+	return (free(program), EXIT_SUCCESS);
 }
 
-int	executor(t_ast_node **tree)
+// static int	_execute_node(t_ast_node *node, int fd_in, int fd_out)
+// {
+// 	int		pipefd[2];
+//
+// 	if (node == NULL)
+// 		return (EXIT_FAILURE);
+// 	if (node->type == NODE_TYPE_COMMAND)
+// 		_execute_simple_command(node->data.command_node, fd_in, fd_out);
+// 	else if (node->type == NODE_TYPE_PIPE)
+// 	{
+// 		pipe(pipefd);
+// 		_execute_node(node->data.pipe_node->left, fd_in, pipefd[1]);
+// 		close(pipefd[1]);
+// 		_execute_node(node->data.pipe_node->right, pipefd[0], fd_out);
+// 		close(pipefd[0]);
+// 	}
+// 	return (EXIT_SUCCESS);
+// }
+
+int	executor(t_ast_node **tree, char **envp)
 {
+	(void)envp;
 	if (!tree || !*tree)
 		return (EXIT_FAILURE);
-	_execute_node(*tree, STDIN_FILENO, STDOUT_FILENO);
+	t_command_node *cmd = (t_command_node *)(*tree)->data.command_node;
+	_execute_simple_command(cmd, STDIN_FILENO, STDOUT_FILENO);
+	// _execute_node(*tree, STDIN_FILENO, STDOUT_FILENO);
+
 	return (EXIT_SUCCESS);
 }

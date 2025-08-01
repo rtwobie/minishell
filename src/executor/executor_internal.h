@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 17:19:33 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/28 23:06:26 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/07/31 18:26:58 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <sys/wait.h>
-#include "parser.h"
+
+# include "parser.h"
 
 // typedef struct s_pid
 // {
@@ -34,5 +35,8 @@ typedef struct s_pid
 }	t_pid;
 
 void	_redirect_io(t_command_node *cmd, int input_fd, int output_fd);
+
+// search_program.c
+char	*search_program(char *program);
 
 #endif // !EXECUTOR_INTERNAL_H
