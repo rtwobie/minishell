@@ -17,7 +17,7 @@ int	ft_isoperator(char c)
 
 int ft_isword(char c)
 {
-	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>' || c == '$')
+	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>')
 		return (0);
 	else if (c > 32 && c < 127)
 		return (1);
