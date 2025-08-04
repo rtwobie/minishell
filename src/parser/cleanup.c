@@ -21,9 +21,11 @@ void	free_args(char **args)
 	while (args[i])
 	{
 		free(args[i]);
+		args[i] = NULL;
 		++i;
 	}
 	free(args);
+	args = NULL;
 }
 
 void	free_redir(void *content)
