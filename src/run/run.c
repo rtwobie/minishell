@@ -66,6 +66,7 @@ static int	_execute_command(char **user_input, char **envp)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
+	heredoc_test(&tokens);
 	// TEST: DEBUG
 		print_all_tokens(tokens);
 	if (parser(tokens, &ast))
@@ -74,9 +75,9 @@ static int	_execute_command(char **user_input, char **envp)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
-	// heredoc_test(&tokens);
-	free_tokens(&tokens);
 	executor(&ast, envp);
+	cleanup_hdoc(&tokens);
+	free_tokens(&tokens);
 	cleanup_ast(&ast);
 	return (EXIT_SUCCESS);
 }
@@ -112,5 +113,3 @@ int	run_minishell(char **envp)
 	rl_clear_history();
 	return (EXIT_SUCCESS);
 }
-
-// TODO: ln15: use exit function instead
