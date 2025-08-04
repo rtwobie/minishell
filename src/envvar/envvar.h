@@ -14,14 +14,10 @@
 # define ENVVAR_H
 
 # include <stdlib.h>
-# include "tokenizer.h"
 # include <stddef.h>
 # include <stdlib.h>
-# include "error.h"
-# include "libft.h"
+
 # include "tokenizer.h"
-# include "pipe.h"
-# include "tokenizer_internal.h"
 
 int		envvar(t_token **tokens, unsigned int skip);
 int		_get_env_tok(char **idx);

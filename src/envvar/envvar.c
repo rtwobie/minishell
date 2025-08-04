@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+
+#include "libft.h"
 #include "envvar.h"
 
 char	*_use_getent(char *idx, size_t i)
