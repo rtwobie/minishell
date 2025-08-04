@@ -10,13 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #ifndef HEREDOC_H
 # define HEREDOC_H
 
 # define HDOCDIR "./minihdoc_"
 
-typedef struct s_token t_token;
+typedef struct s_token	t_token;
 
 int	heredoc(t_token **tokens);
 int	cleanup_hdoc(t_token **tokens);

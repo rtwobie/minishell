@@ -98,7 +98,7 @@ int	heredoc(t_token **tokens)
 
 int	cleanup_hdoc(t_token **tokens)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = *tokens;
 	while (current)
