@@ -3,17 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   envvar.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 14:42:12 by fgorlich          #+#    #+#             */
-/*   Updated: 2025/08/01 22:39:32 by fgorlich         ###   ########.fr       */
+/*   Created: 2025/07/31 14:42:12 by fgroo          #+#    #+#             */
+/*   Updated: 2025/08/01 23:31:31 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "envvar.h"
-#include "tokenizer.h"
-#include "tokenizer_internal.h"
-#include <stdlib.h>
 
 char	*_use_getent(char *idx, size_t i)
 {
@@ -22,11 +19,13 @@ char	*_use_getent(char *idx, size_t i)
 	char	*substr;
 
 	substr = ft_substr(idx, 0, i);
+	temp = ft_substr(idx, (unsigned int)i, ft_strlen(idx));
 	join = getenv(substr);
 	free(substr);
-	if (!join)
+	if (!join && !temp)
 		return (perror("ENV VAR not found"), NULL);
-	temp = ft_substr(idx, (unsigned int)i, ft_strlen(idx));
+	else if (!join && temp)
+		return (perror("ENV VAR not found"), temp);
 	idx = ft_strjoin(join, temp);
 	free(temp);
 	return (idx);
@@ -79,31 +78,45 @@ int	_get_env_tok(char **idx)
 	return (EXIT_SUCCESS);
 }
 
-int	envvar(t_token **tokens)
+int	envvar(t_token **tokens, unsigned int skip)
 {
 	unsigned int	i;
 	char			*temp;
 	char			*new;
 	char			*val;
 
-	i = 0;
+	if (dollars(tokens, &skip, &i))
+		return (EXIT_SUCCESS);
+	val = ft_substr((*tokens)->value, skip, ft_strlen((*tokens)->value) - skip);
+	if (!ft_strcmp("$", val))
+		return (EXIT_SUCCESS);
+	temp = ft_substr((*tokens)->value, 0, skip + i);
+	(*tokens)->value = ft_substr(val, i, ft_strlen(val));
+	if (free(val), 1 && _get_env_tok(&((*tokens)->value)) == EXIT_FAILURE)
+		return ((*tokens)->value = temp,
+			EXIT_FAILURE);
+	new = ft_strjoin(temp, (*tokens)->value);
+	(free(temp), free((*tokens)->value));
+	(*tokens)->value = new;
+	envvar(tokens, skip + i);
+	return (EXIT_SUCCESS);
+}
+
+int	dollars(t_token **tokens, unsigned int *skip, unsigned int *i)
+{
+	*i = 0;
 	if ((*tokens)->type != TOKEN_DOUBLE_QUOTES
 		&& (*tokens)->type != TOKEN_LITERAL)
+		return (EXIT_FAILURE);
+	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
+		++(*skip);
+	while ((*tokens)->value[*skip] == 36 && (*tokens)->value[*skip + 1] == 36)
+		++(*skip);
+	if ((*tokens)->value[*skip] == '$' && (*tokens)->value[*skip + 1] == '?')
+		return (perror("$?->FOUND\n"), EXIT_FAILURE);
+	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
+		++(*i);
+	if ((*tokens)->value[*skip + *i] == '$')
 		return (EXIT_SUCCESS);
-	while ((*tokens)->value[i] && (*tokens)->value[i] != '$')
-		++i;
-	if ((*tokens)->value[i] == '$')
-	{
-		val = (*tokens)->value;
-		temp = ft_substr((*tokens)->value, 0, i);
-		(*tokens)->value = ft_substr(val, i, ft_strlen((*tokens)->value));
-		if (free(val), 1 && _get_env_tok(&((*tokens)->value)) == EXIT_FAILURE)
-			return (free((*tokens)->value), (*tokens)->value = temp,
-				EXIT_FAILURE);
-		new = ft_strjoin(temp, (*tokens)->value);
-		free(temp);
-		free((*tokens)->value);
-		(*tokens)->value = new;
-	}
-	return (EXIT_SUCCESS);
+	return (EXIT_FAILURE);
 }

@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/01 20:48:04 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/08/04 19:07:06 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stddef.h>
 #include <stdlib.h>
 #include "error.h"
 #include "libft.h"
@@ -84,19 +85,18 @@ static int	_condense_redirection(t_token **tokens)
 
 static int	_expand(t_token **tokens)
 {
-	t_token *current;
-	t_token *prev;
+	t_token 		*current;
+	t_token 		*prev;
 
 	current = *tokens;
 	prev = current;
 	while (current)
 	{
-		// EXPANSION CODE HERE
-		if (envvar(&current) == EXIT_FAILURE)
+		if (envvar(&current, 0) == EXIT_FAILURE)
 		{
 			if (!*current->value)
 			{
-				prev->next = current->next; // not ideal
+				prev->next = current->next;
 				free_token(current);
 				current = prev->next;
 			}
