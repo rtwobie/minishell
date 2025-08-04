@@ -40,10 +40,11 @@ int fd_in, int fd_out)
 		return (EXIT_FAILURE);
 	else if (pid == 0)
 	{
+		rl_clear_history();
 		if (redirect_io(cmd, fd_in, fd_out))
-			(free(program), cleanup_ast(tree), rl_clear_history(), exit(1));
+			(free(program), cleanup_ast(tree), exit(EXIT_FAILURE));
 		if (execve(program, cmd->program_argv, NULL))
-			(free(program), cleanup_ast(tree), rl_clear_history(), exit(127));
+			(free(program), cleanup_ast(tree), exit(127));
 	}
 	else if (pid > 0)
 		waitpid(pid, NULL, 0);
