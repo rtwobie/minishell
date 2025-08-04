@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:15:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/31 15:23:35 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/04 21:57:29 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../error/error.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -33,7 +34,7 @@ static char	*_skip_whitespace(char *str)
 	return (str);
 }
 
-static enum e_state _check_state(char c)
+enum e_state _check_state(char c)
 {
 	enum e_state state;
 
@@ -52,6 +53,7 @@ static enum e_state _check_state(char c)
 		state = WORD;
 	return (state);
 }
+
 
 static char	*_get_word_tok(char *idx, t_token **tokens)
 {

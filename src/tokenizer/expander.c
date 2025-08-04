@@ -3,17 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/19 18:33:10 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/04 19:07:06 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stddef.h>
 #include <stdlib.h>
 #include "error.h"
 #include "libft.h"
 #include "tokenizer.h"
+#include "envvar.h"
+#include "../error/error.h"
 
 static int	_is_redirection(enum e_token_type type)
 {
@@ -82,19 +85,29 @@ static int	_condense_redirection(t_token **tokens)
 
 static int	_expand(t_token **tokens)
 {
-	t_token *current;
+	t_token 		*current;
+	t_token 		*prev;
 
 	current = *tokens;
-
+	prev = current;
 	while (current)
 	{
-		// EXPANSION CODE HERE
+		if (envvar(&current, 0) == EXIT_FAILURE)
+		{
+			if (!*current->value)
+			{
+				prev->next = current->next;
+				free_token(current);
+				current = prev->next;
+			}
+			continue ;
+		}
 		if (current->type == TOKEN_SINGLE_QUOTES || \
 			current->type == TOKEN_DOUBLE_QUOTES)
 				current->type = TOKEN_LITERAL;
+		prev = current;
 		current = current->next;
 	}
-
 	return (EXIT_SUCCESS);
 }
 

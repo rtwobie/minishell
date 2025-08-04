@@ -28,6 +28,7 @@ CPPFLAGS	+= -I$(SRC_DIR)/run
 CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
 CPPFLAGS	+= -I$(SRC_DIR)/heredoc
 CPPFLAGS	+= -I$(SRC_DIR)/parser
+CPPFLAGS	+= -I$(SRC_DIR)/envvar
 CPPFLAGS	+= -I$(SRC_DIR)/executor
 CPPFLAGS	+= -I$(SRC_DIR)/builtin
 CPPFLAGS	+= -I$(SRC_DIR)/error
@@ -108,6 +109,11 @@ SRC		+= executor.c
 SRC		+= redirect.c
 SRC		+= search_program.c
 
+
+#new envvar
+
+vpath %.c $(SRC_DIR)/envvar
+SRC		+= envvar.c
 
 vpath %.c $(SRC_DIR)/builtin
 SRC		+= exit.c
