@@ -21,7 +21,8 @@ static int	_open_redirect_in(t_redirection_node *redir_data)
 {
 	int	fd_in;
 
-	if (redir_data->type != TOKEN_REDIRECT_IN)
+	if (redir_data->type != TOKEN_REDIRECT_IN
+		&& redir_data->type != TOKEN_HERE_DOC)
 		return (EXIT_SUCCESS);
 	fd_in = open(redir_data->filename, O_RDONLY);
 	if (fd_in == -1)
