@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe.h                                             :+:      :+:    :+:   */
+/*   executor_internal.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/28 14:13:10 by fgorlich          #+#    #+#             */
-/*   Updated: 2025/07/28 14:13:26 by fgorlich         ###   ########.fr       */
+/*   Created: 2025/07/28 17:19:33 by rha-le            #+#    #+#             */
+/*   Updated: 2025/07/31 18:26:58 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPE_H
-# define PIPE_H
+#ifndef EXECUTOR_INTERNAL_H
+# define EXECUTOR_INTERNAL_H
 
-# include <stdio.h>
 # include <unistd.h>
-# include <stdlib.h>
-# include <string.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+
 # include "parser.h"
-# include "pipe.h"
-# include "libft.h"
 
 // typedef struct s_pid
 // {
@@ -38,9 +34,10 @@ typedef struct s_pid
 	int		output_fd;
 }	t_pid;
 
-void	execute_command(t_command_node *com_nd);
-void	redirect_io(int input_fd, int output_fd);
-int		main_pipe(t_ast_node **tree);
-void	execute_node(t_ast_node *node, int input_fd, int output_fd);
+// redirect.c
+int		redirect_io(t_command_node *cmd, int input_fd, int output_fd);
 
-#endif
+// search_program.c
+char	*search_program(char *program);
+
+#endif // !EXECUTOR_INTERNAL_H

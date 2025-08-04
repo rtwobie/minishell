@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:32:20 by rha-le            #+#    #+#             */
-/*   Updated: 2025/06/29 15:48:46 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/28 14:13:10 by fgorlich          #+#    #+#             */
+/*   Updated: 2025/07/28 17:20:49 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
+#ifndef EXECUTOR_H
+# define EXECUTOR_H
 
-int main(int argc, char *argv[], char *envp[])
-{
-	(void)argc;
-	(void)argv;
-	run_minishell(envp);
-}
+# include "parser.h"
+
+int		executor(t_ast_node **tree, char **envp);
+
+#endif // !EXECUTOR_H
