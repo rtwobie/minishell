@@ -66,7 +66,7 @@ static int	_execute_command(char **user_input, char **envp)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
-	heredoc_test(&tokens);
+	heredoc(&tokens);
 	// TEST: DEBUG
 		print_all_tokens(tokens);
 	if (parser(tokens, &ast))

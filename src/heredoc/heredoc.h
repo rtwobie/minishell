@@ -18,7 +18,7 @@
 
 typedef struct s_token t_token;
 
-int	heredoc_test(t_token **tokens);
+int	heredoc(t_token **tokens);
 int	cleanup_hdoc(t_token **tokens);
 
 #endif // !HEREDOC_H

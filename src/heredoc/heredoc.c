@@ -42,7 +42,7 @@ static char	*_generate_name(int count)
 	return (tmpfile);
 }
 
-static char	*heredoc(char *delimiter, int count)
+static char	*_hdoc(char *delimiter, int count)
 {
 	int		fd;
 	char	*input;
@@ -70,7 +70,7 @@ static char	*heredoc(char *delimiter, int count)
 	return (tmpfile);
 }
 
-int	heredoc_test(t_token **tokens)
+int	heredoc(t_token **tokens)
 {
 	int		count;
 	char	*hdoc;
@@ -85,7 +85,7 @@ int	heredoc_test(t_token **tokens)
 			current = current->next;
 			continue ;
 		}
-		hdoc = heredoc(current->value, count);
+		hdoc = _hdoc(current->value, count);
 		if (!hdoc)
 			return (EXIT_FAILURE);
 		free(current->value);
