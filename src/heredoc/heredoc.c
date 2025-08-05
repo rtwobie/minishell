@@ -62,7 +62,7 @@ static char	*_hdoc(char *delimiter, int count)
 			free(input);
 			break ;
 		}
-		// input = envvar();
+		hdoc_envvar(&input, 0);
 		ft_putendl_fd(input, fd);
 		free(input);
 	}
