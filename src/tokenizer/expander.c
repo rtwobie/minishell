@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+
 #include "error.h"
 #include "libft.h"
 #include "tokenizer.h"
@@ -40,7 +42,7 @@ static int	_reedit(t_token **tokens)
 		{
 			new_value = ft_strtrim(current->value, "\'");
 			if (!new_value)
-				return (EXIT_FAILURE);
+				return (perror("malloc failed"), EXIT_FAILURE);
 			free(current->value);
 			current->value = new_value;
 		}
@@ -48,7 +50,7 @@ static int	_reedit(t_token **tokens)
 		{
 			new_value = ft_strtrim(current->value, "\"");
 			if (!new_value)
-				return (EXIT_FAILURE);
+				return (perror("malloc failed"), EXIT_FAILURE);
 			free(current->value);
 			current->value = new_value;
 		}
@@ -76,7 +78,7 @@ static int	_condense_redirection(t_token **tokens)
 				free_token(temp);
 			}
 			else
-				return (ERR_SYNTAX);
+				return (print_err(ERR_SYNTAX, current->value), EXIT_FAILURE);
 		}
 		current = current->next;
 	}
@@ -118,8 +120,6 @@ int	expander(t_token **tokens, unsigned char *exit_status)
 	if (_expand(tokens, exit_status))
 		return (EXIT_FAILURE);
 	if (_condense_redirection(tokens))
-		return (ERR_SYNTAX);
-	// expand variables
-	// condense TOKEN_SINGLE_QUOTES and TOKEN_DOUBLE_QUOTES to TOKEN_LITERAL
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
