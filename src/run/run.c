@@ -47,7 +47,8 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	_execute_command(char **user_input, char **envp)
+static int	_process_command(char **user_input, unsigned char *exit_status,
+char **envp)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
@@ -59,7 +60,7 @@ static int	_execute_command(char **user_input, char **envp)
 		return (EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
-	err = expander(&tokens);
+	err = expander(&tokens, exit_status);
 	if (err)
 	{
 		print_error(err);
@@ -75,27 +76,21 @@ static int	_execute_command(char **user_input, char **envp)
 		free_tokens(&tokens);
 		return (EXIT_FAILURE);
 	}
-	executor(&ast, envp);
+	executor(&ast, exit_status, envp);
 	cleanup_hdoc(&tokens);
 	free_tokens(&tokens);
 	cleanup_ast(&ast);
 	return (EXIT_SUCCESS);
 }
 
-// 1. Lexer (your existing `lexer` function) -> creates raw tokens
-// 2. Expander (new function) -> processes raw tokens for expansions
-// TODO:	the variable to expend ist delimited by if(ft_alnum())
-//			find out how to get the expansion -> probably from env
-//			research/test '$$' what it means and the behaviour
-//
-// 3. Parser -> builds command tree from expanded tokens
-// 4. Executor -> runs commands
-
 int	run_minishell(char **envp)
 {
-	char *user_input;
-	struct sigaction sa;
+	struct sigaction	sa;
+	char				*user_input;
+	unsigned char		exit_status;
+
 	_connect_to_signals(&sa);
+	exit_status = 0;
 	while (1)
 	{
 		user_input = readline(PROMPT);
@@ -107,7 +102,7 @@ int	run_minishell(char **envp)
 
 		if (*user_input)
 			add_history(user_input);
-		_execute_command(&user_input, envp);
+		_process_command(&user_input, &exit_status, envp);
 		free(user_input);
 	}
 	rl_clear_history();

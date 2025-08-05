@@ -83,7 +83,7 @@ static int	_condense_redirection(t_token **tokens)
 	return (EXIT_SUCCESS);
 }
 
-static int	_expand(t_token **tokens)
+static int	_expand(t_token **tokens, unsigned char *exit_status)
 {
 	t_token 		*current;
 	t_token 		*prev;
@@ -92,7 +92,7 @@ static int	_expand(t_token **tokens)
 	prev = current;
 	while (current)
 	{
-		if (envvar(&current, 0) == EXIT_FAILURE)
+		if (envvar(&current, exit_status, 0) == EXIT_FAILURE)
 		{
 			if (!*current->value)
 			{
@@ -111,19 +111,11 @@ static int	_expand(t_token **tokens)
 	return (EXIT_SUCCESS);
 }
 
-// TODO:	get the variable after $
-//			best approach might be to read str and write new one at the same time
-//			so first read str for $
-//			then read again and write
-//			when $ found then save getenv(variable) into string
-//			write expandion into the new string
-//			repeat until end of string
-
-int	expander(t_token **tokens)
+int	expander(t_token **tokens, unsigned char *exit_status)
 {
 	if (_reedit(tokens))
 		return (EXIT_FAILURE);
-	if (_expand(tokens))
+	if (_expand(tokens, exit_status))
 		return (EXIT_FAILURE);
 	if (_condense_redirection(tokens))
 		return (ERR_SYNTAX);
