@@ -98,6 +98,7 @@ SRC		+= token_list.c
 
 vpath %.c $(SRC_DIR)/heredoc
 SRC		+= heredoc.c
+SRC		+= hdoc_envvar.c
 
 vpath %.c $(SRC_DIR)/parser
 SRC		+= ast.c
@@ -108,9 +109,6 @@ vpath %.c $(SRC_DIR)/executor
 SRC		+= executor.c
 SRC		+= redirect.c
 SRC		+= search_program.c
-
-
-#new envvar
 
 vpath %.c $(SRC_DIR)/envvar
 SRC		+= envvar.c
