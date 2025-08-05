@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/07/31 19:03:12 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/05 12:10:25 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <readline/readline.h>
 #include <stdio.h>
+#include <readline/readline.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>

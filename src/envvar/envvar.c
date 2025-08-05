@@ -25,7 +25,7 @@ char	*_use_getent(char *idx, size_t i)
 	temp = ft_substr(idx, (unsigned int)i, ft_strlen(idx));
 	join = getenv(substr);
 	free(substr);
-	if (!join && !temp)
+	if (!join && !temp[0])
 		return (perror("ENV VAR not found"), NULL);
 	else if (!join && temp)
 		return (perror("ENV VAR not found"), temp);
@@ -87,17 +87,19 @@ int	envvar(t_token **tokens, unsigned int skip)
 	char			*temp;
 	char			*new;
 	char			*val;
+	char			*original_value;
 
 	if (dollars(tokens, &skip, &i))
 		return (EXIT_SUCCESS);
-	val = ft_substr((*tokens)->value, skip, ft_strlen((*tokens)->value) - skip);
+	val = ft_substr((*tokens)->value, skip, ft_strlen((*tokens)->value));
 	if (!ft_strcmp("$", val))
-		return (EXIT_SUCCESS);
+		return (free(val), val = NULL, EXIT_SUCCESS);
 	temp = ft_substr((*tokens)->value, 0, skip + i);
+	original_value = (*tokens)->value;
 	(*tokens)->value = ft_substr(val, i, ft_strlen(val));
+	free(original_value);
 	if (free(val), 1 && _get_env_tok(&((*tokens)->value)) == EXIT_FAILURE)
-		return ((*tokens)->value = temp,
-			EXIT_FAILURE);
+		return ((*tokens)->value = temp, EXIT_FAILURE);
 	new = ft_strjoin(temp, (*tokens)->value);
 	(free(temp), free((*tokens)->value));
 	(*tokens)->value = new;
