@@ -82,8 +82,13 @@ static int	_get_env_tok(char **idx)
 	return (EXIT_SUCCESS);
 }
 
-static int	dollars(t_token **tokens, unsigned int *skip, unsigned int *i)
+static int	dollars(t_token **tokens, unsigned int *skip,
+	unsigned int *i, unsigned char *exit_status)
 {
+	const int numerical_value = *exit_status;
+	const char *extracted_str = ft_itoa(numerical_value);
+	char	*pos[3];
+
 	*i = 0;
 	if ((*tokens)->type != TOKEN_DOUBLE_QUOTES
 		&& (*tokens)->type != TOKEN_LITERAL)
@@ -93,7 +98,13 @@ static int	dollars(t_token **tokens, unsigned int *skip, unsigned int *i)
 	while ((*tokens)->value[*skip] == 36 && (*tokens)->value[*skip + 1] == 36)
 		++(*skip);
 	if ((*tokens)->value[*skip] == '$' && (*tokens)->value[*skip + 1] == '?')
-		return (perror("$?->FOUND\n"), EXIT_FAILURE);
+	{
+		pos[0] = ft_strjoin(extracted_str,(*tokens)->value + *skip + 2);
+		pos[1] = ft_substr((*tokens)->value, 0, *skip);
+		pos[2] = ft_strjoin(pos[1], pos[0]);
+		(free((*tokens)->value), free(pos[0]), free(pos[1]), (*tokens)->value = NULL);
+		(*tokens)->value = pos[2];
+	}
 	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
 		++(*i);
 	if ((*tokens)->value[*skip + *i] == '$')
@@ -109,7 +120,7 @@ int	envvar(t_token **tokens, unsigned char *exit_status, unsigned int skip)
 	char			*val;
 	char			*original_value;
 
-	if (dollars(tokens, &skip, &i))
+	if (dollars(tokens, &skip, &i, exit_status))
 		return (EXIT_SUCCESS);
 	val = ft_substr((*tokens)->value, skip, ft_strlen((*tokens)->value));
 	if (!ft_strcmp("$", val))
