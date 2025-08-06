@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 23:00:47 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/28 23:58:27 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/06 17:30:55 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static int	_open_redirect_in(t_redirection_node *redir_data)
 	return (EXIT_SUCCESS);
 }
 
-// TODO: heredoc
 static int	_set_input(t_list *redir, int input_fd)
 {
 	t_list	*current;
