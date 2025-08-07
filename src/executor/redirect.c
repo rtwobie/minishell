@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 23:00:47 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/28 23:58:27 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/06 18:25:39 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,12 @@ static int	_open_redirect_in(t_redirection_node *redir_data)
 	{
 		close(fd_in);
 		perror("dup2 in failed");
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	close(fd_in);
 	return (EXIT_SUCCESS);
 }
 
-// TODO: heredoc
 static int	_set_input(t_list *redir, int input_fd)
 {
 	t_list	*current;
@@ -66,7 +65,7 @@ static int	_set_input(t_list *redir, int input_fd)
 	return (EXIT_SUCCESS);
 }
 
-static void	_open_redirect_out(t_redirection_node *redir_data)
+static int	_open_redirect_out(t_redirection_node *redir_data)
 {
 	int	fd;
 
@@ -75,19 +74,20 @@ static void	_open_redirect_out(t_redirection_node *redir_data)
 	else if (redir_data->type == TOKEN_REDIRECT_OUT_APPEND)
 		fd = open(redir_data->filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	else
-		return ;
+		return (EXIT_SUCCESS);
 	if (fd == -1)
 	{
 		perror(redir_data->filename);
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
 		perror("dup2 out failed");
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	close(fd);
+	return (EXIT_SUCCESS);
 }
 
 static int	_set_output(t_list *redir, int output_fd)
@@ -99,7 +99,7 @@ static int	_set_output(t_list *redir, int output_fd)
 		if (dup2(output_fd, STDOUT_FILENO) == -1)
 		{
 			perror("dup2 out failed");
-			exit(EXIT_FAILURE);
+			return (EXIT_FAILURE);
 		}
 	}
 	if (redir)
@@ -107,7 +107,8 @@ static int	_set_output(t_list *redir, int output_fd)
 		current = redir;
 		while (current)
 		{
-			_open_redirect_out((t_redirection_node *)current->content);
+			if (_open_redirect_out((t_redirection_node *)current->content))
+				return (EXIT_FAILURE);
 			current = current->next;
 		}
 	}
@@ -124,7 +125,14 @@ int	redirect_io(t_command_node *cmd, int input_fd, int output_fd)
 			close(output_fd);
 		return (EXIT_FAILURE);
 	}
-	_set_output(cmd->redir, output_fd);
+	if (_set_output(cmd->redir, output_fd))
+	{
+		if (input_fd != STDIN_FILENO)
+			close(input_fd);
+		if (output_fd != STDOUT_FILENO)
+			close(output_fd);
+		return (EXIT_FAILURE);
+	}
 	if (input_fd != STDIN_FILENO)
 		close(input_fd);
 	if (output_fd != STDOUT_FILENO)

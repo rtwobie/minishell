@@ -15,11 +15,11 @@ int	ft_isoperator(char c)
 	return (c == '|' || c == '>' || c == '<');
 }
 
-int ft_isword(char c)
+int ft_isword(unsigned char c)
 {
 	if (c == '\"' || c == '\'' || c == '|' || c == '<' || c == '>')
 		return (0);
-	else if (c > 32 && c < 127)
+	else if (c > 32 && c != 127)
 		return (1);
 	return (0);
 }
