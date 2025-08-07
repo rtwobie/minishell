@@ -53,7 +53,7 @@ static char	*_hdoc(char *delimiter, int count)
 		return (NULL);
 	fd = open(tmpfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd == -1)
-		return (perror("heredoc"), NULL);
+		return (perror("creating hdoc"), NULL);
 	while (1)
 	{
 		input = readline("> ");

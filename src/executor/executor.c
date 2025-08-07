@@ -22,13 +22,29 @@
 #include "executor_internal.h"
 #include "executor.h"
 
-static int	_execute_simple_cmd(t_ast_node **tree, t_command_node *cmd,
+static	unsigned char	_get_exit_status(pid_t pid)
+{
+	unsigned char	exit_status;
+	int				status;
+
+	exit_status = 0;
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		exit_status = (unsigned char)WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		exit_status = (unsigned char)WTERMSIG(status) + 128;
+	return (exit_status);
+}
+
+static int	_exec_cmd(t_command_node *cmd, unsigned char *exit_status,
 int fd_in, int fd_out)
 {
 	pid_t	pid;
 	char	*program;
 
 	program = NULL;
+	// if (is_builtin(cmd->program_argv[0]))
+	// 	return (_exec_builtin());
 	if (cmd->program_argv[0])
 	{
 		program = search_program(cmd->program_argv[0]);
@@ -42,17 +58,16 @@ int fd_in, int fd_out)
 	{
 		rl_clear_history();
 		if (redirect_io(cmd, fd_in, fd_out))
-			(free(program), cleanup_ast(tree), exit(EXIT_FAILURE));
+			(free(program), exit(EXIT_FAILURE));
 		if (execve(program, cmd->program_argv, NULL))
-			(free(program), cleanup_ast(tree), exit(127));
+			(free(program), exit(127));
 	}
-	else if (pid > 0)
-		waitpid(pid, NULL, 0);
+	*exit_status = _get_exit_status(pid);
 	return (free(program), EXIT_SUCCESS);
 }
 
-static int	_execute_node(t_ast_node **tree, t_ast_node *node,
-int fd_in, int fd_out)
+static int	_exec_node(t_ast_node *node, unsigned char *exit_status,
+int fdin, int fdout)
 {
 	int		pipefd[2];
 
@@ -60,26 +75,26 @@ int fd_in, int fd_out)
 		return (EXIT_FAILURE);
 	if (node->type == NODE_TYPE_COMMAND)
 	{
-		if (_execute_simple_cmd(tree, node->data.command_node, fd_in, fd_out))
+		if (_exec_cmd(node->data.command_node, exit_status, fdin, fdout))
 			return (EXIT_FAILURE);
 	}
 	else if (node->type == NODE_TYPE_PIPE)
 	{
 		pipe(pipefd);
-		_execute_node(tree, node->data.pipe_node->left, fd_in, pipefd[1]);
+		_exec_node(node->data.pipe_node->left, exit_status, fdin, pipefd[1]);
 		close(pipefd[1]);
-		_execute_node(tree, node->data.pipe_node->right, pipefd[0], fd_out);
+		_exec_node(node->data.pipe_node->right, exit_status, pipefd[0], fdout);
 		close(pipefd[0]);
 	}
 	return (EXIT_SUCCESS);
 }
 
-int	executor(t_ast_node **tree, char **envp)
+int	executor(t_ast_node **tree, unsigned char *exit_status, char **envp)
 {
 	(void)envp;
 	if (!tree || !*tree)
 		return (EXIT_FAILURE);
-	if (_execute_node(tree, *tree, STDIN_FILENO, STDOUT_FILENO))
+	if (_exec_node(*tree, exit_status, STDIN_FILENO, STDOUT_FILENO))
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

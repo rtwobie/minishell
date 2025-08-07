@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "debug.h"
+
 #include "libft.h"
 #include "tokenizer.h"
 #include "parser_internal.h"
@@ -149,7 +149,8 @@ static t_ast_node	*_parse_command(t_token **token_ptr)
 	t_list	*arg_list;
 	char	**args;
 
-	if (!(*token_ptr) || ((*token_ptr)->type != TOKEN_LITERAL && !_is_redirection((*token_ptr)->type)))
+	if (!(*token_ptr) || ((*token_ptr)->type != TOKEN_LITERAL
+		&& !_is_redirection((*token_ptr)->type)))
 		return (NULL);
 	redirects = NULL;
 	arg_list = NULL;
@@ -165,7 +166,8 @@ static t_ast_node	*_parse_command(t_token **token_ptr)
 	return (_create_command_node(args, &redirects));
 }
 
-static t_pipe_node	*_init_pipe_data(t_ast_node *left_node, t_ast_node *right_node)
+static t_pipe_node	*_init_pipe_data(t_ast_node *left_node,
+t_ast_node *right_node)
 {
 	t_pipe_node	*pipe;
 
@@ -190,31 +192,17 @@ static t_ast_node	*_parse_pipeline(t_token **token_ptr)
 	while (*token_ptr && (*token_ptr)->type == TOKEN_PIPE)
 	{
 		if (!match(token_ptr, TOKEN_PIPE))
-		{
-			cleanup_ast(&left_node);
-			return (NULL);
-		}
+			return (cleanup_ast(&left_node), NULL);
 		right_node = _parse_command(token_ptr);
 		if (!right_node)
-		{
-			cleanup_ast(&left_node);
-			return (NULL);
-		}
+			return (cleanup_ast(&left_node), NULL);
 		pipe_data = _init_pipe_data(left_node, right_node);
 		if (!pipe_data)
-		{
-			cleanup_ast(&left_node);
-			cleanup_ast(&right_node);
-			return (NULL);
-		}
+			return (cleanup_ast(&left_node), cleanup_ast(&right_node), NULL);
 		pipe_node = _create_ast_node(NODE_TYPE_PIPE, pipe_data);
 		if (!pipe_node)
-		{
-			cleanup_ast(&left_node);
-			cleanup_ast(&right_node);
-			free(pipe_data);
-			return (NULL);
-		}
+			return (cleanup_ast(&left_node), cleanup_ast(&right_node),
+				free(pipe_data), NULL);
 		left_node = pipe_node;
 	}
 	return (left_node);
@@ -226,7 +214,6 @@ int	parser(t_token *tokens, t_ast_node	**ast)
 		return (EXIT_SUCCESS);
 	*ast = _parse_pipeline(&tokens);
 	if (!*ast)
-		return (EXIT_FAILURE);
-	print_ast(*ast, 0);
+		return (perror("parser"), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

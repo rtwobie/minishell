@@ -35,7 +35,7 @@ typedef struct s_token
 }	t_token;
 
 int		lexer(char *user_input, t_token **tokens);
-int		expander(t_token **tokens);
+int		expander(t_token **tokens, unsigned char *exit_status);
 
 // token_list.c
 void	free_tokens(t_token **lst);

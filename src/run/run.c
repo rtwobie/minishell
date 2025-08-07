@@ -15,11 +15,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+
 #include "run.h"
 #include "parser.h"
 #include "heredoc.h"
 #include "executor.h"
-#include "error.h"
 #include "tokenizer.h"
 #include "debug.h"
 
@@ -47,11 +47,11 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	_execute_command(char **user_input, char **envp)
+static int	_process_command(char **user_input, unsigned char *exit_status,
+char **envp)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
-	int			err;
 
 	tokens = NULL;
 	ast = NULL;
@@ -59,43 +59,29 @@ static int	_execute_command(char **user_input, char **envp)
 		return (EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
-	err = expander(&tokens);
-	if (err)
-	{
-		print_error(err);
-		free_tokens(&tokens);
-		return (EXIT_FAILURE);
-	}
-	heredoc(&tokens);
-	// TEST: DEBUG
-		print_all_tokens(tokens);
+	if (expander(&tokens, exit_status))
+		return (free_tokens(&tokens), EXIT_FAILURE);
+	if (heredoc(&tokens))
+		return (free_tokens(&tokens), EXIT_FAILURE);
+	print_all_tokens(tokens); // DEBUG
 	if (parser(tokens, &ast))
-	{
-		print_error(1);
-		free_tokens(&tokens);
-		return (EXIT_FAILURE);
-	}
-	executor(&ast, envp);
+		return (free_tokens(&tokens), EXIT_FAILURE);
+	print_ast(ast, 0); // DEBUG
+	executor(&ast, exit_status, envp);
 	cleanup_hdoc(&tokens);
 	free_tokens(&tokens);
 	cleanup_ast(&ast);
 	return (EXIT_SUCCESS);
 }
 
-// 1. Lexer (your existing `lexer` function) -> creates raw tokens
-// 2. Expander (new function) -> processes raw tokens for expansions
-// TODO:	the variable to expend ist delimited by if(ft_alnum())
-//			find out how to get the expansion -> probably from env
-//			research/test '$$' what it means and the behaviour
-//
-// 3. Parser -> builds command tree from expanded tokens
-// 4. Executor -> runs commands
-
 int	run_minishell(char **envp)
 {
-	char *user_input;
-	struct sigaction sa;
+	struct sigaction	sa;
+	char				*user_input;
+	unsigned char		exit_status;
+
 	_connect_to_signals(&sa);
+	exit_status = 0;
 	while (1)
 	{
 		user_input = readline(PROMPT);
@@ -107,7 +93,7 @@ int	run_minishell(char **envp)
 
 		if (*user_input)
 			add_history(user_input);
-		_execute_command(&user_input, envp);
+		_process_command(&user_input, &exit_status, envp);
 		free(user_input);
 	}
 	rl_clear_history();

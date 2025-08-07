@@ -11,11 +11,12 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "libft.h"
 #include "envvar.h"
 
-char	*_use_getent(char *idx, size_t i)
+static char	*_use_getent(char *idx, size_t i)
 {
 	char	*join;
 	char	*temp;
@@ -34,7 +35,7 @@ char	*_use_getent(char *idx, size_t i)
 	return (idx);
 }
 
-char	*rm_braces(char **idx, size_t *j)
+static char	*rm_braces(char **idx, size_t *j)
 {
 	unsigned int	i;
 	char			*temp1;
@@ -53,7 +54,7 @@ char	*rm_braces(char **idx, size_t *j)
 	return (free(temp1), free(temp2), *idx);
 }
 
-int	_get_env_tok(char **idx)
+static int	_get_env_tok(char **idx)
 {
 	size_t		i;
 	char		*t;
@@ -81,7 +82,37 @@ int	_get_env_tok(char **idx)
 	return (EXIT_SUCCESS);
 }
 
-int	envvar(t_token **tokens, unsigned int skip)
+static int	dollars(t_token **tokens, unsigned int *skip,
+	unsigned int *i, unsigned char *exit_status)
+{
+	const int	numerical_value = *exit_status;
+	char		*extr_str;
+	char		*pos[3];
+
+	*i = 0;
+	if ((*tokens)->type != TOKEN_DOUBLE_QUOTES
+		&& (*tokens)->type != TOKEN_LITERAL)
+		return (EXIT_FAILURE);
+	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
+		++(*skip);
+	while ((*tokens)->value[*skip] == 36 && (*tokens)->value[*skip + 1] == 36)
+		++(*skip);
+	if ((*tokens)->value[*skip] == '$' && (*tokens)->value[*skip + 1] == '?')
+	{
+		extr_str = ft_itoa(numerical_value);
+		pos[0] = ft_strjoin(extr_str, (*tokens)->value + *skip + 2);
+		pos[1] = ft_substr((*tokens)->value, 0, *skip);
+		(free((*tokens)->value), pos[2] = ft_strjoin(pos[1], pos[0]));
+		(free(*pos), free(pos[1]), free(extr_str), (*tokens)->value = pos[2]);
+	}
+	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
+		++(*i);
+	if ((*tokens)->value[*skip + *i] == '$')
+		return (EXIT_SUCCESS);
+	return (EXIT_FAILURE);
+}
+
+int	envvar(t_token **tokens, unsigned char *exit_status, unsigned int skip)
 {
 	unsigned int	i;
 	char			*temp;
@@ -89,7 +120,7 @@ int	envvar(t_token **tokens, unsigned int skip)
 	char			*val;
 	char			*original_value;
 
-	if (dollars(tokens, &skip, &i))
+	if (dollars(tokens, &skip, &i, exit_status))
 		return (EXIT_SUCCESS);
 	val = ft_substr((*tokens)->value, skip, ft_strlen((*tokens)->value));
 	if (!ft_strcmp("$", val))
@@ -103,25 +134,6 @@ int	envvar(t_token **tokens, unsigned int skip)
 	new = ft_strjoin(temp, (*tokens)->value);
 	(free(temp), free((*tokens)->value));
 	(*tokens)->value = new;
-	envvar(tokens, skip + i);
+	envvar(tokens, exit_status, skip + i);
 	return (EXIT_SUCCESS);
-}
-
-int	dollars(t_token **tokens, unsigned int *skip, unsigned int *i)
-{
-	*i = 0;
-	if ((*tokens)->type != TOKEN_DOUBLE_QUOTES
-		&& (*tokens)->type != TOKEN_LITERAL)
-		return (EXIT_FAILURE);
-	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
-		++(*skip);
-	while ((*tokens)->value[*skip] == 36 && (*tokens)->value[*skip + 1] == 36)
-		++(*skip);
-	if ((*tokens)->value[*skip] == '$' && (*tokens)->value[*skip + 1] == '?')
-		return (perror("$?->FOUND\n"), EXIT_FAILURE);
-	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
-		++(*i);
-	if ((*tokens)->value[*skip + *i] == '$')
-		return (EXIT_SUCCESS);
-	return (EXIT_FAILURE);
 }

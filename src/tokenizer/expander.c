@@ -6,12 +6,14 @@
 /*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/04 19:07:06 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/06 22:48:11 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+
 #include "error.h"
 #include "libft.h"
 #include "tokenizer.h"
@@ -40,7 +42,7 @@ static int	_reedit(t_token **tokens)
 		{
 			new_value = ft_strtrim(current->value, "\'");
 			if (!new_value)
-				return (EXIT_FAILURE);
+				return (perror("malloc failed"), EXIT_FAILURE);
 			free(current->value);
 			current->value = new_value;
 		}
@@ -48,7 +50,7 @@ static int	_reedit(t_token **tokens)
 		{
 			new_value = ft_strtrim(current->value, "\"");
 			if (!new_value)
-				return (EXIT_FAILURE);
+				return (perror("malloc failed"), EXIT_FAILURE);
 			free(current->value);
 			current->value = new_value;
 		}
@@ -76,14 +78,14 @@ static int	_condense_redirection(t_token **tokens)
 				free_token(temp);
 			}
 			else
-				return (ERR_SYNTAX);
+				return (print_err(ERR_SYNTAX, current->value), EXIT_FAILURE);
 		}
 		current = current->next;
 	}
 	return (EXIT_SUCCESS);
 }
 
-static int	_expand(t_token **tokens)
+static int	_expand(t_token **tokens, unsigned char *exit_status)
 {
 	t_token 		*current;
 	t_token 		*prev;
@@ -92,7 +94,7 @@ static int	_expand(t_token **tokens)
 	prev = current;
 	while (current)
 	{
-		if (envvar(&current, 0) == EXIT_FAILURE)
+		if (envvar(&current, exit_status, 0) == EXIT_FAILURE)
 		{
 			if (!*current->value)
 			{
@@ -111,23 +113,13 @@ static int	_expand(t_token **tokens)
 	return (EXIT_SUCCESS);
 }
 
-// TODO:	get the variable after $
-//			best approach might be to read str and write new one at the same time
-//			so first read str for $
-//			then read again and write
-//			when $ found then save getenv(variable) into string
-//			write expandion into the new string
-//			repeat until end of string
-
-int	expander(t_token **tokens)
+int	expander(t_token **tokens, unsigned char *exit_status)
 {
 	if (_reedit(tokens))
 		return (EXIT_FAILURE);
-	if (_expand(tokens))
+	if (_expand(tokens, exit_status))
 		return (EXIT_FAILURE);
 	if (_condense_redirection(tokens))
-		return (ERR_SYNTAX);
-	// expand variables
-	// condense TOKEN_SINGLE_QUOTES and TOKEN_DOUBLE_QUOTES to TOKEN_LITERAL
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

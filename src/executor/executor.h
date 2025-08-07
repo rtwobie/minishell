@@ -15,6 +15,6 @@
 
 # include "parser.h"
 
-int		executor(t_ast_node **tree, char **envp);
+int		executor(t_ast_node **tree, unsigned char *exit_status, char **envp);
 
 #endif // !EXECUTOR_H
