@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/08/06 20:25:03 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/08 00:10:09 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "parser.h"
 #include "executor_internal.h"
 #include "executor.h"
+#include "builtin.h"
 
 static int	_get_exit_status(pid_t pid)
 {
@@ -46,6 +47,10 @@ char **envp)
 	status = 0;
 	if (redirect_io(cmd, fd_in, fd_out))
 		return (EXIT_FAILURE);
+	if (!ft_strcmp(cmd->program_argv[0], "cd")
+		|| !ft_strcmp(cmd->program_argv[0], "pwd")
+		|| !ft_strcmp(cmd->program_argv[0], "env"))
+			status = cd(cmd->program_argv, envp, -1);
 	if (!ft_strcmp(cmd->program_argv[0], "echo"))
 		status = echo(cmd->program_argv);
 	return (status);
