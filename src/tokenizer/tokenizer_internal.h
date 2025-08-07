@@ -35,7 +35,7 @@ enum e_state	_check_state(char c);
 
 // lexer_utils.c
 int		ft_isoperator(char c);
-int		ft_isword(char c);
+int		ft_isword(unsigned char c);
 
 // token.c
 int		save_token(char *value, size_t size, t_token **tokens);

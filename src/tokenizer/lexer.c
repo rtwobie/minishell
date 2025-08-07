@@ -47,7 +47,7 @@ enum e_state _check_state(char c)
 		state = IN_OPERATOR;
 	else if (c == '\0')
 		state = END;
-	else if (ft_isword(c))
+	else if (ft_isword((unsigned char)c))
 		state = WORD;
 	return (state);
 }
