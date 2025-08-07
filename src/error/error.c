@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:46:01 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/31 19:02:49 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/07 17:17:22 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ char	*_lookup_err(int err)
 		return ("too many arguments");
 	else if (err == ERR_CMD_NOTFOUND)
 		return ("command not found");
+	else if (err == ERR_ONLY_ONE_ARG)
+		return ("wrong amount of arguments: needed one");
 	return ("error");
 }
 
@@ -46,6 +48,6 @@ void	print_err(int err, char *location)
 	if (err < 0)
 		ft_putstr_fd(_lookup_err(err), STDERR_FILENO);
 	else if (err > 0)
-		strerror(err);
+		ft_putstr_fd(strerror(err), STDERR_FILENO);
 	write(STDERR_FILENO, "\n", 1);
 }
