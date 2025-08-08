@@ -13,31 +13,18 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <stdlib.h>
-#include "libft.h"
-#include "parser.h"
-#include "error.h"
 
-int	builtin_exit(int argc, char **argv)
-{
-	char	*endptr;
-	int		status;
-	long	val;
+#include "run.h"
 
-	if (argc == 1)
-	{
-		printf("exit\n");
-		exit(0);
-	}
-	else if (argc > 2)
-		return (ERR_TOOMANY_ARGS);
-	status = 0;
-	val = strtol(argv[0], &endptr, 10); // TODO: CHANGE TO CUSTOM STRTOL
-	if (*endptr == '\0' && val >= 0 && val <= 255)
-		status = (int)val;
-	else
-		status = 2;
-	// TODO: do cleanup
-	rl_clear_history();
-	printf("exit\n");
-	exit(status);
-}
+// void	exit_(char **argv, t_data *data)
+// {
+// 	unsigned char	status;
+//
+// 	status = 0;
+// 	(void)argv;
+// 	cleanup_data(data);
+// 	rl_clear_history();
+// 	printf("exit\n");
+// 	exit(status);
+// }
+
