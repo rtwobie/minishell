@@ -21,6 +21,8 @@ typedef struct s_data
 {
 	t_token		*tokens;
 	t_ast_node	*tree;
+	int			restorefd[2];
+	int			stdfd[2];
 }	t_data;
 
 int	run_minishell(char **envp);

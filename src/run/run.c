@@ -15,6 +15,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "run.h"
 #include "parser.h"
@@ -47,13 +48,30 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+static int	_init_data(t_data *data)
+{
+
+	data->tokens = NULL;
+	data->tree = NULL;
+	data->stdfd[0] = STDIN_FILENO;
+	data->stdfd[1] = STDOUT_FILENO;
+	data->restorefd[0] = dup(STDIN_FILENO);
+	data->restorefd[1] = dup(STDOUT_FILENO);
+	if (data->restorefd[0] < 0 || data->restorefd[1] < 0)
+	{
+		(close(data->restorefd[0]), close(data->restorefd[1]));
+		return (perror("dup failed"), EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
 static int	_process_command(char **user_input, unsigned char *exit_status,
 char **envp)
 {
 	t_data	data;
 
-	data.tokens = NULL;
-	data.tree = NULL;
+	if (_init_data(&data))
+		return (EXIT_FAILURE);
 	if (lexer(*user_input, &data.tokens))
 		return (EXIT_FAILURE);
 	free(*user_input);
@@ -68,8 +86,7 @@ char **envp)
 	print_ast(data.tree, 0); // DEBUG
 	executor(&data, exit_status, envp);
 	cleanup_hdoc(&data.tokens);
-	free_tokens(&data.tokens);
-	cleanup_ast(&data.tree);
+	cleanup_data(&data);
 	return (EXIT_SUCCESS);
 }
 

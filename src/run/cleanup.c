@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "parser.h"
 #include "run.h"
@@ -67,6 +68,8 @@ void	cleanup_ast(t_ast_node **ast)
 
 void	cleanup_data(t_data *data)
 {
+	close(data->restorefd[0]);
+	close(data->restorefd[1]);
 	free_tokens(&data->tokens);
 	cleanup_ast(&data->tree);
 }

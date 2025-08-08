@@ -133,25 +133,14 @@ int fd_io[2], char **envp)
 
 int	executor(t_data *data, unsigned char *exit_status, char **envp)
 {
-	int	stdfd[2];
-	int	tempfd[2];
-
 	if (!data || !data->tree)
 		return (EXIT_FAILURE);
-	stdfd[0] = STDIN_FILENO;
-	stdfd[1] = STDOUT_FILENO;
-	tempfd[0] = dup(STDIN_FILENO);
-	tempfd[1] = dup(STDOUT_FILENO);
-	if (tempfd[0] < 0 || tempfd[1] < 0)
+	*exit_status = (unsigned char)_exec(data, data->tree, data->stdfd, envp);
+	if (dup2(data->restorefd[0], STDIN_FILENO) < 0
+	|| dup2(data->restorefd[1], STDOUT_FILENO) < 0)
 	{
-		(close(tempfd[0]), close(tempfd[1]), perror("dup failed"));
-		return (EXIT_FAILURE);
+		(close(data->restorefd[0]), close(data->restorefd[1]));
+		return (perror("dup2 failed"), EXIT_FAILURE);
 	}
-	*exit_status = (unsigned char)_exec(data, data->tree, stdfd, envp);
-	if (dup2(tempfd[0], STDIN_FILENO) < 0 || dup2(tempfd[1], STDOUT_FILENO) < 0)
-	{
-		(close(tempfd[0]), close(tempfd[1]), perror("dup2 failed"));
-		return (EXIT_FAILURE);
-	}
-	return (close(tempfd[0]), close(tempfd[1]), *exit_status);
+	return (close(data->restorefd[0]), close(data->restorefd[1]), *exit_status);
 }
