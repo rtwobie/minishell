@@ -25,8 +25,8 @@ t_ast_node	*_create_ast_node(t_nodetype type, void *data)
 		return (NULL);
 	node->type = type;
 	if (node->type == NODE_TYPE_COMMAND)
-		node->data.command_node = (t_command_node *)data;
+		node->data.command = (t_command_node *)data;
 	else if (node->type == NODE_TYPE_PIPE)
-		node->data.pipe_node = (t_pipe_node *)data;
+		node->data.pipe = (t_pipe_node *)data;
 	return (node);
 }

@@ -91,7 +91,7 @@ static int	_exec(t_ast_node *node, int fdin, int fdout, char **envp)
 	if (node == NULL)
 		return (EXIT_FAILURE);
 	if (node->type == NODE_TYPE_COMMAND)
-		return (_exec_cmd(node->data.command_node, fdin, fdout, envp));
+		return (_exec_cmd(node->data.command, fdin, fdout, envp));
 	else if (node->type == NODE_TYPE_PIPE)
 		return (_handle_pipe(node, fdin, fdout, envp));
 	return (EXIT_FAILURE);
@@ -110,7 +110,7 @@ static int	_handle_pipe(t_ast_node *node, int fdin, int fdout, char **envp)
 		return (close(pfd[0]), close(pfd[1]), EXIT_FAILURE);
 	else if (pid[0] == 0)
 	{
-		(close(pfd[0]), st = _exec(node->data.pipe_node->left, fdin, pfd[1], envp));
+		(close(pfd[0]), st = _exec(node->data.pipe->left, fdin, pfd[1], envp));
 		(rl_clear_history(), exit(st));
 	}
 	pid[1] = fork();
@@ -118,7 +118,7 @@ static int	_handle_pipe(t_ast_node *node, int fdin, int fdout, char **envp)
 		return (close(pfd[0]), close(pfd[1]), EXIT_FAILURE);
 	else if (pid[1] == 0)
 	{
-		(close(pfd[1]), st = _exec(node->data.pipe_node->right, pfd[0], fdout, envp));
+		(close(pfd[1]), st = _exec(node->data.pipe->right, pfd[0], fdout, envp));
 		(rl_clear_history(), exit(st));
 	}
 	(close(pfd[0]), close(pfd[1]));

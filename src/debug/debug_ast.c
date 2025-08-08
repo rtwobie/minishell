@@ -77,8 +77,8 @@ void print_ast(t_ast_node *ast, int level) // Added 'level' parameter
         return;
     if (ast->type == NODE_TYPE_COMMAND)
 	{
-        if (ast->data.command_node && ast->data.command_node->program_argv)
-			print_command_node(ast->data.command_node, level);
+        if (ast->data.command && ast->data.command->program_argv)
+			print_command_node(ast->data.command, level);
         else
              printf("(Empty Command)\n");
     } else if (ast->type == NODE_TYPE_PIPE) {
@@ -88,12 +88,12 @@ void print_ast(t_ast_node *ast, int level) // Added 'level' parameter
         // Print left child with increased indentation
         print_indent(level);
         printf("├── LEFT:\n"); // A simple line to indicate left child
-        print_ast(ast->data.pipe_node->left, level + 1); // Recurse with increased level
+        print_ast(ast->data.pipe->left, level + 1); // Recurse with increased level
 
         // Print right child with increased indentation
         print_indent(level);
         printf("└── RIGHT:\n"); // A simple line to indicate right child
-        print_ast(ast->data.pipe_node->right, level + 1); // Recurse with increased level
+        print_ast(ast->data.pipe->right, level + 1); // Recurse with increased level
     }
     // Add more else if blocks for other node types as needed (e.g., REDIRECTION_NODE)
 }

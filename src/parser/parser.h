@@ -56,8 +56,8 @@ struct s_pipe_node
 
 union u_node
 {
-	struct s_command_node		*command_node;
-	struct s_pipe_node			*pipe_node;
+	struct s_command_node		*command;
+	struct s_pipe_node			*pipe;
 };
 
 struct s_ast_node
