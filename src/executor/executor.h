@@ -13,8 +13,8 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-# include "parser.h"
+#include "run.h"
 
-int		executor(t_ast_node **tree, unsigned char *exit_status, char **envp);
+int	executor(t_data *data, unsigned char *exit_status, char **envp);
 
 #endif // !EXECUTOR_H

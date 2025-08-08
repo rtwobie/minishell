@@ -23,6 +23,7 @@
 #include "executor_internal.h"
 #include "executor.h"
 #include "builtin.h"
+#include "run.h"
 
 static int	_get_exit_status(pid_t pid)
 {
@@ -37,15 +38,14 @@ static int	_get_exit_status(pid_t pid)
 	return (status);
 }
 
-static int	_exec_builtin(t_command_node *cmd, int fd_in, int fd_out,
-char **envp)
+static int	_exec_builtin(t_data *data, t_command_node *cmd,
+int fd_io[2], char **envp)
 {
 	int	status;
 
-	(void)envp;
 	printf("EXECUTING BUILTIN...\n"); // debug
 	status = 0;
-	if (redirect_io(cmd, fd_in, fd_out))
+	if (redirect_io(cmd, fd_io[0], fd_io[1]))
 		return (EXIT_FAILURE);
 	if (!ft_strcmp(cmd->program_argv[0], "cd")
 		|| !ft_strcmp(cmd->program_argv[0], "pwd")
@@ -53,17 +53,20 @@ char **envp)
 			status = cd(cmd->program_argv, envp, -1);
 	if (!ft_strcmp(cmd->program_argv[0], "echo"))
 		status = echo(cmd->program_argv);
+	else if  (!ft_strcmp(cmd->program_argv[0], "exit"))
+		exit_(cmd->program_argv, data);
 	return (status);
 }
 
-static int	_exec_cmd(t_command_node *cmd, int fd_in, int fd_out, char **envp)
+static int	_exec_cmd(t_data *data, t_command_node *cmd,
+int fd_io[2], char **envp)
 {
 	pid_t	pid;
 	char	*program;
 
 	program = NULL;
 	if (is_builtin(cmd->program_argv[0]))
-		return (_exec_builtin(cmd, fd_in, fd_out, envp));
+		return (_exec_builtin(data, cmd, fd_io, envp));
 	if (cmd->program_argv[0])
 	{
 		program = search_program(cmd->program_argv[0]);
@@ -76,7 +79,7 @@ static int	_exec_cmd(t_command_node *cmd, int fd_in, int fd_out, char **envp)
 	else if (pid == 0)
 	{
 		rl_clear_history();
-		if (redirect_io(cmd, fd_in, fd_out))
+		if (redirect_io(cmd, fd_io[0], fd_io[1]))
 			(free(program), exit(EXIT_FAILURE));
 		if (execve(program, cmd->program_argv, NULL))
 			(free(program), exit(127));
@@ -84,70 +87,70 @@ static int	_exec_cmd(t_command_node *cmd, int fd_in, int fd_out, char **envp)
 	return (free(program), _get_exit_status(pid));
 }
 
-static int	_handle_pipe(t_ast_node *node, int fdin, int fdout, char **envp);
+static int	_handle_pipe(t_data *data, t_ast_node *node,
+int fd_io[2], char **envp);
 
-static int	_exec(t_ast_node *node, int fdin, int fdout, char **envp)
+static int	_exec(t_data *data, t_ast_node *node, int fd_io[2], char **envp)
 {
 	if (node == NULL)
 		return (EXIT_FAILURE);
 	if (node->type == NODE_TYPE_COMMAND)
-		return (_exec_cmd(node->data.command, fdin, fdout, envp));
+		return (_exec_cmd(data, node->data.command, fd_io, envp));
 	else if (node->type == NODE_TYPE_PIPE)
-		return (_handle_pipe(node, fdin, fdout, envp));
+		return (_handle_pipe(data, node, fd_io, envp));
 	return (EXIT_FAILURE);
 }
 
-static int	_handle_pipe(t_ast_node *node, int fdin, int fdout, char **envp)
+static int	_handle_pipe(t_data *data, t_ast_node *node,
+int fd_io[2], char **envp)
 {
 	pid_t	pid[2];
-	int		pfd[2];
-	int		st;
+	int		pipefd[2];
 
-	if (pipe(pfd))
+	if (pipe(pipefd))
 		return (EXIT_FAILURE);
 	pid[0] = fork();
 	if (pid[0] < 0)
-		return (close(pfd[0]), close(pfd[1]), EXIT_FAILURE);
+		return (close(pipefd[0]), close(pipefd[1]), EXIT_FAILURE);
 	else if (pid[0] == 0)
 	{
-		(close(pfd[0]), st = _exec(node->data.pipe->left, fdin, pfd[1], envp));
-		(rl_clear_history(), exit(st));
+		(close(pipefd[0]), fd_io[1] = pipefd[1], rl_clear_history());
+		exit(_exec(data, node->data.pipe->left, fd_io, envp));
 	}
 	pid[1] = fork();
 	if (pid[1] < 0)
-		return (close(pfd[0]), close(pfd[1]), EXIT_FAILURE);
+		return (close(pipefd[0]), close(pipefd[1]), waitpid(pid[0], NULL, 0),
+			EXIT_FAILURE);
 	else if (pid[1] == 0)
 	{
-		(close(pfd[1]), st = _exec(node->data.pipe->right, pfd[0], fdout, envp));
-		(rl_clear_history(), exit(st));
+		(close(pipefd[1]), fd_io[0] = pipefd[0], rl_clear_history());
+		exit(_exec(data, node->data.pipe->right, fd_io, envp));
 	}
-	(close(pfd[0]), close(pfd[1]));
+	(close(pipefd[0]), close(pipefd[1]));
 	return (waitpid(pid[0], NULL, 0), _get_exit_status(pid[1]));
 }
 
-int	executor(t_ast_node **tree, unsigned char *exit_status, char **envp)
+int	executor(t_data *data, unsigned char *exit_status, char **envp)
 {
-	int	fd[2];
+	int	stdfd[2];
+	int	tempfd[2];
 
-	if (!tree || !*tree)
+	if (!data || !data->tree)
 		return (EXIT_FAILURE);
-	fd[0] = dup(STDIN_FILENO);
-	fd[1] = dup(STDOUT_FILENO);
-	if (fd[0] < 0 || fd[1] < 0)
+	stdfd[0] = STDIN_FILENO;
+	stdfd[1] = STDOUT_FILENO;
+	tempfd[0] = dup(STDIN_FILENO);
+	tempfd[1] = dup(STDOUT_FILENO);
+	if (tempfd[0] < 0 || tempfd[1] < 0)
 	{
-		(close(fd[0]), close(fd[1]), perror("dup failed"));
+		(close(tempfd[0]), close(tempfd[1]), perror("dup failed"));
 		return (EXIT_FAILURE);
 	}
-	*exit_status = (unsigned char)_exec(*tree, STDIN_FILENO, STDOUT_FILENO, envp);
-	if (dup2(fd[0], STDIN_FILENO) == -1 || dup2(fd[1], STDOUT_FILENO) == -1)
+	*exit_status = (unsigned char)_exec(data, data->tree, stdfd, envp);
+	if (dup2(tempfd[0], STDIN_FILENO) < 0 || dup2(tempfd[1], STDOUT_FILENO) < 0)
 	{
-		(close(fd[0]), close(fd[1]), perror("dup2 failed"));
+		(close(tempfd[0]), close(tempfd[1]), perror("dup2 failed"));
 		return (EXIT_FAILURE);
 	}
-	if (*exit_status != 0)
-	{
-		(close(fd[0]), close(fd[1]));
-		return (EXIT_FAILURE);
-	}
-	return (EXIT_SUCCESS);
+	return (close(tempfd[0]), close(tempfd[1]), *exit_status);
 }
