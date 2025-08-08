@@ -23,8 +23,12 @@
 
 int	is_builtin(char *program)
 {
+	if (!program)
+		return (0);
 	if (!ft_strcmp(program, "echo") || !ft_strcmp(program, "cd")
 		|| !ft_strcmp(program, "pwd") || !ft_strcmp(program, "env"))
+		return (1);
+	else if (!ft_strcmp(program, "exit"))
 		return (1);
 	return (0);
 }

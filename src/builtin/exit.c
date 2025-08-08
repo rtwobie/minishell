@@ -16,15 +16,14 @@
 
 #include "run.h"
 
-// void	exit_(char **argv, t_data *data)
-// {
-// 	unsigned char	status;
-//
-// 	status = 0;
-// 	(void)argv;
-// 	cleanup_data(data);
-// 	rl_clear_history();
-// 	printf("exit\n");
-// 	exit(status);
-// }
+void	exit_(char **argv, t_data *data)
+{
+	unsigned char	status;
 
+	status = 0;
+	(void)argv;
+	cleanup_data(data);
+	rl_clear_history();
+	printf("exit\n");
+	exit(status);
+}
