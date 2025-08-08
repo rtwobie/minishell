@@ -30,5 +30,6 @@ void	free_redir(void *content);
 void	free_args(char **args);
 void	free_command_node(t_command_node *node);
 void	cleanup_ast(t_ast_node **ast);
+void	cleanup_data(t_data *data);
 
 #endif // !RUN_H

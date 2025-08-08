@@ -50,27 +50,26 @@ static void	_connect_to_signals(struct sigaction *sa)
 static int	_process_command(char **user_input, unsigned char *exit_status,
 char **envp)
 {
-	t_token		*tokens;
-	t_ast_node	*ast;
+	t_data	data;
 
-	tokens = NULL;
-	ast = NULL;
-	if (lexer(*user_input, &tokens))
+	data.tokens = NULL;
+	data.tree = NULL;
+	if (lexer(*user_input, &data.tokens))
 		return (EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
-	if (expander(&tokens, exit_status))
-		return (free_tokens(&tokens), EXIT_FAILURE);
-	if (heredoc(&tokens))
-		return (free_tokens(&tokens), EXIT_FAILURE);
-	print_all_tokens(tokens); // DEBUG
-	if (parser(tokens, &ast))
-		return (free_tokens(&tokens), EXIT_FAILURE);
-	print_ast(ast, 0); // DEBUG
-	executor(&ast, exit_status, envp);
-	cleanup_hdoc(&tokens);
-	free_tokens(&tokens);
-	cleanup_ast(&ast);
+	if (expander(&data.tokens, exit_status))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
+	if (heredoc(&data.tokens))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
+	print_all_tokens(data.tokens); // DEBUG
+	if (parser(data.tokens, &data.tree))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
+	print_ast(data.tree, 0); // DEBUG
+	executor(&data, exit_status, envp);
+	cleanup_hdoc(&data.tokens);
+	free_tokens(&data.tokens);
+	cleanup_ast(&data.tree);
 	return (EXIT_SUCCESS);
 }
 
