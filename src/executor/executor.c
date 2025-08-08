@@ -63,25 +63,26 @@ int fd_io[2], char **envp)
 {
 	pid_t	pid;
 	char	*program;
+	int		status;
 
 	program = NULL;
 	if (is_builtin(cmd->program_argv[0]))
 		return (_exec_builtin(data, cmd, fd_io, envp));
 	if (cmd->program_argv[0])
 	{
-		program = search_program(cmd->program_argv[0]);
-		if (!program)
-			return (EXIT_FAILURE);
+		status = search_program(cmd->program_argv[0], &program);
+		if (status)
+			return (status);
 	}
 	pid = fork();
 	if (pid == -1)
-		return (EXIT_FAILURE);
+		return (free(program), EXIT_FAILURE);
 	else if (pid == 0)
 	{
 		rl_clear_history();
 		if (redirect_io(cmd, fd_io[0], fd_io[1]))
 			(free(program), exit(EXIT_FAILURE));
-		if (execve(program, cmd->program_argv, NULL))
+		if (execve(program, cmd->program_argv, envp))
 			(free(program), exit(127));
 	}
 	return (free(program), _get_exit_status(pid));
