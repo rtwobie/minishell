@@ -15,6 +15,20 @@
 
 # define PROMPT "minishell$ "
 
+# include "parser.h"
+
+typedef struct s_data
+{
+	t_token		*tokens;
+	t_ast_node	*tree;
+}	t_data;
+
 int	run_minishell(char **envp);
+
+//cleanup.c
+void	free_redir(void *content);
+void	free_args(char **args);
+void	free_command_node(t_command_node *node);
+void	cleanup_ast(t_ast_node **ast);
 
 #endif // !RUN_H

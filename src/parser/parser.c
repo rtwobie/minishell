@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 #include "libft.h"
+#include "run.h"
 #include "tokenizer.h"
 #include "parser_internal.h"
 #include "parser.h"

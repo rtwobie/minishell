@@ -11,7 +11,9 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+
 #include "parser.h"
+#include "run.h"
 
 void	free_args(char **args)
 {
@@ -61,4 +63,10 @@ void	cleanup_ast(t_ast_node **ast)
 
 	}
 	free(*ast);
+}
+
+void	cleanup_data(t_data *data)
+{
+	free_tokens(&data->tokens);
+	cleanup_ast(&data->tree);
 }
