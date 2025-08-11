@@ -38,6 +38,7 @@ typedef struct s_pid
 int		redirect_io(t_command_node *cmd, int input_fd, int output_fd);
 
 // search_program.c
-char	*search_program(char *program);
+int	search_program(char *lookup, char **program);
+// char	*search_program(char *program);
 
 #endif // !EXECUTOR_INTERNAL_H

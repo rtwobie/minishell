@@ -69,10 +69,4 @@ struct s_ast_node
 //parser.c
 int		parser(t_token *tokens, t_ast_node	**ast);
 
-//cleanup.c
-void	free_redir(void *content);
-void	free_args(char **args);
-void	free_command_node(t_command_node *node);
-void	cleanup_ast(t_ast_node **ast);
-
 #endif // !PARSER_H

@@ -13,11 +13,13 @@
 #ifndef BUILTIN_H
 # define BUILTIN_H
 
-#include <stdlib.h>
+# include <stdio.h>
 
-int	builtin_exit(int argc, char **argv);
-int	echo(char *argv[]);
-int	is_builtin(char *program);
-int	cd(char **av,char **v, ssize_t i);
+# include "run.h"
+
+int		echo(char *argv[]);
+int		is_builtin(char *program);
+int		cd(char **av,char **v, ssize_t i);
+void	exit_(char **argv, t_data *data);
 
 #endif // !BUILTIN_H

@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/06 22:48:11 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/11 16:26:31 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include "error.h"
 #include "libft.h"
+#include "run.h"
 #include "tokenizer.h"
 #include "envvar.h"
 #include "../error/error.h"

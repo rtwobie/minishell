@@ -18,9 +18,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "error.h"
 #include "libft.h"
-#include "parser.h"
+#include "error.h"
+#include "run.h"
 
 static int	_is_executable(char *exec_path)
 {
@@ -76,25 +76,28 @@ static char	*_set_executable_path(char *program, char *path_env)
 	return (ft_strdup(program));
 }
 
-char	*search_program(char *program)
+int	search_program(char *lookup, char **program)
 {
 	char		*path_env;
 
-	if (ft_strchr(program, '/'))
+	if (ft_strchr(lookup, '/'))
 	{
-		if (!_is_executable(program))
-			return (perror(program), NULL);
-		return (ft_strdup(program));
+		if (!_is_executable(lookup))
+			return (perror(lookup), EXIT_FAILURE);
+		*program = ft_strdup(lookup);
+		if (!*program)
+			return (perror("malloc"), EXIT_FAILURE);
+		return (EXIT_SUCCESS);
 	}
 	path_env = getenv("PATH");
-	program = _set_executable_path(program, path_env);
-	if (!program)
-		return (NULL);
-	if (!_is_executable(program))
+	*program = _set_executable_path(lookup, path_env);
+	if (!*program)
+		return (EXIT_FAILURE);
+	if (!_is_executable(*program))
 	{
-		print_err(ERR_CMD_NOTFOUND, program);
-		free(program);
-		return (NULL);
+		print_err(ERR_CMD_NOTFOUND, *program);
+		free(*program);
+		return (127);
 	}
-	return (program);
+	return (EXIT_SUCCESS);
 }

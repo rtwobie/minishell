@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:43:24 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/31 13:04:14 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:48:35 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,5 @@ typedef struct s_token
 
 int		lexer(char *user_input, t_token **tokens);
 int		expander(t_token **tokens, unsigned char *exit_status);
-
-// token_list.c
-void	free_tokens(t_token **lst);
-void	free_token(t_token *token);
 
 #endif // !TOKENIZER_H

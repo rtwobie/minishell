@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 19:41:21 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 19:56:45 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/11 15:45:53 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,23 +45,4 @@ void	add_token(t_token **lst, t_token *token)
 		*lst = token;
 	else
 		get_last_token(*lst)->next = token;
-}
-
-void	free_token(t_token *token)
-{
-		free(token->value);
-		free(token);
-}
-
-void	free_tokens(t_token **lst)
-{
-	t_token	*temp;
-
-	while (*lst)
-	{
-		temp = *lst;
-		*lst = temp->next;
-		free_token(temp);
-	}
-	*lst = NULL;
 }

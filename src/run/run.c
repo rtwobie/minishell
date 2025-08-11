@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/07 15:42:46 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/11 16:24:18 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "run.h"
 #include "parser.h"
@@ -47,30 +48,45 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+static int	_init_data(t_data *data, char **envp)
+{
+	data->envp = envp;
+	data->tokens = NULL;
+	data->tree = NULL;
+	data->stdfd[0] = STDIN_FILENO;
+	data->stdfd[1] = STDOUT_FILENO;
+	data->restorefd[0] = dup(STDIN_FILENO);
+	data->restorefd[1] = dup(STDOUT_FILENO);
+	if (data->restorefd[0] < 0 || data->restorefd[1] < 0)
+	{
+		(close(data->restorefd[0]), close(data->restorefd[1]));
+		return (perror("dup failed"), EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
 static int	_process_command(char **user_input, unsigned char *exit_status,
 char **envp)
 {
-	t_token		*tokens;
-	t_ast_node	*ast;
+	t_data	data;
 
-	tokens = NULL;
-	ast = NULL;
-	if (lexer(*user_input, &tokens))
+	if (_init_data(&data, envp))
+		return (EXIT_FAILURE);
+	if (lexer(*user_input, &data.tokens))
 		return (EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
-	if (expander(&tokens, exit_status))
-		return (free_tokens(&tokens), EXIT_FAILURE);
-	if (heredoc(&tokens))
-		return (free_tokens(&tokens), EXIT_FAILURE);
-	print_all_tokens(tokens); // DEBUG
-	if (parser(tokens, &ast))
-		return (free_tokens(&tokens), EXIT_FAILURE);
-	print_ast(ast, 0); // DEBUG
-	executor(&ast, exit_status, envp);
-	cleanup_hdoc(&tokens);
-	free_tokens(&tokens);
-	cleanup_ast(&ast);
+	if (expander(&data.tokens, exit_status))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
+	if (heredoc(&data.tokens))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
+	print_all_tokens(data.tokens); // DEBUG
+	if (parser(data.tokens, &data.tree))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
+	print_ast(data.tree, 0); // DEBUG
+	executor(&data, exit_status);
+	cleanup_hdoc(&data.tokens);
+	cleanup_data(&data);
 	return (EXIT_SUCCESS);
 }
 

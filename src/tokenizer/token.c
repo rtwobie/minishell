@@ -18,9 +18,7 @@
 
 static enum e_token_type	_get_token_type(char *value)
 {
-	if (!ft_strcmp(value, "exit"))
-		return (TOKEN_EXIT_STATUS);
-	else if (!ft_strcmp(value, "|"))
+	if (!ft_strcmp(value, "|"))
 		return (TOKEN_PIPE);
 	else if (!ft_strcmp(value, "<"))
 		return (TOKEN_REDIRECT_IN);
