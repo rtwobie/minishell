@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/08/08 00:10:09 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/11 18:45:26 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 #include "parser.h"
 #include "executor_internal.h"
 #include "executor.h"
-#include "builtin.h"
 #include "run.h"
 
 static int	_get_exit_status(pid_t pid)
@@ -39,7 +38,7 @@ static int	_get_exit_status(pid_t pid)
 }
 
 static int	_exec_builtin(t_data *data, t_command_node *cmd,
-int fd_io[2], char **envp)
+int fd_io[2])
 {
 	int	status;
 
@@ -50,7 +49,7 @@ int fd_io[2], char **envp)
 	if (!ft_strcmp(cmd->program_argv[0], "cd")
 		|| !ft_strcmp(cmd->program_argv[0], "pwd")
 		|| !ft_strcmp(cmd->program_argv[0], "env"))
-			status = cd(cmd->program_argv, envp, -1);
+			status = cd(cmd->program_argv, data->envp, -1);
 	if (!ft_strcmp(cmd->program_argv[0], "echo"))
 		status = echo(cmd->program_argv);
 	else if  (!ft_strcmp(cmd->program_argv[0], "exit"))
@@ -58,8 +57,7 @@ int fd_io[2], char **envp)
 	return (status);
 }
 
-static int	_exec_cmd(t_data *data, t_command_node *cmd,
-int fd_io[2], char **envp)
+static int	_exec_cmd(t_data *data, t_command_node *cmd, int fd_io[2])
 {
 	pid_t	pid;
 	char	*program;
@@ -67,7 +65,7 @@ int fd_io[2], char **envp)
 
 	program = NULL;
 	if (is_builtin(cmd->program_argv[0]))
-		return (_exec_builtin(data, cmd, fd_io, envp));
+		return (_exec_builtin(data, cmd, fd_io));
 	if (cmd->program_argv[0])
 	{
 		status = search_program(cmd->program_argv[0], &program);
@@ -82,65 +80,62 @@ int fd_io[2], char **envp)
 		rl_clear_history();
 		if (redirect_io(cmd, fd_io[0], fd_io[1]))
 			(free(program), exit(EXIT_FAILURE));
-		if (execve(program, cmd->program_argv, envp))
+		if (execve(program, cmd->program_argv, data->envp))
 			(free(program), exit(127));
 	}
-	return (free(program), _get_exit_status(pid));
+	return (close_fds(fd_io), free(program), _get_exit_status(pid));
 }
 
-static int	_handle_pipe(t_data *data, t_ast_node *node,
-int fd_io[2], char **envp);
+static int	_handle_pipe(t_data *data, t_ast_node *node, int fd_io[2]);
 
-static int	_exec(t_data *data, t_ast_node *node, int fd_io[2], char **envp)
+static int	_exec(t_data *data, t_ast_node *node, int fd_io[2])
 {
 	if (node == NULL)
 		return (EXIT_FAILURE);
 	if (node->type == NODE_TYPE_COMMAND)
-		return (_exec_cmd(data, node->data.command, fd_io, envp));
+		return (_exec_cmd(data, node->data.command, fd_io));
 	else if (node->type == NODE_TYPE_PIPE)
-		return (_handle_pipe(data, node, fd_io, envp));
+		return (_handle_pipe(data, node, fd_io));
 	return (EXIT_FAILURE);
 }
 
-static int	_handle_pipe(t_data *data, t_ast_node *node,
-int fd_io[2], char **envp)
+static int	_handle_pipe(t_data *data, t_ast_node *node, int fd_io[2])
 {
 	pid_t	pid[2];
-	int		pipefd[2];
+	int		pfd[2];
 
-	if (pipe(pipefd))
+	if (pipe(pfd))
 		return (EXIT_FAILURE);
 	pid[0] = fork();
 	if (pid[0] < 0)
-		return (close(pipefd[0]), close(pipefd[1]), EXIT_FAILURE);
+		return (close(pfd[0]), close(pfd[1]), EXIT_FAILURE);
 	else if (pid[0] == 0)
 	{
-		(close(pipefd[0]), fd_io[1] = pipefd[1], rl_clear_history());
-		exit(_exec(data, node->data.pipe->left, fd_io, envp));
+		(close_fds(data->restorefd), fd_io[1] = pfd[1], rl_clear_history());
+		(close(pfd[0]), exit(_exec(data, node->data.pipe->left, fd_io)));
 	}
 	pid[1] = fork();
 	if (pid[1] < 0)
-		return (close(pipefd[0]), close(pipefd[1]), waitpid(pid[0], NULL, 0),
+		return (close(pfd[0]), close(pfd[1]), waitpid(pid[0], NULL, 0),
 			EXIT_FAILURE);
 	else if (pid[1] == 0)
 	{
-		(close(pipefd[1]), fd_io[0] = pipefd[0], rl_clear_history());
-		exit(_exec(data, node->data.pipe->right, fd_io, envp));
+		(close_fds(data->restorefd), fd_io[0] = pfd[0], rl_clear_history());
+		(close(pfd[1]), exit(_exec(data, node->data.pipe->right, fd_io)));
 	}
-	(close(pipefd[0]), close(pipefd[1]));
-	return (waitpid(pid[0], NULL, 0), _get_exit_status(pid[1]));
+	return (close_fds(pfd), waitpid(pid[0], NULL, 0), _get_exit_status(pid[1]));
 }
 
-int	executor(t_data *data, unsigned char *exit_status, char **envp)
+int	executor(t_data *data, unsigned char *exit_status)
 {
 	if (!data || !data->tree)
 		return (EXIT_FAILURE);
-	*exit_status = (unsigned char)_exec(data, data->tree, data->stdfd, envp);
+	*exit_status = (unsigned char)_exec(data, data->tree, data->stdfd);
 	if (dup2(data->restorefd[0], STDIN_FILENO) < 0
 	|| dup2(data->restorefd[1], STDOUT_FILENO) < 0)
 	{
-		(close(data->restorefd[0]), close(data->restorefd[1]));
+		close_fds(data->restorefd);
 		return (perror("dup2 failed"), EXIT_FAILURE);
 	}
-	return (close(data->restorefd[0]), close(data->restorefd[1]), *exit_status);
+	return (close_fds(data->restorefd), *exit_status);
 }
