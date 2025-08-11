@@ -15,15 +15,17 @@
 #include <stdlib.h>
 
 #include "run.h"
+#include "libft.h"
 
 void	exit_(char **argv, t_data *data)
 {
 	unsigned char	status;
 
 	status = 0;
-	(void)argv;
-	cleanup_data(data);
+	if (argv[1])
+		status = (unsigned char)ft_strtol(argv[1], NULL, 10);
 	rl_clear_history();
+	cleanup_data(data);
 	printf("exit\n");
 	exit(status);
 }
