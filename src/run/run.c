@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/07 15:42:46 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/11 16:24:18 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ static void	_connect_to_signals(struct sigaction *sa)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	_init_data(t_data *data)
+static int	_init_data(t_data *data, char **envp)
 {
-
+	data->envp = envp;
 	data->tokens = NULL;
 	data->tree = NULL;
 	data->stdfd[0] = STDIN_FILENO;
@@ -70,7 +70,7 @@ char **envp)
 {
 	t_data	data;
 
-	if (_init_data(&data))
+	if (_init_data(&data, envp))
 		return (EXIT_FAILURE);
 	if (lexer(*user_input, &data.tokens))
 		return (EXIT_FAILURE);
@@ -84,7 +84,7 @@ char **envp)
 	if (parser(data.tokens, &data.tree))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
 	print_ast(data.tree, 0); // DEBUG
-	executor(&data, exit_status, envp);
+	executor(&data, exit_status);
 	cleanup_hdoc(&data.tokens);
 	cleanup_data(&data);
 	return (EXIT_SUCCESS);
