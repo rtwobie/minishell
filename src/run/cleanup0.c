@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cleanup.c                                          :+:      :+:    :+:   */
+/*   cleanup0.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 18:06:58 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/23 16:13:26 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/11 15:48:45 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <unistd.h>
 
 #include "parser.h"
-#include "run.h"
 
 void	free_args(char **args)
 {
@@ -64,12 +63,4 @@ void	cleanup_ast(t_ast_node **ast)
 
 	}
 	free(*ast);
-}
-
-void	cleanup_data(t_data *data)
-{
-	close(data->restorefd[0]);
-	close(data->restorefd[1]);
-	free_tokens(&data->tokens);
-	cleanup_ast(&data->tree);
 }

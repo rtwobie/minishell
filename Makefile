@@ -88,6 +88,8 @@ SRC		+= error.c
 
 vpath %.c $(SRC_DIR)/run
 SRC		+= run.c
+SRC		+= cleanup0.c
+SRC		+= cleanup1.c
 
 vpath %.c $(SRC_DIR)/tokenizer
 SRC		+= lexer.c
@@ -102,7 +104,6 @@ SRC		+= hdoc_envvar.c
 
 vpath %.c $(SRC_DIR)/parser
 SRC		+= ast.c
-SRC		+= cleanup.c
 SRC		+= parser.c
 
 vpath %.c $(SRC_DIR)/executor
