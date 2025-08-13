@@ -80,7 +80,7 @@ static int	_exec_cmd(t_data *data, t_command_node *cmd, int fd_io[2])
 		rl_clear_history();
 		if (redirect_io(cmd, fd_io[0], fd_io[1]))
 			(free(program), exit(EXIT_FAILURE));
-		if (execve(program, cmd->program_argv, data->envp))
+		if (cmd->program_argv && execve(program, cmd->program_argv, data->envp))
 			(free(program), exit(127));
 	}
 	return (close_fds(fd_io), free(program), _get_exit_status(pid));
