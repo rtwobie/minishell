@@ -81,23 +81,34 @@ static int	_get_env_tok(char **idx)
 	return (EXIT_SUCCESS);
 }
 
-static int	_dollars(char *input, unsigned int *skip, unsigned int *i)
+static int	_dollars(char **input, unsigned int *skip,
+unsigned int *i, unsigned char *exit_status)
 {
+	const int	numerical_value = *exit_status;
+	char		*extr_str;
+	char		*pos[3];
+
 	*i = 0;
-	while (input[*skip + *i] && (input[*skip + *i] != '$'))
+	while ((*input)[*skip + *i] && (*input)[*skip + *i] != '$')
 		++(*skip);
-	while (input[*skip] == 36 && (input[*skip + 1] == 36))
+	while ((*input)[*skip] == 36 && (*input)[*skip + 1] == 36)
 		++(*skip);
-	if (input[*skip] == '$' && (input[*skip + 1] == '?'))
-		return (perror("$?->FOUND\n"), EXIT_FAILURE);
-	while (input[*skip + *i] && (input[*skip + *i] != '$'))
+	if ((*input)[*skip] == '$' && (*input)[*skip + 1] == '?')
+	{
+		extr_str = ft_itoa(numerical_value);
+		pos[0] = ft_strjoin(extr_str, (*input) + *skip + 2);
+		pos[1] = ft_substr((*input), 0, *skip);
+		(free((*input)), pos[2] = ft_strjoin(pos[1], pos[0]));
+		(free(*pos), free(pos[1]), free(extr_str), (*input) = pos[2]);
+	}
+	while ((*input)[*skip + *i] && (*input)[*skip + *i] != '$')
 		++(*i);
-	if (input[*skip + *i] == '$')
+	if ((*input)[*skip + *i] == '$')
 		return (EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }
 
-int	hdoc_envvar(char **input, unsigned int skip)
+int	hdoc_envvar(char **input, unsigned int skip, unsigned char *exit_status)
 {
 	unsigned int	i;
 	char			*temp;
@@ -105,7 +116,7 @@ int	hdoc_envvar(char **input, unsigned int skip)
 	char			*val;
 	char			*original_value;
 
-	if (_dollars(*input, &skip, &i))
+	if (_dollars(input, &skip, &i, exit_status))
 		return (EXIT_SUCCESS);
 	val = ft_substr(*input, skip, ft_strlen(*input));
 	if (!ft_strcmp("$", val))
@@ -119,6 +130,6 @@ int	hdoc_envvar(char **input, unsigned int skip)
 	new = ft_strjoin(temp, *input);
 	(free(temp), free(*input));
 	*input = new;
-	hdoc_envvar(input, skip + i);
+	hdoc_envvar(input, skip + i, exit_status);
 	return (EXIT_SUCCESS);
 }
