@@ -6,10 +6,14 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:21:12 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/08 00:10:16 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/13 15:44:32 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "error.h"
+#include "libft.h"
+#include "builtin.h"
+#include <asm-generic/errno-base.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,18 +21,10 @@
 #include <errno.h>
 #include <stdbool.h>
 
-#include "error.h"
-#include "libft.h"
-#include "builtin.h"
-
 int	is_builtin(char *program)
 {
-	if (!program)
-		return (0);
 	if (!ft_strcmp(program, "echo") || !ft_strcmp(program, "cd")
 		|| !ft_strcmp(program, "pwd") || !ft_strcmp(program, "env"))
-		return (1);
-	else if (!ft_strcmp(program, "exit"))
 		return (1);
 	return (0);
 }
@@ -61,17 +57,17 @@ int	echo(char *argv[])
 
 int	cd(char **av, char **envp, ssize_t i)
 {
-	char	cwd[1024];
-
 	if (av[0][0] == 'e' && envp[++i] && ft_putendl_fd(envp[i], STDOUT_FILENO))
 		return (cd(av, envp, i), EXIT_SUCCESS);
 	if (av[0][0] == 'p' && ft_putstr_fd(getenv("PWD"), STDOUT_FILENO))
 		return (write(1, "\n", 1), EXIT_SUCCESS);
-	if (av[0][0] == 'c' && (av[1] == NULL || av[2] != NULL))
+	if (av[0][0] == 'c' && av[1] && av[2])
 		return (print_err(ERR_ONLY_ONE_ARG, "cd"), EXIT_FAILURE);
-	if (av[0][0] == 'c' && chdir(av[1]) != 0)
+	if (av[0][0] == 'c' && !av[1] && chdir(getenv("HOME")) != 0)
+		perror("getcwd in home");
+	if (av[0][0] == 'c' && av[1] && chdir(av[1]) != 0)
 		return (errno = ENOENT, print_err(ENOENT, "cd"), EXIT_FAILURE);
-	if (av[0][0] == 'c' && getcwd(cwd, sizeof(cwd)) == NULL)
-		perror("getcwd");
+	if (av[0][0] == 'c' && check_entries(&envp))
+		perror("lol");
 	return (EXIT_SUCCESS);
 }
