@@ -86,7 +86,7 @@ static int	_condense_redirection(t_token **tokens)
 	return (EXIT_SUCCESS);
 }
 
-static int	_expand(t_token **tokens, unsigned char *exit_status)
+static int	_expand(t_token **tokens, unsigned char *exit_status, t_data *data)
 {
 	t_token 		*current;
 	t_token 		*prev;
@@ -95,7 +95,7 @@ static int	_expand(t_token **tokens, unsigned char *exit_status)
 	prev = current;
 	while (current)
 	{
-		if (envvar(&current, exit_status, 0) == EXIT_FAILURE)
+		if (envvar(&current, exit_status, 0, data) == EXIT_FAILURE)
 		{
 			if (!*current->value)
 			{
@@ -114,11 +114,11 @@ static int	_expand(t_token **tokens, unsigned char *exit_status)
 	return (EXIT_SUCCESS);
 }
 
-int	expander(t_token **tokens, unsigned char *exit_status)
+int	expander(t_token **tokens, unsigned char *exit_status, t_data *data)
 {
 	if (_reedit(tokens))
 		return (EXIT_FAILURE);
-	if (_expand(tokens, exit_status))
+	if (_expand(tokens, exit_status, data))
 		return (EXIT_FAILURE);
 	if (_condense_redirection(tokens))
 		return (EXIT_FAILURE);

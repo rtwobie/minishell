@@ -117,6 +117,7 @@ SRC		+= envvar.c
 vpath %.c $(SRC_DIR)/builtin
 SRC		+= builtin.c
 SRC		+= exit.c
+SRC		+= new_updating.c
 
 #*******************************************************#
 
