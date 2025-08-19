@@ -42,7 +42,7 @@ static char	*_generate_name(int count)
 	return (tmpfile);
 }
 
-static char	*_hdoc(char *delimiter, int count)
+static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status)
 {
 	int		fd;
 	char	*input;
@@ -62,7 +62,7 @@ static char	*_hdoc(char *delimiter, int count)
 			free(input);
 			break ;
 		}
-		hdoc_envvar(&input, 0);
+		hdoc_envvar(&input, 0, exit_status);
 		ft_putendl_fd(input, fd);
 		free(input);
 	}
@@ -70,7 +70,7 @@ static char	*_hdoc(char *delimiter, int count)
 	return (tmpfile);
 }
 
-int	heredoc(t_token **tokens)
+int	heredoc(t_token **tokens, unsigned char *exit_status)
 {
 	int		count;
 	char	*hdoc;
@@ -85,7 +85,7 @@ int	heredoc(t_token **tokens)
 			current = current->next;
 			continue ;
 		}
-		hdoc = _hdoc(current->value, count);
+		hdoc = _hdoc(current->value, count, exit_status);
 		if (!hdoc)
 			return (EXIT_FAILURE);
 		free(current->value);

@@ -17,8 +17,8 @@
 
 typedef struct s_token	t_token;
 
-int	heredoc(t_token **tokens);
+int	heredoc(t_token **tokens, unsigned char *exit_status);
 int	cleanup_hdoc(t_token **tokens);
-int	hdoc_envvar(char **input, unsigned int skip);
+int	hdoc_envvar(char **input, unsigned int skip, unsigned char *exit_status);
 
 #endif // !HEREDOC_H
