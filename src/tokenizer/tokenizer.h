@@ -3,15 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:43:24 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/11 15:48:35 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/17 20:25:00 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKENIZER_H
 # define TOKENIZER_H
+
+// Forward declaration to avoid circular includes
+typedef struct s_data t_data;
 
 enum e_token_type
 {
@@ -35,6 +38,6 @@ typedef struct s_token
 }	t_token;
 
 int		lexer(char *user_input, t_token **tokens);
-int		expander(t_token **tokens, unsigned char *exit_status);
+int		expander(t_token **tokens, unsigned char *exit_status, t_data *data);
 
 #endif // !TOKENIZER_H

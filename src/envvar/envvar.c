@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 #include "libft.h"
+#include "run.h"
 #include "envvar.h"
 
 static char	*_use_getent(char *idx, size_t i)
@@ -27,9 +28,11 @@ static char	*_use_getent(char *idx, size_t i)
 	join = getenv(substr);
 	free(substr);
 	if (!join && !temp[0])
-		return (perror("ENV VAR not found"), NULL);
+		return (perror("ENV VAR not found"), free(temp), NULL);
 	else if (!join && temp)
 		return (perror("ENV VAR not found"), temp);
+	else if (!join)
+		return (free(temp), NULL);
 	idx = ft_strjoin(join, temp);
 	free(temp);
 	return (idx);
@@ -112,7 +115,8 @@ static int	dollars(t_token **tokens, unsigned int *skip,
 	return (EXIT_FAILURE);
 }
 
-int	envvar(t_token **tokens, unsigned char *exit_status, unsigned int skip)
+int	envvar(t_token **tokens, unsigned char *exit_status,
+		unsigned int skip, t_data *data)
 {
 	unsigned int	i;
 	char			*temp;
@@ -134,6 +138,5 @@ int	envvar(t_token **tokens, unsigned char *exit_status, unsigned int skip)
 	new = ft_strjoin(temp, (*tokens)->value);
 	(free(temp), free((*tokens)->value));
 	(*tokens)->value = new;
-	envvar(tokens, exit_status, skip + i);
-	return (EXIT_SUCCESS);
+	return (envvar(tokens, exit_status, skip + i, data));
 }
