@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:31:43 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/11 16:26:31 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/19 23:00:40 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	_reedit(t_token **tokens)
 static int	_condense_redirection(t_token **tokens)
 {
 	t_token	*current;
-	t_token *temp;
+	t_token	*temp;
 
 	current = *tokens;
 	while (current)
@@ -88,28 +88,29 @@ static int	_condense_redirection(t_token **tokens)
 
 static int	_expand(t_token **tokens, unsigned char *exit_status, t_data *data)
 {
-	t_token 		*current;
-	t_token 		*prev;
+	t_token	*pos[3];
 
-	current = *tokens;
-	prev = current;
-	while (current)
+	pos[1] = *tokens;
+	pos[0] = NULL;
+	while (pos[1])
 	{
-		if (envvar(&current, exit_status, 0, data) == EXIT_FAILURE)
+		pos[2] = pos[1]->next;
+		if (envvar(&pos[1], exit_status, 0, data) == EXIT_FAILURE)
 		{
-			if (!*current->value)
+			if (!*pos[1]->value)
 			{
-				prev->next = current->next;
-				free_token(current);
-				current = prev->next;
+				if (free_token(pos[1]), 1 && !pos[0])
+					*tokens = pos[2];
+				else
+					pos[0]->next = pos[2];
+				pos[1] = pos[2];
 			}
 			continue ;
 		}
-		if (current->type == TOKEN_SINGLE_QUOTES || \
-			current->type == TOKEN_DOUBLE_QUOTES)
-				current->type = TOKEN_LITERAL;
-		prev = current;
-		current = current->next;
+		if (pos[1] && (pos[1]->type == 1 || pos[1]->type == 2))
+			pos[1]->type = TOKEN_LITERAL;
+		pos[0] = pos[1];
+		pos[1] = pos[1]->next;
 	}
 	return (EXIT_SUCCESS);
 }

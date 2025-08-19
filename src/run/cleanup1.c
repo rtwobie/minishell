@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:45:35 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/18 22:00:14 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/19 19:26:45 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 void	free_token(t_token *token)
 {
 		free(token->value);
+		token->value = NULL;
 		free(token);
 }
 

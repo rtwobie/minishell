@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 22:39:38 by fgorlich          #+#    #+#             */
-/*   Updated: 2025/08/18 21:59:40 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/19 23:00:19 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 
 # include "tokenizer.h"
 
-typedef struct s_data t_data;
+typedef struct s_data	t_data;
 
-int	envvar(t_token **tokens, unsigned char *exit_status, unsigned int skip, t_data *data);
+int	envvar(t_token **tokens, unsigned char *exit_status,
+		unsigned int skip, t_data *data);
 
 #endif
