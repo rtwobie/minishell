@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/08/18 20:56:59 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:07:24 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ int fd_io[2])
 			status = cd(cmd->program_argv, data, -1);
 	else if (!ft_strcmp(cmd->program_argv[0], "echo"))
 		status = echo(cmd->program_argv);
+	else if (!ft_strcmp(cmd->program_argv[0], "export"))
+		status = _export(cmd->program_argv, data);
 	else if  (!ft_strcmp(cmd->program_argv[0], "exit"))
 		exit_(cmd->program_argv, data);
 	return (status);

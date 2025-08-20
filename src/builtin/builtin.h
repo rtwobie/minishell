@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 17:23:34 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/17 18:57:11 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:07:59 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,12 @@ int	cd(char **av, t_data *data, ssize_t i);
 // new_updating
 
 int check_entries(t_data *data);
-int	add_entry(char *type, t_data *data, size_t nb);
+int	add_entry(char *type, t_data *data, size_t nb, int flag);
 void	update_lst(t_data *data, size_t i, size_t j);
+
+// export
+
+int	_export(char **av, t_data *data);
 
 
 #endif // !BUILTIN_H

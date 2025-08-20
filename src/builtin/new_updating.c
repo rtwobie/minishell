@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 21:25:50 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/18 21:28:46 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/20 19:01:24 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	update_lst(t_data *data, size_t i, size_t j)
 		free(old_envp_j);
 }
 
-int	add_entry(char *type, t_data *data, size_t nb)
+int	add_entry(char *type, t_data *data, size_t nb, int flag)
 {
 	char	*join;
 	char	**newenvp;
@@ -51,11 +51,12 @@ int	add_entry(char *type, t_data *data, size_t nb)
 	join = ft_strjoin(type, "=");
 	if (!join)
 		return (EXIT_FAILURE);
-	if (!getcwd(cwd, sizeof(cwd)))
+	if (!flag && !getcwd(cwd, sizeof(cwd)))
 		return (free(join), perror("getcwd"), EXIT_FAILURE);
+	else if (flag)
+		ft_strlcpy(cwd, type, ft_strlen(type));
 	entry = ft_strjoin(join, cwd);
-	free(join);
-	if (!entry)
+	if (free(join), 1 && !entry)
 		return (EXIT_FAILURE);
 	newenvp = malloc(sizeof(char *) * (nb + 2));
 	if (!newenvp)
@@ -65,8 +66,7 @@ int	add_entry(char *type, t_data *data, size_t nb)
 	while (nb--)
 		newenvp[nb] = data->envp[nb];
 	old_envp = data->envp;
-	data->envp = newenvp;
-	return (free(old_envp), EXIT_SUCCESS);
+	return (data->envp = newenvp, free(old_envp), EXIT_SUCCESS);
 }
 
 int	check_entries(t_data *data)
@@ -78,12 +78,12 @@ int	check_entries(t_data *data)
 	j = 0;
 	while (data->envp[i] && ft_strncmp(data->envp[i], "OLDPWD=", 7))
 		++i;
-	if (!data->envp[i] && add_entry("OLDPWD", data, i) == EXIT_FAILURE)
+	if (!data->envp[i] && add_entry("OLDPWD", data, i, 0) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	j = 0;
 	while (data->envp[j] && ft_strncmp(data->envp[j], "PWD=", 4))
 		++j;
-	if (!data->envp[j] && add_entry("PWD", data, j) == EXIT_FAILURE)
+	if (!data->envp[j] && add_entry("PWD", data, j, 0) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	i = 0;
 	while (data->envp[i] && ft_strncmp(data->envp[i], "OLDPWD=", 7))
