@@ -34,7 +34,6 @@ int fd_io[2])
 		return (_restore_stdfd(data->restorefd), EXIT_FAILURE);
 	if (is_builtin(cmd->program_argv[0]))
 		return (_exec_builtin(data, cmd));
-	rl_clear_history();
 	program = NULL;
 	status = search_program(cmd->program_argv[0], &program);
 	if (status)
@@ -58,7 +57,6 @@ static int	_handle_fork(t_data *data, t_ast_node *node, pid_t *pid, int fd[3])
 		return (close(fd[0]), close(fd[1]), EXIT_FAILURE);
 	else if (*pid == 0)
 	{
-		rl_clear_history();
 		close(fd[2]);
 		exit(_exec_pipeline(data, node, fd));
 	}
@@ -125,5 +123,6 @@ int	executor(t_data *data, t_ast_node *tree, unsigned char *exit_status)
 		(print_err(ERR_INVAL_NODE, "executor"), *exit_status = EXIT_FAILURE);
 	if (_restore_stdfd(data->restorefd))
 		*exit_status = EXIT_FAILURE;
-	return (close_fds(data->restorefd), *exit_status);
+	close_fds(data->restorefd);
+	return (*exit_status);
 }
