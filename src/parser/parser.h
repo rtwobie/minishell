@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/18 19:37:31 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/23 18:12:05 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/18 19:37:31 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/20 18:07:18 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ typedef enum e_nodetype
 {
 	NODE_TYPE_COMMAND,
 	NODE_TYPE_PIPE,
-	NODE_TYPE_REDIRECTION,
 }	t_nodetype;
 
 struct s_command_node

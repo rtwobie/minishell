@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/11 16:24:18 by rtwobie          ###   ########.fr       */
+/*   Created: 2025/05/27 15:39:23 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/20 18:09:43 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ char **envp)
 	*user_input = NULL;
 	if (expander(&data.tokens, exit_status))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	if (heredoc(&data.tokens))
+	if (heredoc(&data.tokens, exit_status))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	print_all_tokens(data.tokens); // DEBUG
+	// print_all_tokens(data.tokens); // DEBUG
 	if (parser(data.tokens, &data.tree))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	print_ast(data.tree, 0); // DEBUG
-	executor(&data, exit_status);
+	// print_ast(data.tree, 0); // DEBUG
+	executor(&data, data.tree, exit_status);
 	cleanup_hdoc(&data.tokens);
 	cleanup_data(&data);
 	return (EXIT_SUCCESS);
