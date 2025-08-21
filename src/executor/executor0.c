@@ -33,14 +33,16 @@ int fd_io[2])
 
 	if (redirect_io(cmd, fd_io[0], fd_io[1]))
 		return (_restore_stdfd(data->restorefd), EXIT_FAILURE);
-	if (is_builtin(cmd->program_argv[0]))
+	if (!cmd->argv || !*cmd->argv)
+		return (EXIT_SUCCESS);
+	if (is_builtin(cmd->argv[0]))
 		return (_exec_builtin(data, cmd));
 	program = NULL;
-	status = search_program(cmd->program_argv[0], &program);
+	status = search_program(cmd->argv[0], &program);
 	if (status)
 		return (cleanup_data(data), (unsigned char)status);
 	set_noninteractive_mode();
-	execve(program, cmd->program_argv, data->envp);
+	execve(program, cmd->argv, data->envp);
 	perror(program);
 	free(program);
 	cleanup_data(data);
@@ -99,7 +101,7 @@ int fd_io[2])
 static unsigned char	_single_cmd(t_data *data, t_command_node *cmd,
 int fd[2])
 {
-	pid_t			pid;
+	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
@@ -112,14 +114,17 @@ int fd[2])
 
 int	executor(t_data *data, t_ast_node *tree, unsigned char *exit_status)
 {
+	t_command_node	*cmd;
+
 	if (!data || !data->tree)
 		return (EXIT_FAILURE);
+	cmd = tree->data.command;
 	if (data->tree->type == NODE_TYPE_COMMAND)
 	{
-		if (!is_builtin(data->tree->data.command->program_argv[0]))
-			*exit_status = _single_cmd(data, tree->data.command, data->stdfd);
+		if (cmd->argv && *cmd->argv && !is_builtin(cmd->argv[0]))
+			*exit_status = _single_cmd(data, cmd, data->stdfd);
 		else
-			*exit_status = _exec_cmd(data, tree->data.command, data->stdfd);
+			*exit_status = _exec_cmd(data, cmd, data->stdfd);
 	}
 	else if (data->tree->type == NODE_TYPE_PIPE)
 		*exit_status = _exec_pipeline(data, tree, data->stdfd);

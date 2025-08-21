@@ -46,13 +46,13 @@ unsigned char	_exec_builtin(t_data *data, t_command_node *cmd)
 	int	status;
 
 	status = 0;
-	if (!ft_strcmp(cmd->program_argv[0], "cd")
-		|| !ft_strcmp(cmd->program_argv[0], "pwd")
-		|| !ft_strcmp(cmd->program_argv[0], "env"))
-		status = cd(cmd->program_argv, data, -1);
-	if (!ft_strcmp(cmd->program_argv[0], "echo"))
-		status = echo(cmd->program_argv);
-	else if (!ft_strcmp(cmd->program_argv[0], "exit"))
-		exit_(cmd->program_argv, data);
+	if (!ft_strcmp(cmd->argv[0], "cd")
+		|| !ft_strcmp(cmd->argv[0], "pwd")
+		|| !ft_strcmp(cmd->argv[0], "env"))
+		status = cd(cmd->argv, data, -1);
+	if (!ft_strcmp(cmd->argv[0], "echo"))
+		status = echo(cmd->argv);
+	else if (!ft_strcmp(cmd->argv[0], "exit"))
+		exit_(cmd->argv, data);
 	return ((unsigned char)status);
 }
