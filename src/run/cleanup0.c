@@ -60,7 +60,6 @@ void	cleanup_ast(t_ast_node **ast)
 			cleanup_ast(&(*ast)->data.pipe->right);
 			free((*ast)->data.pipe);
 		}
-
 	}
 	free(*ast);
 }
