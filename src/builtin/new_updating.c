@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 21:25:50 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/20 19:01:24 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/21 20:41:53 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ int	add_entry(char *type, t_data *data, size_t nb, int flag)
 		return (EXIT_FAILURE);
 	if (!flag && !getcwd(cwd, sizeof(cwd)))
 		return (free(join), perror("getcwd"), EXIT_FAILURE);
-	else if (flag)
-		ft_strlcpy(cwd, type, ft_strlen(type));
+	else if (flag && (free(join), 1))
+		join = ft_strdup(type);
 	entry = ft_strjoin(join, cwd);
 	if (free(join), 1 && !entry)
 		return (EXIT_FAILURE);
