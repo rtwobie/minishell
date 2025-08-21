@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:32:20 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:10:14 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/18 20:23:16 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,5 @@ int main(int argc, char *argv[], char *envp[])
 {
 	(void)argc;
 	(void)argv;
-	run_minishell(envp);
+	run_minishell(cpy_envp(envp));
 }

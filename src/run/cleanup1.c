@@ -3,22 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup1.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:45:35 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/11 15:47:51 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/19 19:26:45 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "libft.h"
 #include "run.h"
 #include "tokenizer.h"
 
 void	free_token(t_token *token)
 {
 		free(token->value);
+		token->value = NULL;
 		free(token);
 }
 
@@ -40,6 +42,8 @@ void	close_fds(int fds[2])
 	close(fds[0]);
 	close(fds[1]);
 }
+
+
 
 void	cleanup_data(t_data *data)
 {

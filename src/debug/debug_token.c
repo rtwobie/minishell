@@ -62,7 +62,11 @@ char	*output_type_to_string(enum e_output type)
 
 void	print_token(t_token *token)
 {
-	printf("%s%s\n%s", YELLOW, token->value, END);
+	if (!token)
+	{
+		printf("(null token)\n");
+		return;
+	}
 	printf("%s%s\n%s", CYAN, token_type_to_string(token->type), END);
 	printf("\n");
 }
@@ -71,6 +75,11 @@ void	print_all_tokens(t_token *tokens)
 {
 	t_token	*current;
 
+	if (!tokens)
+	{
+		printf("(null tokens list)\n");
+		return;
+	}
 	current = tokens;
 	while (current != NULL)
 	{
