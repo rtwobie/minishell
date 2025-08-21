@@ -10,11 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+
 #include "run.h"
 
 int main(int argc, char *argv[], char *envp[])
 {
 	(void)argc;
 	(void)argv;
-	run_minishell(cpy_envp(envp));
+	if (run_minishell(envp))
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
