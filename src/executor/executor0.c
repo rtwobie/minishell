@@ -20,6 +20,7 @@
 #include "executor.h"
 #include "executor_internal.h"
 #include "run.h"
+#include "signals.h"
 
 static unsigned char	_exec_pipeline(t_data *data, t_ast_node *node, \
 int fd_io[2]);
@@ -38,6 +39,7 @@ int fd_io[2])
 	status = search_program(cmd->program_argv[0], &program);
 	if (status)
 		return (cleanup_data(data), (unsigned char)status);
+	set_noninteractive_mode();
 	execve(program, cmd->program_argv, data->envp);
 	perror(program);
 	free(program);
@@ -60,6 +62,7 @@ static int	_handle_fork(t_data *data, t_ast_node *node, pid_t *pid, int fd[3])
 		close(fd[2]);
 		exit(_exec_pipeline(data, node, fd));
 	}
+	set_ignore_mode();
 	return (EXIT_SUCCESS);
 }
 
@@ -96,13 +99,14 @@ int fd_io[2])
 static unsigned char	_single_cmd(t_data *data, t_command_node *cmd,
 int fd[2])
 {
-	pid_t	pid;
+	pid_t			pid;
 
 	pid = fork();
 	if (pid == -1)
 		return (EXIT_FAILURE);
 	else if (pid == 0)
 		exit(_exec_cmd(data, cmd, fd));
+	set_ignore_mode();
 	return (_get_exit_status(pid));
 }
 
@@ -121,6 +125,8 @@ int	executor(t_data *data, t_ast_node *tree, unsigned char *exit_status)
 		*exit_status = _exec_pipeline(data, tree, data->stdfd);
 	else
 		(print_err(ERR_INVAL_NODE, "executor"), *exit_status = EXIT_FAILURE);
+	if (*exit_status == 131)
+		write(STDERR_FILENO, "Quit (core dumped)\n", 20);
 	if (_restore_stdfd(data->restorefd))
 		*exit_status = EXIT_FAILURE;
 	close_fds(data->restorefd);
