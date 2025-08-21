@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/30 17:09:07 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/04 19:00:37 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/30 17:09:07 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/20 18:10:59 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 
 typedef struct s_token	t_token;
 
-int	heredoc(t_token **tokens);
+int	heredoc(t_token **tokens, unsigned char *exit_status);
 int	cleanup_hdoc(t_token **tokens);
-int	hdoc_envvar(char **input, unsigned int skip);
+int	hdoc_envvar(char **input, unsigned int skip, unsigned char *exit_status);
 
 #endif // !HEREDOC_H

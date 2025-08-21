@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/30 16:07:09 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/04 18:59:59 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/30 16:07:09 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/20 18:10:46 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static char	*_generate_name(int count)
 	return (tmpfile);
 }
 
-static char	*_hdoc(char *delimiter, int count)
+static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status)
 {
 	int		fd;
 	char	*input;
@@ -62,7 +62,7 @@ static char	*_hdoc(char *delimiter, int count)
 			free(input);
 			break ;
 		}
-		hdoc_envvar(&input, 0);
+		hdoc_envvar(&input, 0, exit_status);
 		ft_putendl_fd(input, fd);
 		free(input);
 	}
@@ -70,7 +70,7 @@ static char	*_hdoc(char *delimiter, int count)
 	return (tmpfile);
 }
 
-int	heredoc(t_token **tokens)
+int	heredoc(t_token **tokens, unsigned char *exit_status)
 {
 	int		count;
 	char	*hdoc;
@@ -85,7 +85,7 @@ int	heredoc(t_token **tokens)
 			current = current->next;
 			continue ;
 		}
-		hdoc = _hdoc(current->value, count);
+		hdoc = _hdoc(current->value, count, exit_status);
 		if (!hdoc)
 			return (EXIT_FAILURE);
 		free(current->value);

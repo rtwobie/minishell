@@ -5,14 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/25 17:46:01 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/07 17:17:22 by fgroo            ###   ########.fr       */
+/*   Created: 2025/06/25 17:46:01 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/20 18:11:22 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include "error.h"
 #include "libft.h"
@@ -27,9 +26,12 @@ char	*_lookup_err(int err)
 		return ("command not found");
 	else if (err == ERR_ONLY_ONE_ARG)
 		return ("wrong amount of arguments: needed one");
+	else if (err == ERR_INVAL_NODE)
+		return ("wrong node type in ast");
 	return ("error");
 }
 
+/* *DEPRECATED* */
 void	print_error(int err)
 {
 	ft_putstr_fd("-minishell: ", STDERR_FILENO);

@@ -107,7 +107,8 @@ SRC		+= ast.c
 SRC		+= parser.c
 
 vpath %.c $(SRC_DIR)/executor
-SRC		+= executor.c
+SRC		+= executor0.c
+SRC		+= executor1.c
 SRC		+= redirect.c
 SRC		+= search_program.c
 
