@@ -23,7 +23,7 @@
 
 // ****************************** //
 
-void	print_error(int err);
+void	print_hdoc_warning(char *eof);
 void	print_err(int err, char *location);
 
 #endif // !ERROR_H

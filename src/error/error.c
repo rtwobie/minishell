@@ -31,12 +31,14 @@ char	*_lookup_err(int err)
 	return ("error");
 }
 
-/* *DEPRECATED* */
-void	print_error(int err)
+void	print_hdoc_warning(char *eof)
 {
 	ft_putstr_fd("-minishell: ", STDERR_FILENO);
-	ft_putstr_fd(_lookup_err(err), STDERR_FILENO);
-	write(STDERR_FILENO, "\n", 1);
+	ft_putstr_fd("warning: ", STDERR_FILENO);
+	ft_putstr_fd("here-document delimited by end-of-file ", STDERR_FILENO);
+	ft_putstr_fd("(wanted `", STDERR_FILENO);
+	ft_putstr_fd(eof, STDERR_FILENO);
+	ft_putstr_fd("')\n", STDERR_FILENO);
 }
 
 void	print_err(int err, char *location)
