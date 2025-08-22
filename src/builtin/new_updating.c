@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   new_updating.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
+/*   By: admin <admin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 21:25:50 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/21 20:41:53 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/22 22:39:22 by admin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	add_entry(char *type, t_data *data, size_t nb, int flag)
 	if (!flag && !getcwd(cwd, sizeof(cwd)))
 		return (free(join), perror("getcwd"), EXIT_FAILURE);
 	else if (flag && (free(join), 1))
-		join = ft_strdup(type);
+		join = ft_substr(type, 0, ft_strlen(type));
 	entry = ft_strjoin(join, cwd);
 	if (free(join), 1 && !entry)
 		return (EXIT_FAILURE);
