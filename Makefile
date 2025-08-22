@@ -118,9 +118,11 @@ SRC		+= signals0.c
 SRC		+= signals1.c
 
 vpath %.c $(SRC_DIR)/tokenizer
-SRC		+= lexer.c
-SRC		+= lexer_utils.c
-SRC		+= expander.c
+SRC		+= expander0.c
+SRC		+= expander1.c
+SRC		+= lexer0.c
+SRC		+= lexer1.c
+SRC		+= lexer2.c
 SRC		+= token.c
 SRC		+= token_list.c
 

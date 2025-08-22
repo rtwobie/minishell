@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 21:15:25 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:12:36 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 17:04:02 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,12 @@ char	*token_type_to_string(enum e_token_type type)
 		return ("TOKEN_HERE_DOC");
 	else if (type == TOKEN_REDIRECT_OUT_APPEND)
 		return ("TOKEN_REDIRECT_OUT_APPEND");
-	else if (type == TOKEN_ENVIRONMENT_VARIABLES)
-		return ("TOKEN_ENVIRONMENT_VARIABLES");
-	else if (type == TOKEN_EXIT_STATUS)
-		return ("TOKEN_EXIT_STATUS");
 	else if (type == TOKEN_SINGLE_QUOTES)
 		return ("TOKEN_SINGLE_QUOTES");
 	else if (type == TOKEN_DOUBLE_QUOTES)
 		return ("TOKEN_DOUBLE_QUOTES");
+	else if (type == TOKEN_COMBINE)
+		return ("TOKEN_COMBINE");
 	return (NULL);
 }
 
@@ -67,6 +65,7 @@ void	print_token(t_token *token)
 		printf("(null token)\n");
 		return;
 	}
+	printf("%s%s\n%s", YELLOW, token->value, END);
 	printf("%s%s\n%s", CYAN, token_type_to_string(token->type), END);
 	printf("\n");
 }

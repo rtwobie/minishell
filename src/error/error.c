@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.de>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:46:01 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:11:22 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 19:28:46 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,24 @@ void	print_hdoc_warning(char *eof)
 	ft_putstr_fd("')\n", STDERR_FILENO);
 }
 
+void	print_err_unexpected_tok(char *value)
+{
+	ft_putstr_fd("syntax error near token `", STDERR_FILENO);
+	ft_putstr_fd(value, STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
+}
+
 void	print_err(int err, char *location)
 {
 	if (err == 0)
 		return ;
 	if (err < 0)
 		ft_putstr_fd("-minishell: ", STDERR_FILENO);
+	if (err == ERR_UNEXPECTED_TOK)
+	{
+		print_err_unexpected_tok(location);
+		return ;
+	}
 	ft_putstr_fd(location, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
 	if (err < 0)

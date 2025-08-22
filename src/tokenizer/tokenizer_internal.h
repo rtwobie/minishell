@@ -6,7 +6,7 @@
 /*   By: fgorlich <fgorlich@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 18:01:53 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/31 13:04:08 by fgorlich         ###   ########.fr       */
+/*   Updated: 2025/08/22 19:21:39 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,26 @@ enum e_state
 	END,
 };
 
-// lexer.c
+// expander1.c
+int				_is_redirection(enum e_token_type type);
+int				_remove_and_combine(t_token **token_ptr);
+
+// lexer1.c
+int				ft_isoperator(char c);
+int				ft_isword(unsigned char c);
+char			*_skip_whitespace(char *str);
 enum e_state	_check_state(char c);
 
-// lexer_utils.c
-int		ft_isoperator(char c);
-int		ft_isword(unsigned char c);
+// lexer2.c
+char			*_get_operator_tok(char *idx, t_token **tokens);
 
 // token.c
-int		save_token(char *value, size_t size, t_token **tokens);
+int				save_token(t_token **list, char *str, size_t size, \
+enum e_token_type type);
 
 // token_list.c
-t_token	*new_token(enum e_token_type type, char *value);
-t_token	*get_last_token(t_token *lst);
-void	add_token(t_token **lst, t_token *token);
+t_token			*new_token(enum e_token_type type, char *value);
+t_token			*get_last_token(t_token *lst);
+void			add_token(t_token **lst, t_token *token);
 
 #endif // !TOKENIZER_INTERNAL_H
