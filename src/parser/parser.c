@@ -137,7 +137,7 @@ static t_ast_node	*_create_command_node(char **args, t_list **redirects)
 		ft_lstclear(redirects, free_redir);
 		return (NULL);
 	}
-	cmd_data->program_argv = args;
+	cmd_data->argv = args;
 	cmd_data->redir = *redirects;
 	node->data.command = cmd_data;
 	node->type = NODE_TYPE_COMMAND;

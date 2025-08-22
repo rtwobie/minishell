@@ -37,7 +37,7 @@ typedef enum e_nodetype
 
 struct s_command_node
 {
-	char	**program_argv;
+	char	**argv;
 	t_list	*redir;
 };
 

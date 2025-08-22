@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 16:07:09 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:10:46 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 14:17:10 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,11 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "libft.h"
-#include "tokenizer.h"
+#include "error.h"
 #include "heredoc.h"
-
-// TODO: SIGNAL HANDLING
-// TODO: env expansion in heredoc
+#include "libft.h"
+#include "signals.h"
+#include "tokenizer.h"
 
 static char	*_generate_name(int count)
 {
@@ -42,32 +41,57 @@ static char	*_generate_name(int count)
 	return (tmpfile);
 }
 
+static int	_hdoc_readline(int fd, char *delimiter)
+{
+	char			*input;
+	unsigned char	exit_status;
+
+	exit_status = 0;
+	set_noninteractive_hdoc_mode();
+	while (1)
+	{
+		input = readline("> ");
+		if (!input)
+			return (close(fd), print_hdoc_warning(delimiter), EXIT_SUCCESS);
+		if (!ft_strcmp(input, delimiter))
+		{
+			free(input);
+			break ;
+		}
+		hdoc_envvar(&input, 0, &exit_status);
+		ft_putendl_fd(input, fd);
+		free(input);
+	}
+	close(fd);
+	return (exit_status);
+}
+
 static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status)
 {
 	int		fd;
-	char	*input;
 	char	*tmpfile;
+	pid_t	pid;
 
 	tmpfile = _generate_name(count);
 	if (!tmpfile)
 		return (NULL);
 	fd = open(tmpfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd == -1)
-		return (perror("creating hdoc"), NULL);
-	while (1)
+		return (perror("creating heredoc file"), NULL);
+	pid = fork();
+	if (pid == -1)
 	{
-		input = readline("> ");
-		if (!ft_strcmp(input, delimiter))
-		{
-			free(input);
-			break ;
-		}
-		hdoc_envvar(&input, 0, exit_status);
-		ft_putendl_fd(input, fd);
-		free(input);
+		perror("fork in hdoc failed");
+		return (unlink(tmpfile), free(tmpfile), close(fd), NULL);
 	}
-	close(fd);
-	return (tmpfile);
+	else if (pid == 0)
+		exit(_hdoc_readline(fd, delimiter));
+	set_ignore_mode();
+	*exit_status = get_exit_status(pid);
+	set_interactive_mode();
+	if (*exit_status)
+		return (unlink(tmpfile), free(tmpfile), close(fd), NULL);
+	return (close(fd), tmpfile);
 }
 
 int	heredoc(t_token **tokens, unsigned char *exit_status)

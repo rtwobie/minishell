@@ -24,15 +24,16 @@ CPPFLAGS	+= -I$(SRC_DIR)
 # e.g: CPPFLAGS	+= -I$(SRC_DIR)/module/path
 
 
-CPPFLAGS	+= -I$(SRC_DIR)/run
-CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
+CPPFLAGS	+= -I$(SRC_DIR)/builtin
+CPPFLAGS	+= -I$(SRC_DIR)/debug
+CPPFLAGS	+= -I$(SRC_DIR)/envvar
+CPPFLAGS	+= -I$(SRC_DIR)/error
+CPPFLAGS	+= -I$(SRC_DIR)/executor
 CPPFLAGS	+= -I$(SRC_DIR)/heredoc
 CPPFLAGS	+= -I$(SRC_DIR)/parser
-CPPFLAGS	+= -I$(SRC_DIR)/envvar
-CPPFLAGS	+= -I$(SRC_DIR)/executor
-CPPFLAGS	+= -I$(SRC_DIR)/builtin
-CPPFLAGS	+= -I$(SRC_DIR)/error
-CPPFLAGS	+= -I$(SRC_DIR)/debug
+CPPFLAGS	+= -I$(SRC_DIR)/run
+CPPFLAGS	+= -I$(SRC_DIR)/signals
+CPPFLAGS	+= -I$(SRC_DIR)/tokenizer
 
 
 #********************************************************#
@@ -72,31 +73,32 @@ endif
 #******* Add your module and your .c files here ********#
 # e.g: vpath %.c $(SRC_DIR)/module/path
 
-
 # Sources
 SRC		:=
 
 vpath %.c $(SRC_DIR)
 SRC		+= main.c
 
-vpath %.c $(SRC_DIR)/debug
-SRC		+= debug_token.c
-SRC		+= debug_ast.c
+vpath %.c $(SRC_DIR)/builtin
+SRC		+= builtin.c
+SRC		+= exit.c
+SRC		+= new_updating.c
+
+vpath %.c $(SRC_DIR)/envvar
+SRC		+= envvar.c
 
 vpath %.c $(SRC_DIR)/error
 SRC		+= error.c
 
-vpath %.c $(SRC_DIR)/run
-SRC		+= run.c
-SRC		+= cleanup0.c
-SRC		+= cleanup1.c
+vpath %.c $(SRC_DIR)/executor
+SRC		+= executor0.c
+SRC		+= executor1.c
+SRC		+= redirect.c
+SRC		+= search_program.c
 
-vpath %.c $(SRC_DIR)/tokenizer
-SRC		+= lexer.c
-SRC		+= lexer_utils.c
-SRC		+= expander.c
-SRC		+= token.c
-SRC		+= token_list.c
+vpath %.c $(SRC_DIR)/debug
+SRC		+= debug_token.c
+SRC		+= debug_ast.c
 
 vpath %.c $(SRC_DIR)/heredoc
 SRC		+= heredoc.c
@@ -106,19 +108,21 @@ vpath %.c $(SRC_DIR)/parser
 SRC		+= ast.c
 SRC		+= parser.c
 
-vpath %.c $(SRC_DIR)/executor
-SRC		+= executor0.c
-SRC		+= executor1.c
-SRC		+= redirect.c
-SRC		+= search_program.c
+vpath %.c $(SRC_DIR)/run
+SRC		+= run.c
+SRC		+= cleanup0.c
+SRC		+= cleanup1.c
 
-vpath %.c $(SRC_DIR)/envvar
-SRC		+= envvar.c
+vpath %.c $(SRC_DIR)/signals
+SRC		+= signals0.c
+SRC		+= signals1.c
 
-vpath %.c $(SRC_DIR)/builtin
-SRC		+= builtin.c
-SRC		+= exit.c
-SRC		+= new_updating.c
+vpath %.c $(SRC_DIR)/tokenizer
+SRC		+= lexer.c
+SRC		+= lexer_utils.c
+SRC		+= expander.c
+SRC		+= token.c
+SRC		+= token_list.c
 
 #*******************************************************#
 

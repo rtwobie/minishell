@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:52:08 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:05:06 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 13:29:38 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "executor.h"
 #include "executor_internal.h"
 #include "run.h"
+#include "signals.h"
 
 static unsigned char	_exec_pipeline(t_data *data, t_ast_node *node, \
 int fd_io[2]);
@@ -32,13 +33,16 @@ int fd_io[2])
 
 	if (redirect_io(cmd, fd_io[0], fd_io[1]))
 		return (_restore_stdfd(data->restorefd), EXIT_FAILURE);
-	if (is_builtin(cmd->program_argv[0]))
+	if (!cmd->argv || !*cmd->argv)
+		return (EXIT_SUCCESS);
+	if (is_builtin(cmd->argv[0]))
 		return (_exec_builtin(data, cmd));
 	program = NULL;
-	status = search_program(cmd->program_argv[0], &program);
+	status = search_program(cmd->argv[0], &program);
 	if (status)
 		return (cleanup_data(data), (unsigned char)status);
-	execve(program, cmd->program_argv, data->envp);
+	set_noninteractive_mode();
+	execve(program, cmd->argv, data->envp);
 	perror(program);
 	free(program);
 	cleanup_data(data);
@@ -60,6 +64,7 @@ static int	_handle_fork(t_data *data, t_ast_node *node, pid_t *pid, int fd[3])
 		close(fd[2]);
 		exit(_exec_pipeline(data, node, fd));
 	}
+	set_ignore_mode();
 	return (EXIT_SUCCESS);
 }
 
@@ -84,7 +89,7 @@ int fd_io[2])
 		if (_handle_fork(data, r, &pid[1], (int [3]){pfd[0], fd_io[1], pfd[1]}))
 			return (close_fds(pfd), waitpid(pid[0], NULL, 0), EXIT_FAILURE);
 		close_fds(pfd);
-		return (waitpid(pid[0], NULL, 0), _get_exit_status(pid[1]));
+		return (waitpid(pid[0], NULL, 0), get_exit_status(pid[1]));
 	}
 	else if (node->type == NODE_TYPE_COMMAND)
 		return (_exec_cmd(data, node->data.command, fd_io));
@@ -103,24 +108,30 @@ int fd[2])
 		return (EXIT_FAILURE);
 	else if (pid == 0)
 		exit(_exec_cmd(data, cmd, fd));
-	return (_get_exit_status(pid));
+	set_ignore_mode();
+	return (get_exit_status(pid));
 }
 
 int	executor(t_data *data, t_ast_node *tree, unsigned char *exit_status)
 {
+	t_command_node	*cmd;
+
 	if (!data || !data->tree)
 		return (EXIT_FAILURE);
+	cmd = tree->data.command;
 	if (data->tree->type == NODE_TYPE_COMMAND)
 	{
-		if (!is_builtin(data->tree->data.command->program_argv[0]))
-			*exit_status = _single_cmd(data, tree->data.command, data->stdfd);
+		if (cmd->argv && *cmd->argv && !is_builtin(cmd->argv[0]))
+			*exit_status = _single_cmd(data, cmd, data->stdfd);
 		else
-			*exit_status = _exec_cmd(data, tree->data.command, data->stdfd);
+			*exit_status = _exec_cmd(data, cmd, data->stdfd);
 	}
 	else if (data->tree->type == NODE_TYPE_PIPE)
 		*exit_status = _exec_pipeline(data, tree, data->stdfd);
 	else
 		(print_err(ERR_INVAL_NODE, "executor"), *exit_status = EXIT_FAILURE);
+	if (*exit_status == 131)
+		write(STDERR_FILENO, "Quit (core dumped)\n", 20);
 	if (_restore_stdfd(data->restorefd))
 		*exit_status = EXIT_FAILURE;
 	close_fds(data->restorefd);
