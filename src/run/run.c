@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/21 15:30:37 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 19:32:20 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,16 @@ char ***envp, t_list **env_history)
 	if (_init_data(&data, *envp))
 		return (EXIT_FAILURE);
 	data.env_history = *env_history;
-	if (lexer(*user_input, &data.tokens))
-		return (EXIT_FAILURE);
+	if (lexer(*user_input, &data.tokens, exit_status))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
+	// print_all_tokens(data.tokens); // DEBUG
 	if (expander(&data.tokens, exit_status, &data))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
+	// print_all_tokens(data.tokens); // DEBUG
 	if (heredoc(&data.tokens, exit_status))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	// print_all_tokens(data.tokens); // DEBUG
 	if (parser(data.tokens, &data.tree))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
 	// print_ast(data.tree, 0); // DEBUG
