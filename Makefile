@@ -114,7 +114,8 @@ SRC		+= cleanup0.c
 SRC		+= cleanup1.c
 
 vpath %.c $(SRC_DIR)/signals
-SRC		+= signals.c
+SRC		+= signals0.c
+SRC		+= signals1.c
 
 vpath %.c $(SRC_DIR)/tokenizer
 SRC		+= lexer.c
