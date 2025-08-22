@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.h                                          :+:      :+:    :+:   */
+/*   signals1.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/21 15:19:23 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/22 13:17:29 by rtwobie          ###   ########.fr       */
+/*   Created: 2025/08/22 12:45:57 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/22 13:19:07 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SIGNALS_H
-# define SIGNALS_H
+#include <readline/readline.h>
+#include <unistd.h>
 
-# include <unistd.h>
+#include "signals_internal.h"
 
-unsigned char	get_exit_status(pid_t pid);
-void			set_interactive_mode(void);
-void			set_noninteractive_mode(void);
-void			set_ignore_mode(void);
-void			set_noninteractive_hdoc_mode(void);
+void	_reset_prompt(int sig)
+{
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 1);
+	rl_redisplay();
+}
 
-#endif // !SIGNALS_H
+void	_newline(int sig)
+{
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
+}
