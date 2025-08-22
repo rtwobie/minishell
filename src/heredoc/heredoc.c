@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 16:07:09 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/22 14:06:56 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 14:15:57 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status)
 	set_ignore_mode();
 	*exit_status = get_exit_status(pid);
 	set_interactive_mode();
+	if (*exit_status)
+		return (close(fd), free(tmpfile), NULL);
 	return (close(fd), tmpfile);
 }
 
