@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:52:08 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:05:06 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 13:29:38 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int fd_io[2])
 		if (_handle_fork(data, r, &pid[1], (int [3]){pfd[0], fd_io[1], pfd[1]}))
 			return (close_fds(pfd), waitpid(pid[0], NULL, 0), EXIT_FAILURE);
 		close_fds(pfd);
-		return (waitpid(pid[0], NULL, 0), _get_exit_status(pid[1]));
+		return (waitpid(pid[0], NULL, 0), get_exit_status(pid[1]));
 	}
 	else if (node->type == NODE_TYPE_COMMAND)
 		return (_exec_cmd(data, node->data.command, fd_io));
@@ -109,7 +109,7 @@ int fd[2])
 	else if (pid == 0)
 		exit(_exec_cmd(data, cmd, fd));
 	set_ignore_mode();
-	return (_get_exit_status(pid));
+	return (get_exit_status(pid));
 }
 
 int	executor(t_data *data, t_ast_node *tree, unsigned char *exit_status)

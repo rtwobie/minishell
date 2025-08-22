@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 15:58:33 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 17:57:55 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/22 13:19:27 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,6 @@
 #include "builtin.h"
 #include "executor_internal.h"
 #include "run.h"
-
-unsigned char	_get_exit_status(pid_t pid)
-{
-	int	status;
-
-	status = 0;
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		return ((unsigned char)WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-		return ((unsigned char)(WTERMSIG(status) + 128));
-	return ((unsigned char)status);
-}
 
 int	_restore_stdfd(int restorefd[2])
 {
