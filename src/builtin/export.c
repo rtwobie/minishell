@@ -6,7 +6,7 @@
 /*   By: admin <admin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:43:05 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/22 23:25:14 by admin            ###   ########.fr       */
+/*   Updated: 2025/08/24 16:32:49 by admin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@
 #include <unistd.h>
 
 static int	refactor_arg(char **arg, size_t len);
-static void print_env(char **env, size_t len);
+static void	print_env(char **env, size_t len);
 static int	gilette(char **arg, char	*part[4], size_t *i, size_t len);
-int	delete_entry(char **type, t_data *data, size_t *flag);
-int	_unset(const char *target, t_data *data);
+int			delete_entry(char *type, t_data *data, size_t *flag);
+int			_unset(const char *target, size_t tlen, t_data *data);
 
 int	_export(char **av, t_data *data)
 {
@@ -36,25 +36,25 @@ int	_export(char **av, t_data *data)
 	size_t	len;
 	size_t	flag;
 
+	flag = 0;
 	i = 0;
 	len = 0;
-	while(data->envp[len])
-			len++;
+	while (data->envp[len])
+		len++;
 	if (!av[1])
 		return (print_env(data->envp, len), EXIT_SUCCESS);
 	while (av[++i])
 	{
-		while(data->envp[len])
-			len++;
 		if (refactor_arg(&av[i], ft_strlen(av[i])))
 			return (EXIT_FAILURE);
-		if (delete_entry(&av[i], data, &flag))
+		if (delete_entry(av[i], data, &flag))
 			return (EXIT_FAILURE);
-		if (flag && --flag)
+		if (flag && flag--)
 			continue ;
-		if (add_entry(av[i], data, len, 1))
+		while (data->envp[len])
+			len++;
+		if (add_entry(av[i], data, len++, 1))
 			return (EXIT_FAILURE);
-		len = 0;
 	}
 	return (EXIT_SUCCESS);
 }
@@ -79,11 +79,12 @@ static void	print_env(char **env, size_t len)
 			if (tmp[i[1]][i[3]] < tmp[i[2]][i[3]])
 				i[2] = i[1];
 		}
-		printf("declare -x %s\n" , tmp[i[2]]);
+		printf("declare -x %s\n", tmp[i[2]]);
 		tmp[i[2]][0] = 127;
 	}
 	free_args(tmp);
 }
+
 static int	refactor_arg(char **arg, size_t len)
 {
 	size_t	i;
@@ -137,7 +138,7 @@ static int	gilette(char **arg, char *part[4], size_t *i, size_t len)
 	return (*arg = NULL, EXIT_SUCCESS);
 }
 
-int	delete_entry(char **type, t_data *data, size_t *flag)
+int	delete_entry(char *type, t_data *data, size_t *flag)
 {
 	size_t	i;
 	size_t	diff;
@@ -145,27 +146,28 @@ int	delete_entry(char **type, t_data *data, size_t *flag)
 	char	*right;
 	char	*left;
 
-	right = ft_strchr((*type), '=');
+	right = ft_strchr(type, '=');
 	prio = (right != NULL);
 	i = 0;
 	if (!right)
-		diff = ft_strlen((*type));
+		diff = ft_strlen(type);
 	else
-		diff = ft_strlen((*type)) - ft_strlen(right);
-	left = ft_substr((*type), 0, diff);
+		diff = ft_strlen(type) - ft_strlen(right);
+	left = ft_substr(type, 0, diff);
 	while (data->envp[i] && ft_strncmp(data->envp[i], left, diff))
 		++i;
 	if (!data->envp[i])
-		return (EXIT_SUCCESS);
-	if (prio && _unset(left, data))
-		return (EXIT_FAILURE);
-	if (!prio && !ft_strrchr(data->envp[i], '=') && _unset(left, data))
-		return (EXIT_FAILURE);
-	free(left);
-	*flag = 1;
-	return (EXIT_SUCCESS);
+		return (free(left), EXIT_SUCCESS);
+	if (prio && _unset(left, diff, data))
+		return (free(left), EXIT_FAILURE);
+	if (!prio && !ft_strrchr(data->envp[i], '=') && _unset(left, diff, data))
+		return (free(left), EXIT_FAILURE);
+	else if (!prio && ft_strrchr(data->envp[i], '=') && ++(*flag))
+		return (free(left), EXIT_SUCCESS);
+	return (free(left), EXIT_SUCCESS);
 }
-int	_unset(const char *target, t_data *data)
+
+int	_unset(const char *target, const size_t tlen, t_data *data)
 {
 	size_t	i;
 	size_t	j;
@@ -174,23 +176,22 @@ int	_unset(const char *target, t_data *data)
 
 	nb = ULONG_MAX;
 	i = ULONG_MAX;
-	j = 0;
-	while (data->envp[++i] && ft_strncmp(data->envp[i], target, ft_strlen(target)))
+	j = ULONG_MAX;
+	while (data->envp[++i] && (ft_strncmp(data->envp[i], target, tlen)
+			&& data->envp[i][tlen] != '=' && data->envp[i][tlen] != '\0'))
 		;
 	if (!data->envp[i])
 		return (EXIT_FAILURE);
-	while (data->envp[i + j])
-		++j;
+	while (data->envp[i + ++j])
+		;
 	cpy = malloc(sizeof(char *) * (j + i));
 	if (!cpy)
 		return (EXIT_FAILURE);
-	j = ULONG_MAX;
-	while (cpy[++nb] && nb < i)
-		cpy[nb] = data->envp[nb];
-	while (data->envp[i] && nb <= i + j)
-		cpy[i++] = data->envp[nb++];
-	cpy[i +j] = NULL;
+	while (++nb < i)
+		cpy[nb] = ft_strdup(data->envp[nb]);
+	while (data->envp[++i])
+		cpy[nb++] = ft_strdup(data->envp[i]);
+	cpy[nb] = NULL;
 	free_args(data->envp);
-	data->envp = cpy;
-	return (EXIT_SUCCESS);
+	return (data->envp = cpy, EXIT_SUCCESS);
 }
