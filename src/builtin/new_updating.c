@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 21:25:50 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/18 21:28:46 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/25 19:55:24 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	update_lst(t_data *data, size_t i, size_t j)
 		free(old_envp_j);
 }
 
-int	add_entry(char *type, t_data *data, size_t nb)
+int	add_entry(char *type, t_data *data, size_t nb, int flag)
 {
 	char	*join;
 	char	**newenvp;
@@ -51,11 +51,12 @@ int	add_entry(char *type, t_data *data, size_t nb)
 	join = ft_strjoin(type, "=");
 	if (!join)
 		return (EXIT_FAILURE);
-	if (!getcwd(cwd, sizeof(cwd)))
+	if (!flag && !getcwd(cwd, sizeof(cwd)))
 		return (free(join), perror("getcwd"), EXIT_FAILURE);
+	else if (flag && (free(join), 1) && ft_memset(cwd, 0, sizeof(cwd)))
+		join = ft_substr(type, 0, ft_strlen(type));
 	entry = ft_strjoin(join, cwd);
-	free(join);
-	if (!entry)
+	if (free(join), 1 && !entry)
 		return (EXIT_FAILURE);
 	newenvp = malloc(sizeof(char *) * (nb + 2));
 	if (!newenvp)
@@ -65,8 +66,36 @@ int	add_entry(char *type, t_data *data, size_t nb)
 	while (nb--)
 		newenvp[nb] = data->envp[nb];
 	old_envp = data->envp;
-	data->envp = newenvp;
-	return (free(old_envp), EXIT_SUCCESS);
+	return (data->envp = newenvp, free(old_envp), EXIT_SUCCESS);
+}
+
+int	delete_entry(char *type, t_data *data, int *flag)
+{
+	size_t	i;
+	size_t	diff;
+	char	*right;
+	char	*left;
+
+	right = ft_strchr(type, '=');
+	i = 0;
+	if (!right)
+		diff = ft_strlen(type);
+	else
+		diff = ft_strlen(type) - ft_strlen(right);
+	left = ft_substr(type, 0, diff);
+	while (data->envp[i] && (ft_strncmp(data->envp[i], left, diff)
+			|| (data->envp[i][diff] != '=' && data->envp[i][diff] != '\0')))
+		++i;
+	if (!data->envp[i])
+		return (free(left), EXIT_SUCCESS);
+	if (right && _unset(left, diff, data, flag))
+		return (free(left), EXIT_FAILURE);
+	if (!right && !ft_strrchr(data->envp[i], '=')
+		&& _unset(left, diff, data, flag))
+		return (free(left), EXIT_FAILURE);
+	if (!right && *flag == 0 && ft_strrchr(data->envp[i], '=') && ++(*flag))
+		return (free(left), EXIT_SUCCESS);
+	return (*flag = (*flag > 0), free(left), EXIT_SUCCESS);
 }
 
 int	check_entries(t_data *data)
@@ -78,12 +107,12 @@ int	check_entries(t_data *data)
 	j = 0;
 	while (data->envp[i] && ft_strncmp(data->envp[i], "OLDPWD=", 7))
 		++i;
-	if (!data->envp[i] && add_entry("OLDPWD", data, i) == EXIT_FAILURE)
+	if (!data->envp[i] && add_entry("OLDPWD", data, i, 0) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	j = 0;
 	while (data->envp[j] && ft_strncmp(data->envp[j], "PWD=", 4))
 		++j;
-	if (!data->envp[j] && add_entry("PWD", data, j) == EXIT_FAILURE)
+	if (!data->envp[j] && add_entry("PWD", data, j, 0) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	i = 0;
 	while (data->envp[i] && ft_strncmp(data->envp[i], "OLDPWD=", 7))
