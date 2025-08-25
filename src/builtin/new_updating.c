@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 21:25:50 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/25 18:57:12 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/25 19:55:24 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ int	delete_entry(char *type, t_data *data, int *flag)
 	else
 		diff = ft_strlen(type) - ft_strlen(right);
 	left = ft_substr(type, 0, diff);
-	while (data->envp[i] && ft_strncmp(data->envp[i], left, diff))
+	while (data->envp[i] && (ft_strncmp(data->envp[i], left, diff)
+			|| (data->envp[i][diff] != '=' && data->envp[i][diff] != '\0')))
 		++i;
 	if (!data->envp[i])
 		return (free(left), EXIT_SUCCESS);
@@ -94,8 +95,7 @@ int	delete_entry(char *type, t_data *data, int *flag)
 		return (free(left), EXIT_FAILURE);
 	if (!right && *flag == 0 && ft_strrchr(data->envp[i], '=') && ++(*flag))
 		return (free(left), EXIT_SUCCESS);
-	*flag = (*flag > 0);
-	return (free(left), EXIT_SUCCESS);
+	return (*flag = (*flag > 0), free(left), EXIT_SUCCESS);
 }
 
 int	check_entries(t_data *data)

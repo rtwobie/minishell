@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:43:24 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/17 20:25:00 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/25 19:57:25 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define TOKENIZER_H
 
 // Forward declaration to avoid circular includes
-typedef struct s_data t_data;
+typedef struct s_data	t_data;
 
 enum e_token_type
 {

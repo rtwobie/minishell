@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/08/25 18:57:17 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/25 19:26:50 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int fd_io[2])
 	else if (!ft_strcmp(cmd->program_argv[0], "echo"))
 		status = echo(cmd->program_argv);
 	else if (!ft_strcmp(cmd->program_argv[0], "export"))
-		status = _export(cmd->program_argv, data);
+		status = _export(cmd->program_argv, data, 0);
 	else if (!ft_strcmp(cmd->program_argv[0], "unset"))
 	{
 		i = 0;

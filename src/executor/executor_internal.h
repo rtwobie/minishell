@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_internal.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 21:54:52 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/04 21:55:35 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/25 19:57:55 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_pid
 }	t_pid;
 
 // redirect.c
-int		redirect_io(t_command_node *cmd, int input_fd, int output_fd);
+int	redirect_io(t_command_node *cmd, int input_fd, int output_fd);
 
 // search_program.c
 int	search_program(char *lookup, char **program);

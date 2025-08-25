@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 17:23:34 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/25 18:57:06 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/25 19:09:41 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	update_lst(t_data *data, size_t i, size_t j);
 
 // export
 
-int		_export(char **av, t_data *data);
+int		_export(char **av, t_data *data, int exit_status);
 int		_unset(const char *target, size_t tlen, t_data *data, int *flag);
 
 #endif // !BUILTIN_H
