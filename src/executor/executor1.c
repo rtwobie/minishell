@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 15:58:33 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/22 13:19:27 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:09:05 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,25 @@ int	_restore_stdfd(int restorefd[2])
 
 unsigned char	_exec_builtin(t_data *data, t_command_node *cmd)
 {
-	int	status;
+	int		status;
+	size_t	i;
 
 	status = 0;
 	if (!ft_strcmp(cmd->argv[0], "cd")
 		|| !ft_strcmp(cmd->argv[0], "pwd")
 		|| !ft_strcmp(cmd->argv[0], "env"))
 		status = cd(cmd->argv, data, -1);
-	if (!ft_strcmp(cmd->argv[0], "echo"))
+	else if (!ft_strcmp(cmd->argv[0], "echo"))
 		status = echo(cmd->argv);
+	else if (!ft_strcmp(cmd->argv[0], "export"))
+		status = _export(cmd->argv, data, 0);
+	else if (!ft_strcmp(cmd->argv[0], "unset"))
+	{
+		i = 0;
+		while (cmd->argv[++i])
+			status = _unset(cmd->argv[i],
+					ft_strlen(cmd->argv[i]), data, &(int){0});
+	}
 	else if (!ft_strcmp(cmd->argv[0], "exit"))
 		status = exit_(cmd->argv, data);
 	return ((unsigned char)status);
