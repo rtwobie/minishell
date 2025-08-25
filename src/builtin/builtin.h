@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include "run.h"
 
-void	exit_(char **argv, t_data *data);
+int	exit_(char **argv, t_data *data);
 int	echo(char *argv[]);
 int	is_builtin(char *program);
 int	cd(char **av, t_data *data, ssize_t i);

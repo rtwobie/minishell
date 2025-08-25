@@ -73,7 +73,7 @@ int	echo(char *argv[])
 	}
 	if (newline)
 		ft_putstr_fd("\n", STDOUT_FILENO);
-	return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 int	cd(char **av, t_data *data, ssize_t i)
@@ -85,7 +85,7 @@ int	cd(char **av, t_data *data, ssize_t i)
 		return (ft_putstr_fd(ft_getenv(data->envp, "PWD"), STDOUT_FILENO)
 			, write(1, "\n", 1), EXIT_SUCCESS);
 	if (av[0][0] == 'c' && av[1] && av[2])
-		return (print_err(ERR_ONLY_ONE_ARG, "cd"), EXIT_FAILURE);
+		return (print_err(ERR_TOOMANY_ARGS, "cd"), EXIT_FAILURE);
 	if (av[0][0] == 'c' && !av[1] && chdir(getenv("HOME")) != 0)
 		perror("getcwd in home");
 	if (av[0][0] == 'c' && av[1] && chdir(av[1]) != 0)
