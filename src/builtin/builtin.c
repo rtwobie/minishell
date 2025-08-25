@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:21:12 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/20 19:05:53 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/25 18:57:09 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ int	is_builtin(char *program)
 {
 	if (!ft_strcmp(program, "echo") || !ft_strcmp(program, "cd")
 		|| !ft_strcmp(program, "pwd") || !ft_strcmp(program, "env")
-		|| !ft_strcmp(program, "exit") || !ft_strcmp(program, "export"))
+		|| !ft_strcmp(program, "exit") || !ft_strcmp(program, "export")
+		|| !ft_strcmp(program, "unset"))
 		return (1);
 	return (0);
 }

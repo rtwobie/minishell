@@ -6,10 +6,11 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:07:47 by admin             #+#    #+#             */
-/*   Updated: 2025/08/20 17:07:24 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/25 18:57:17 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stddef.h>
 #include <stdio.h>
 #include <readline/readline.h>
 #include <unistd.h>
@@ -19,6 +20,7 @@
 #include <fcntl.h>
 
 #include "builtin.h"
+#include "libft.h"
 #include "parser.h"
 #include "executor_internal.h"
 #include "executor.h"
@@ -40,7 +42,8 @@ static int	_get_exit_status(pid_t pid)
 static int	_exec_builtin(t_data *data, t_command_node *cmd,
 int fd_io[2])
 {
-	int	status;
+	int		status;
+	size_t	i;
 
 	printf("EXECUTING BUILTIN...\n"); // debug
 	status = 0;
@@ -49,12 +52,19 @@ int fd_io[2])
 	if (!ft_strcmp(cmd->program_argv[0], "cd")
 		|| !ft_strcmp(cmd->program_argv[0], "pwd")
 		|| !ft_strcmp(cmd->program_argv[0], "env"))
-			status = cd(cmd->program_argv, data, -1);
+		status = cd(cmd->program_argv, data, -1);
 	else if (!ft_strcmp(cmd->program_argv[0], "echo"))
 		status = echo(cmd->program_argv);
 	else if (!ft_strcmp(cmd->program_argv[0], "export"))
 		status = _export(cmd->program_argv, data);
-	else if  (!ft_strcmp(cmd->program_argv[0], "exit"))
+	else if (!ft_strcmp(cmd->program_argv[0], "unset"))
+	{
+		i = 0;
+		while (cmd->program_argv[++i])
+			status = _unset(cmd->program_argv[i],
+					ft_strlen(cmd->program_argv[i]), data, &(int){0});
+	}
+	else if (!ft_strcmp(cmd->program_argv[0], "exit"))
 		exit_(cmd->program_argv, data);
 	return (status);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   new_updating.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: admin <admin@student.42.fr>                +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 21:25:50 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/24 14:57:58 by admin            ###   ########.fr       */
+/*   Updated: 2025/08/25 18:57:12 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,35 @@ int	add_entry(char *type, t_data *data, size_t nb, int flag)
 		newenvp[nb] = data->envp[nb];
 	old_envp = data->envp;
 	return (data->envp = newenvp, free(old_envp), EXIT_SUCCESS);
+}
+
+int	delete_entry(char *type, t_data *data, int *flag)
+{
+	size_t	i;
+	size_t	diff;
+	char	*right;
+	char	*left;
+
+	right = ft_strchr(type, '=');
+	i = 0;
+	if (!right)
+		diff = ft_strlen(type);
+	else
+		diff = ft_strlen(type) - ft_strlen(right);
+	left = ft_substr(type, 0, diff);
+	while (data->envp[i] && ft_strncmp(data->envp[i], left, diff))
+		++i;
+	if (!data->envp[i])
+		return (free(left), EXIT_SUCCESS);
+	if (right && _unset(left, diff, data, flag))
+		return (free(left), EXIT_FAILURE);
+	if (!right && !ft_strrchr(data->envp[i], '=')
+		&& _unset(left, diff, data, flag))
+		return (free(left), EXIT_FAILURE);
+	if (!right && *flag == 0 && ft_strrchr(data->envp[i], '=') && ++(*flag))
+		return (free(left), EXIT_SUCCESS);
+	*flag = (*flag > 0);
+	return (free(left), EXIT_SUCCESS);
 }
 
 int	check_entries(t_data *data)
