@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup0.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/22 18:06:58 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/11 15:48:45 by rtwobie          ###   ########.fr       */
+/*   Created: 2025/07/22 18:06:58 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/20 18:09:28 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ void	free_redir(void *content)
 	free(redir);
 }
 
-void	free_command_node(t_command_node *node)
+void	free_command_node(t_command_node *cmd)
 {
-	ft_lstclear(&node->redir, free_redir);
-	free_args(node->program_argv);
-	free(node);
+	ft_lstclear(&cmd->redir, free_redir);
+	free_args(cmd->argv);
+	free(cmd);
 }
 
 void	cleanup_ast(t_ast_node **ast)
@@ -60,7 +60,6 @@ void	cleanup_ast(t_ast_node **ast)
 			cleanup_ast(&(*ast)->data.pipe->right);
 			free((*ast)->data.pipe);
 		}
-
 	}
 	free(*ast);
 }

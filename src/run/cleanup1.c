@@ -13,15 +13,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "libft.h"
 #include "run.h"
 #include "tokenizer.h"
 
 void	free_token(t_token *token)
 {
-		free(token->value);
-		token->value = NULL;
-		free(token);
+	free(token->value);
+	token->value = NULL;
+	free(token);
 }
 
 void	free_tokens(t_token **lst)
@@ -42,8 +41,6 @@ void	close_fds(int fds[2])
 	close(fds[0]);
 	close(fds[1]);
 }
-
-
 
 void	cleanup_data(t_data *data)
 {

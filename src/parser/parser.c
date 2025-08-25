@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/01 15:41:08 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/23 16:47:24 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/01 15:41:08 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/20 18:09:02 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ static t_ast_node	*_create_command_node(char **args, t_list **redirects)
 		ft_lstclear(redirects, free_redir);
 		return (NULL);
 	}
-	cmd_data->program_argv = args;
+	cmd_data->argv = args;
 	cmd_data->redir = *redirects;
 	node->data.command = cmd_data;
 	node->type = NODE_TYPE_COMMAND;

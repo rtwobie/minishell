@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 15:37:37 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/23 16:51:22 by rha-le           ###   ########.fr       */
+/*   Created: 2025/07/23 15:37:37 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/21 22:19:37 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ void	print_command_node(t_command_node *cmd, int level)
 
 	i = 0;
     print_indent(level);
-	printf("%s[program] %s\n%s", CYAN, cmd->program_argv[0], END);
+	printf("%s[program] %s\n%s", CYAN, cmd->argv[0], END);
     print_indent(level);
 	printf("%s[argv]\n%s", CYAN, END);
-	while (cmd->program_argv[i])
+	while (cmd->argv[i])
 	{
 		print_indent(level);
-		printf("%s  %s\n%s", CYAN, cmd->program_argv[i], END);
+		printf("%s  %s\n%s", CYAN, cmd->argv[i], END);
 		++i;
 	}
 	print_indent(level);
@@ -77,7 +77,7 @@ void print_ast(t_ast_node *ast, int level) // Added 'level' parameter
         return;
     if (ast->type == NODE_TYPE_COMMAND)
 	{
-        if (ast->data.command && ast->data.command->program_argv)
+        if (ast->data.command && ast->data.command->argv)
 			print_command_node(ast->data.command, level);
         else
              printf("(Empty Command)\n");

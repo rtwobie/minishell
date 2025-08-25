@@ -5,12 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 15:39:23 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/18 23:33:05 by fgroo            ###   ########.fr       */
+/*   Created: 2025/05/27 15:39:23 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/22 19:32:20 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <readline/readline.h>
@@ -18,35 +17,41 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "run.h"
-#include "parser.h"
-#include "heredoc.h"
 #include "executor.h"
-#include "tokenizer.h"
 #include "debug.h"
+#include "heredoc.h"
+#include "parser.h"
+#include "run.h"
+#include "signals.h"
+#include "tokenizer.h"
 
-static void	_reset_prompt(void)
+char	**cpy_envp(char	**envp)
 {
-	printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 1);
-	rl_redisplay();
-}
+	char	**new_envp;
+	size_t	count;
+	size_t	i;
 
-static void	_signal_handler(int sig, siginfo_t *info, void *context)
-{
-	(void)context;
-	(void)info;
-	if (sig == SIGINT)
-		_reset_prompt();
-}
-
-static void	_connect_to_signals(struct sigaction *sa)
-{
-	sa->sa_flags = SA_SIGINFO;
-	sa->sa_sigaction = _signal_handler;
-	sigaction(SIGINT, sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
+	count = 0;
+	while (envp[count])
+		count++;
+	new_envp = malloc(sizeof(char *) * (count + 1));
+	if (!new_envp)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		new_envp[i] = ft_strdup(envp[i]);
+		if (!new_envp[i])
+		{
+			while (i > 0)
+				free(new_envp[--i]);
+			free(new_envp);
+			return (NULL);
+		}
+		i++;
+	}
+	new_envp[count] = NULL;
+	return (new_envp);
 }
 
 static int	_init_data(t_data *data, char **envp)
@@ -74,19 +79,20 @@ char ***envp, t_list **env_history)
 	if (_init_data(&data, *envp))
 		return (EXIT_FAILURE);
 	data.env_history = *env_history;
-	if (lexer(*user_input, &data.tokens))
-		return (EXIT_FAILURE);
+	if (lexer(*user_input, &data.tokens, exit_status))
+		return (free_tokens(&data.tokens), EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
+	// print_all_tokens(data.tokens); // DEBUG
 	if (expander(&data.tokens, exit_status, &data))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	if (heredoc(&data.tokens))
+	// print_all_tokens(data.tokens); // DEBUG
+	if (heredoc(&data.tokens, exit_status))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	print_all_tokens(data.tokens); // DEBUG
 	if (parser(data.tokens, &data.tree))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	print_ast(data.tree, 0); // DEBUG
-	executor(&data, exit_status);
+	// print_ast(data.tree, 0); // DEBUG
+	executor(&data, data.tree, exit_status);
 	*envp = data.envp;
 	*env_history = data.env_history;
 	cleanup_hdoc(&data.tokens);
@@ -96,16 +102,18 @@ char ***envp, t_list **env_history)
 
 int	run_minishell(char **envp)
 {
-	struct sigaction	sa;
 	char				*user_input;
 	unsigned char		exit_status;
 	t_list				*env_history;
 
-	_connect_to_signals(&sa);
 	exit_status = 0;
 	env_history = NULL;
+	envp = cpy_envp(envp);
+	if (!envp)
+		return (EXIT_FAILURE);
 	while (1)
 	{
+		set_interactive_mode();
 		user_input = readline(PROMPT);
 		if (user_input == NULL)
 		{
@@ -117,37 +125,6 @@ int	run_minishell(char **envp)
 		_process_command(&user_input, &exit_status, &envp, &env_history);
 		free(user_input);
 	}
-	rl_clear_history();
-	ft_lstclear(&env_history, free);
-	free_args(envp);
+	(rl_clear_history(), ft_lstclear(&env_history, free), free_args(envp));
 	return (EXIT_SUCCESS);
-}
-
-char	**cpy_envp(char	**envp)
-{
-	char	**new_envp;
-	size_t		count;
-	size_t		i;
-
-	count = 0;
-	while (envp[count])
-		count++;
-	new_envp = malloc(sizeof(char *) * (count + 1));
-	if (!new_envp)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		new_envp[i] = ft_strdup(envp[i]);
-		if (!new_envp[i])
-		{
-			while (i > 0)
-				free(new_envp[--i]);
-			free(new_envp);
-			return (NULL);
-		}
-		i++;
-	}
-	new_envp[count] = NULL;
-	return (new_envp);
 }

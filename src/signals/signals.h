@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   signals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:32:20 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/18 20:23:16 by fgroo            ###   ########.fr       */
+/*   Created: 2025/08/21 15:19:23 by rtwobie           #+#    #+#             */
+/*   Updated: 2025/08/22 13:17:29 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#ifndef SIGNALS_H
+# define SIGNALS_H
 
-#include "run.h"
+# include <unistd.h>
 
-int main(int argc, char *argv[], char *envp[])
-{
-	(void)argc;
-	(void)argv;
-	if (run_minishell(envp))
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
-}
+unsigned char	get_exit_status(pid_t pid);
+void			set_interactive_mode(void);
+void			set_noninteractive_mode(void);
+void			set_ignore_mode(void);
+void			set_noninteractive_hdoc_mode(void);
+
+#endif // !SIGNALS_H

@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:17:55 by rha-le            #+#    #+#             */
-/*   Updated: 2025/07/18 19:56:37 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/08/22 16:55:50 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,7 @@
 #include "tokenizer_internal.h"
 #include "tokenizer.h"
 
-static enum e_token_type	_get_token_type(char *value)
-{
-	if (!ft_strcmp(value, "|"))
-		return (TOKEN_PIPE);
-	else if (!ft_strcmp(value, "<"))
-		return (TOKEN_REDIRECT_IN);
-	else if (!ft_strcmp(value, ">"))
-		return (TOKEN_REDIRECT_OUT);
-	else if (!ft_strcmp(value, ">>"))
-		return (TOKEN_REDIRECT_OUT_APPEND);
-	else if (!ft_strcmp(value, "<<"))
-		return (TOKEN_HERE_DOC);
-	else if (value[0] == '\'')
-		return (TOKEN_SINGLE_QUOTES);
-	else if (value[0] == '\"')
-		return (TOKEN_DOUBLE_QUOTES);
-	return (TOKEN_LITERAL);
-}
-
-int	save_token(char *str, size_t size, t_token **tokens)
+int	save_token(t_token **list, char *str, size_t size, enum e_token_type type)
 {
 	char	*value;
 
@@ -43,7 +24,7 @@ int	save_token(char *str, size_t size, t_token **tokens)
 	if (!value)
 		return (EXIT_FAILURE);
 	ft_strlcpy(value, str, size + 1);
-	add_token(tokens, new_token(_get_token_type(value), value));
+	add_token(list, new_token(type, value));
 	free(value);
 	return (EXIT_SUCCESS);
 }
