@@ -40,6 +40,6 @@ unsigned char	_exec_builtin(t_data *data, t_command_node *cmd)
 	if (!ft_strcmp(cmd->argv[0], "echo"))
 		status = echo(cmd->argv);
 	else if (!ft_strcmp(cmd->argv[0], "exit"))
-		exit_(cmd->argv, data);
+		status = exit_(cmd->argv, data);
 	return ((unsigned char)status);
 }
