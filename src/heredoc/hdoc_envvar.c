@@ -91,7 +91,8 @@ unsigned int *i, unsigned char *exit_status)
 	*i = 0;
 	while ((*input)[*skip + *i] && (*input)[*skip + *i] != '$')
 		++(*skip);
-	while ((*input)[*skip] == 36 && (*input)[*skip + 1] == 36)
+	while ((*input)[*skip] == '$'
+		&& ((*input)[*skip + 1] == '$' || ft_isspace((*input)[*skip + 1])))
 		++(*skip);
 	if ((*input)[*skip] == '$' && (*input)[*skip + 1] == '?')
 	{
