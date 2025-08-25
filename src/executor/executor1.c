@@ -50,6 +50,6 @@ unsigned char	_exec_builtin(t_data *data, t_command_node *cmd)
 					ft_strlen(cmd->argv[i]), data, &(int){0});
 	}
 	else if (!ft_strcmp(cmd->argv[0], "exit"))
-		exit_(cmd->argv, data);
+		status = exit_(cmd->argv, data);
 	return ((unsigned char)status);
 }

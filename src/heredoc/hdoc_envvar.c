@@ -26,9 +26,11 @@ static char	*_use_getent(char *idx, size_t i)
 	join = getenv(substr);
 	free(substr);
 	if (!join && !temp[0])
-		return (perror("ENV VAR not found"), NULL);
+		return (free(temp), NULL);
 	else if (!join && temp)
-		return (perror("ENV VAR not found"), temp);
+		return (temp);
+	else if (!join)
+		return (free(temp), NULL);
 	idx = ft_strjoin(join, temp);
 	free(temp);
 	return (idx);
@@ -55,9 +57,9 @@ static char	*rm_braces(char **idx, size_t *j)
 
 static int	_get_env_tok(char **idx)
 {
-	size_t		i;
-	char		*t;
-	char		*str;
+	size_t	i;
+	char	*t;
+	char	*str;
 
 	i = 0;
 	if ((*idx)[1] == '{')
@@ -91,7 +93,8 @@ unsigned int *i, unsigned char *exit_status)
 	*i = 0;
 	while ((*input)[*skip + *i] && (*input)[*skip + *i] != '$')
 		++(*skip);
-	while ((*input)[*skip] == 36 && (*input)[*skip + 1] == 36)
+	while ((*input)[*skip] == '$'
+		&& ((*input)[*skip + 1] == '$' || ft_isspace((*input)[*skip + 1])))
 		++(*skip);
 	if ((*input)[*skip] == '$' && (*input)[*skip + 1] == '?')
 	{

@@ -28,9 +28,9 @@ static char	*_use_getent(char *idx, size_t i)
 	join = getenv(substr);
 	free(substr);
 	if (!join && !temp[0])
-		return (perror("ENV VAR not found"), free(temp), NULL);
+		return (free(temp), NULL);
 	else if (!join && temp)
-		return (perror("ENV VAR not found"), temp);
+		return (temp);
 	else if (!join)
 		return (free(temp), NULL);
 	idx = ft_strjoin(join, temp);
@@ -59,9 +59,9 @@ static char	*rm_braces(char **idx, size_t *j)
 
 static int	_get_env_tok(char **idx)
 {
-	size_t		i;
-	char		*t;
-	char		*str;
+	size_t	i;
+	char	*t;
+	char	*str;
 
 	i = 0;
 	if ((*idx)[1] == '{')
@@ -85,7 +85,7 @@ static int	_get_env_tok(char **idx)
 	return (EXIT_SUCCESS);
 }
 
-static int	dollars(t_token **tokens, unsigned int *skip,
+static int	dollars(t_token **tok, unsigned int *skip,
 	unsigned int *i, unsigned char *exit_status)
 {
 	const int	numerical_value = *exit_status;
@@ -93,24 +93,24 @@ static int	dollars(t_token **tokens, unsigned int *skip,
 	char		*pos[3];
 
 	*i = 0;
-	if ((*tokens)->type != TOKEN_DOUBLE_QUOTES
-		&& (*tokens)->type != TOKEN_LITERAL)
+	if ((*tok)->type != TOKEN_DOUBLE_QUOTES && (*tok)->type != TOKEN_LITERAL)
 		return (EXIT_FAILURE);
-	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
+	while ((*tok)->value[*skip + *i] && (*tok)->value[*skip + *i] != '$')
 		++(*skip);
-	while ((*tokens)->value[*skip] == 36 && (*tokens)->value[*skip + 1] == 36)
+	while ((*tok)->value[*skip] == 36 && ((*tok)->value[*skip + 1] == 36
+			|| ft_isspace((*tok)->value[*skip + 1])))
 		++(*skip);
-	if ((*tokens)->value[*skip] == '$' && (*tokens)->value[*skip + 1] == '?')
+	if ((*tok)->value[*skip] == '$' && (*tok)->value[*skip + 1] == '?')
 	{
 		extr_str = ft_itoa(numerical_value);
-		pos[0] = ft_strjoin(extr_str, (*tokens)->value + *skip + 2);
-		pos[1] = ft_substr((*tokens)->value, 0, *skip);
-		(free((*tokens)->value), pos[2] = ft_strjoin(pos[1], pos[0]));
-		(free(*pos), free(pos[1]), free(extr_str), (*tokens)->value = pos[2]);
+		pos[0] = ft_strjoin(extr_str, (*tok)->value + *skip + 2);
+		pos[1] = ft_substr((*tok)->value, 0, *skip);
+		(free((*tok)->value), pos[2] = ft_strjoin(pos[1], pos[0]));
+		(free(*pos), free(pos[1]), free(extr_str), (*tok)->value = pos[2]);
 	}
-	while ((*tokens)->value[*skip + *i] && (*tokens)->value[*skip + *i] != '$')
+	while ((*tok)->value[*skip + *i] && (*tok)->value[*skip + *i] != '$')
 		++(*i);
-	if ((*tokens)->value[*skip + *i] == '$')
+	if ((*tok)->value[*skip + *i] == '$')
 		return (EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }

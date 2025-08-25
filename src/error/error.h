@@ -18,9 +18,9 @@
 # define ERR_SYNTAX -1
 # define ERR_TOOMANY_ARGS -2
 # define ERR_CMD_NOTFOUND -3
-# define ERR_ONLY_ONE_ARG -4
-# define ERR_INVAL_NODE -5
-# define ERR_UNEXPECTED_TOK -6
+# define ERR_INVAL_NODE -4
+# define ERR_UNEXPECTED_TOK -5
+# define ERR_NUM_ARG_REQUIRED -6
 
 // ****************************** //
 

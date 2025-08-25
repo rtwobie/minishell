@@ -24,8 +24,8 @@ char	*_lookup_err(int err)
 		return ("too many arguments");
 	else if (err == ERR_CMD_NOTFOUND)
 		return ("command not found");
-	else if (err == ERR_ONLY_ONE_ARG)
-		return ("wrong amount of arguments: needed one");
+	else if (err == ERR_NUM_ARG_REQUIRED)
+		return ("numeric argument required");
 	else if (err == ERR_INVAL_NODE)
 		return ("wrong node type in ast");
 	return ("error");
