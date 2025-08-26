@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:21:12 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/25 18:57:09 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/26 13:51:43 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "libft.h"
 #include "run.h"
 #include "builtin.h"
+
 #include <asm-generic/errno-base.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -21,6 +22,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <readline/readline.h>
 
 static char	*ft_getenv(char **envp, const char *name)
 {
@@ -86,7 +88,7 @@ int	cd(char **av, t_data *data, ssize_t i)
 		return (ft_putstr_fd(ft_getenv(data->envp, "PWD"), STDOUT_FILENO)
 			, write(1, "\n", 1), EXIT_SUCCESS);
 	if (av[0][0] == 'c' && av[1] && av[2])
-		return (print_err(ERR_TOOMANY_ARGS, "cd"), EXIT_FAILURE);
+		return (print_err(ERR_TOOMANY_ARGS, "cd"), 2);
 	if (av[0][0] == 'c' && !av[1] && chdir(getenv("HOME")) != 0)
 		perror("getcwd in home");
 	if (av[0][0] == 'c' && av[1] && chdir(av[1]) != 0)
@@ -96,4 +98,29 @@ int	cd(char **av, t_data *data, ssize_t i)
 	return (EXIT_SUCCESS);
 }
 
+int	exit_(char **argv, t_data *data)
+{
+	char			*endptr;
+	unsigned char	status;
+
+	status = 0;
+	printf("exit\n");
+	if (argv[1] && argv[2])
+	{
+		print_err(ERR_TOOMANY_ARGS, "exit");
+		return (EXIT_FAILURE);
+	}
+	if (argv[1])
+		status = (unsigned char)ft_strtol(argv[1], &endptr, 10);
+	if (errno == ERANGE || (*endptr != '\0' && argv[1]))
+	{
+		print_err(ERR_NUM_ARG_REQUIRED, "exit");
+		status = 2;
+	}
+	rl_clear_history();
+	cleanup_data(data);
+	ft_lstclear(&data->env_history, free);
+	free_args(data->envp);
+	exit(status);
+}
 // check the status again EXIT
