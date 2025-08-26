@@ -106,7 +106,8 @@ SRC		+= hdoc_envvar.c
 
 vpath %.c $(SRC_DIR)/parser
 SRC		+= ast.c
-SRC		+= parser.c
+SRC		+= parser0.c
+SRC		+= parser1.c
 
 vpath %.c $(SRC_DIR)/run
 SRC		+= run.c
