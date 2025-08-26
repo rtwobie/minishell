@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:26:20 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/19 20:26:24 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/26 16:46:33 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "libft.h"
 #include "parser.h"
 
-static int	_open_redirect_in(t_redirection_node *redir_data)
+static int	_open_redirect_in(t_redir_node *redir_data)
 {
 	int	fd_in;
 
@@ -57,7 +57,7 @@ static int	_set_input(t_list *redir, int input_fd)
 		current = redir;
 		while (current)
 		{
-			if (_open_redirect_in((t_redirection_node *)current->content))
+			if (_open_redirect_in((t_redir_node *)current->content))
 				return (EXIT_FAILURE);
 			current = current->next;
 		}
@@ -65,7 +65,7 @@ static int	_set_input(t_list *redir, int input_fd)
 	return (EXIT_SUCCESS);
 }
 
-static int	_open_redirect_out(t_redirection_node *redir_data)
+static int	_open_redirect_out(t_redir_node *redir_data)
 {
 	int	fd;
 
@@ -107,7 +107,7 @@ static int	_set_output(t_list *redir, int output_fd)
 		current = redir;
 		while (current)
 		{
-			if (_open_redirect_out((t_redirection_node *)current->content))
+			if (_open_redirect_out((t_redir_node *)current->content))
 				return (EXIT_FAILURE);
 			current = current->next;
 		}

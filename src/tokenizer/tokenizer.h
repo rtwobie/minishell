@@ -6,7 +6,7 @@
 /*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:43:24 by rha-le            #+#    #+#             */
-/*   Updated: 2025/08/25 21:10:00 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/08/26 16:51:13 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,6 @@ typedef struct s_token
 
 int		lexer(char *user_input, t_token **tokens, unsigned char *exit_status);
 int		expander(t_token **tokens, unsigned char *exit_status, t_data *data);
+int		_is_redirection(enum e_token_type type);
 
 #endif // !TOKENIZER_H

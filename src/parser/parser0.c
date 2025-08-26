@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 15:41:08 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:09:02 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/26 16:42:29 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,58 +19,11 @@
 #include "parser_internal.h"
 #include "parser.h"
 
-static int	_is_redirection(enum e_token_type type)
+static int	_parse_command_elements(t_token **token_ptr, t_list	**arg_list,
+t_list **redirects)
 {
-	return (
-		type == TOKEN_REDIRECT_IN || \
-		type == TOKEN_REDIRECT_OUT || \
-		type == TOKEN_HERE_DOC || \
-		type == TOKEN_REDIRECT_OUT_APPEND
-	);
-}
-
-char	*match(t_token **token_ptr, enum e_token_type expected_token)
-{
-	t_token	*current;
-
-	current = *token_ptr;
-	if (current->type != expected_token)
-		return (NULL);
-	else
-		*token_ptr = current->next;
-	return (current->value);
-}
-
-static int _free_on_error(t_list **arg_list, t_list **redirects)
-{
-	ft_lstclear(arg_list, free);
-	ft_lstclear(redirects, free_redir);
-	return (EXIT_FAILURE);
-}
-
-static t_redirection_node	*_create_redirection_node(t_token *token)
-{
-	t_redirection_node	*node;
-
-	if (!_is_redirection(token->type))
-		return (NULL);
-	node = ft_calloc(1, sizeof(*node));
-	if (!node)
-		return (NULL);
-	node->type = token->type;
-	node->filename = ft_strdup(token->value);
-	if (!node->filename)
-	{
-		free(node);
-		return (NULL);
-	}
-	return (node);
-}
-
-static int	_parse_command_elements(t_token **token_ptr, t_list	**arg_list, t_list **redirects)
-{
-	char				*arg;
-	t_redirection_node	*redir_data;
+	char			*arg;
+	t_redir_node	*redir_data;
 
 	while ((*token_ptr) && (*token_ptr)->type != TOKEN_PIPE)
 	{
@@ -93,57 +46,6 @@ static int	_parse_command_elements(t_token **token_ptr, t_list	**arg_list, t_lis
 	return (EXIT_SUCCESS);
 }
 
-static char **_arglist_to_strarr(t_list **arg_list)
-{
-	size_t	i;
-	size_t	size;
-	t_list	*current;
-	char	**args;
-
-	current = *arg_list;
-	size = (size_t)ft_lstsize(current);
-	args = ft_calloc(size + 1, sizeof(*args));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (i < size)
-	{
-		args[i] = ft_strdup(current->content);
-		if (!args[i])
-		{
-			free_args(args);
-			ft_lstclear(arg_list, free);
-			return (NULL);
-		}
-		++i;
-		current = current->next;
-	}
-	ft_lstclear(arg_list, free);
-	return (args);
-}
-
-static t_ast_node	*_create_command_node(char **args, t_list **redirects)
-{
-	t_ast_node		*node;
-	t_command_node	*cmd_data;
-
-	cmd_data = malloc(sizeof(*cmd_data));
-	if (!cmd_data)
-		return (NULL);
-	node = ft_calloc(1, sizeof(*node));
-	if (!node)
-	{
-		free_args(args);
-		ft_lstclear(redirects, free_redir);
-		return (NULL);
-	}
-	cmd_data->argv = args;
-	cmd_data->redir = *redirects;
-	node->data.command = cmd_data;
-	node->type = NODE_TYPE_COMMAND;
-	return (node);
-}
-
 static t_ast_node	*_parse_command(t_token **token_ptr)
 {
 	t_list	*redirects;
@@ -151,7 +53,7 @@ static t_ast_node	*_parse_command(t_token **token_ptr)
 	char	**args;
 
 	if (!(*token_ptr) || ((*token_ptr)->type != TOKEN_LITERAL
-		&& !_is_redirection((*token_ptr)->type)))
+			&& !_is_redirection((*token_ptr)->type)))
 		return (NULL);
 	redirects = NULL;
 	arg_list = NULL;
@@ -165,19 +67,6 @@ static t_ast_node	*_parse_command(t_token **token_ptr)
 		return (NULL);
 	}
 	return (_create_command_node(args, &redirects));
-}
-
-static t_pipe_node	*_init_pipe_data(t_ast_node *left_node,
-t_ast_node *right_node)
-{
-	t_pipe_node	*pipe;
-
-	pipe = ft_calloc(1, sizeof(*pipe));
-	if (!pipe)
-		return (NULL);
-	pipe->left = left_node;
-	pipe->right = right_node;
-	return (pipe);
 }
 
 static t_ast_node	*_parse_pipeline(t_token **token_ptr)

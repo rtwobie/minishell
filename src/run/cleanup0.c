@@ -6,7 +6,7 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 18:06:58 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:09:28 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/26 16:48:52 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ void	free_args(char **args)
 
 void	free_redir(void *content)
 {
-	t_redirection_node	*redir;
+	t_redir_node	*redir;
 
-	redir = (t_redirection_node *)content;
+	redir = (t_redir_node *)content;
 	free(redir->filename);
 	free(redir);
 }

@@ -6,20 +6,20 @@
 /*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 19:37:31 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/20 18:07:18 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/08/26 16:42:20 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
-#include "libft.h"
+# include "libft.h"
 # include "tokenizer.h"
 
-typedef struct s_ast_node			t_ast_node;
-typedef struct s_command_node		t_command_node;
-typedef struct s_pipe_node			t_pipe_node;
-typedef struct s_redirection_node	t_redirection_node;
+typedef struct s_ast_node		t_ast_node;
+typedef struct s_command_node	t_command_node;
+typedef struct s_pipe_node		t_pipe_node;
+typedef struct s_redir_node		t_redir_node;
 
 enum e_output
 {
@@ -41,7 +41,7 @@ struct s_command_node
 	t_list	*redir;
 };
 
-struct s_redirection_node
+struct s_redir_node
 {
 	enum e_token_type	type;
 	char				*filename;
@@ -55,8 +55,8 @@ struct s_pipe_node
 
 union u_node
 {
-	struct s_command_node		*command;
-	struct s_pipe_node			*pipe;
+	struct s_command_node	*command;
+	struct s_pipe_node		*pipe;
 };
 
 struct s_ast_node

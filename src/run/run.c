@@ -83,15 +83,12 @@ char ***envp, t_list **env_history)
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
-	// print_all_tokens(data.tokens); // DEBUG
 	if (expander(&data.tokens, exit_status, &data))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	// print_all_tokens(data.tokens); // DEBUG
 	if (heredoc(&data.tokens, exit_status))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
 	if (parser(data.tokens, &data.tree))
 		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	// print_ast(data.tree, 0); // DEBUG
 	executor(&data, data.tree, exit_status);
 	*envp = data.envp;
 	*env_history = data.env_history;

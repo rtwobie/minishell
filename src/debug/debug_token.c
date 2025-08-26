@@ -63,7 +63,7 @@ void	print_token(t_token *token)
 	if (!token)
 	{
 		printf("(null token)\n");
-		return;
+		return ;
 	}
 	printf("%s%s\n%s", YELLOW, token->value, END);
 	printf("%s%s\n%s", CYAN, token_type_to_string(token->type), END);
@@ -77,7 +77,7 @@ void	print_all_tokens(t_token *tokens)
 	if (!tokens)
 	{
 		printf("(null tokens list)\n");
-		return;
+		return ;
 	}
 	current = tokens;
 	while (current != NULL)
