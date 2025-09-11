@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "builtin.h"
 #include "libft.h"
 #include "error.h"
 #include "run.h"
@@ -78,7 +79,7 @@ static char	*_set_executable_path(char *program, char *path_env)
 	return (ft_strdup(program));
 }
 
-int	search_program(char *lookup, char **program)
+int	search_program(char *lookup, char **program, char **envp)
 {
 	char		*path_env;
 	int			status;
@@ -93,7 +94,7 @@ int	search_program(char *lookup, char **program)
 			return (perror("malloc"), EXIT_FAILURE);
 		return (EXIT_SUCCESS);
 	}
-	path_env = getenv("PATH");
+	path_env = ft_getenv(envp, "PATH");
 	*program = _set_executable_path(lookup, path_env);
 	if (!*program)
 		return (print_err(ERR_CMD_NOTFOUND, lookup), EXIT_FAILURE);

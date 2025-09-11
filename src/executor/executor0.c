@@ -38,7 +38,7 @@ int fd_io[2])
 	if (is_builtin(cmd->argv[0]))
 		return (_exec_builtin(data, cmd));
 	program = NULL;
-	status = search_program(cmd->argv[0], &program);
+	status = search_program(cmd->argv[0], &program, data->envp);
 	if (status)
 		return (cleanup_data(data), (unsigned char)status);
 	set_noninteractive_mode();

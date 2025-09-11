@@ -24,7 +24,7 @@
 int				redirect_io(t_command_node *cmd, int input_fd, int output_fd);
 
 // search_program.c
-int				search_program(char *lookup, char **program);
+int				search_program(char *lookup, char **program, char **envp);
 
 // executor1.c
 unsigned char	_exec_builtin(t_data *data, t_command_node *cmd);
