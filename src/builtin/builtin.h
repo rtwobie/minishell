@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 17:23:34 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/26 13:56:49 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/09/09 16:30:30 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int		exit_(char **argv, t_data *data);
 int		echo(char *argv[]);
 int		is_builtin(char *program);
 int		cd(char **av, t_data *data, ssize_t i);
+char	*ft_getenv(char **envp, const char *name);
 
 // new_updating
 int		check_entries(t_data *data);

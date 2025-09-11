@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:23 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/22 19:32:20 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/09/10 18:11:26 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,15 @@ char ***envp, t_list **env_history)
 		return (EXIT_FAILURE);
 	data.env_history = *env_history;
 	if (lexer(*user_input, &data.tokens, exit_status))
-		return (free_tokens(&data.tokens), EXIT_FAILURE);
+		return (cleanup_data(&data), EXIT_FAILURE);
 	free(*user_input);
 	*user_input = NULL;
 	if (expander(&data.tokens, exit_status, &data))
-		return (free_tokens(&data.tokens), EXIT_FAILURE);
-	if (heredoc(&data.tokens, exit_status))
-		return (free_tokens(&data.tokens), EXIT_FAILURE);
+		return (cleanup_data(&data), EXIT_FAILURE);
+	if (heredoc(&data.tokens, exit_status, data.envp))
+		return (cleanup_data(&data), EXIT_FAILURE);
 	if (parser(data.tokens, &data.tree))
-		return (free_tokens(&data.tokens), EXIT_FAILURE);
+		return (cleanup_hdoc(&data.tokens), cleanup_data(&data), EXIT_FAILURE);
 	executor(&data, data.tree, exit_status);
 	*envp = data.envp;
 	*env_history = data.env_history;

@@ -14,8 +14,9 @@
 #include <stdlib.h>
 
 #include "libft.h"
+#include "builtin.h"
 
-static char	*_use_getent(char *idx, size_t i)
+static char	*_use_getent(char *idx, size_t i, unsigned int *skip, char **envp)
 {
 	char	*join;
 	char	*temp;
@@ -23,7 +24,7 @@ static char	*_use_getent(char *idx, size_t i)
 
 	substr = ft_substr(idx, 0, i);
 	temp = ft_substr(idx, (unsigned int)i, ft_strlen(idx));
-	join = getenv(substr);
+	join = ft_getenv(envp, substr);
 	free(substr);
 	if (!join && !temp[0])
 		return (free(temp), NULL);
@@ -31,6 +32,7 @@ static char	*_use_getent(char *idx, size_t i)
 		return (temp);
 	else if (!join)
 		return (free(temp), NULL);
+	*skip += (unsigned int)ft_strlen(join);
 	idx = ft_strjoin(join, temp);
 	free(temp);
 	return (idx);
@@ -55,7 +57,7 @@ static char	*rm_braces(char **idx, size_t *j)
 	return (free(temp1), free(temp2), *idx);
 }
 
-static int	_get_env_tok(char **idx)
+static int	_get_env_tok(char **idx, unsigned int *skip, char **envp)
 {
 	size_t	i;
 	char	*t;
@@ -66,7 +68,7 @@ static int	_get_env_tok(char **idx)
 	{
 		if (rm_braces(idx, &i) == NULL)
 			return (free(*idx), *idx = NULL, EXIT_FAILURE);
-		t = _use_getent(*idx, i);
+		t = _use_getent(*idx, i, skip, envp);
 		free(*idx);
 	}
 	else
@@ -74,7 +76,7 @@ static int	_get_env_tok(char **idx)
 		str = (*idx) + 1;
 		while (str[++i] && (ft_isalnum(str[i]) || str[i] == '_'))
 			;
-		t = _use_getent(str, i);
+		t = _use_getent(str, i, skip, envp);
 		free(*idx);
 	}
 	if (!t)
@@ -111,7 +113,8 @@ unsigned int *i, unsigned char *exit_status)
 	return (EXIT_FAILURE);
 }
 
-int	hdoc_envvar(char **input, unsigned int skip, unsigned char *exit_status)
+int	hdoc_envvar(char **input, unsigned int skip, unsigned char *exit_status,
+char **envp)
 {
 	unsigned int	i;
 	char			*temp;
@@ -128,11 +131,11 @@ int	hdoc_envvar(char **input, unsigned int skip, unsigned char *exit_status)
 	original_value = *input;
 	*input = ft_substr(val, i, ft_strlen(val));
 	free(original_value);
-	if (free(val), 1 && _get_env_tok(input) == EXIT_FAILURE)
+	if (free(val), 1 && _get_env_tok(input, &skip, envp) == EXIT_FAILURE)
 		return (*input = temp, EXIT_FAILURE);
 	new = ft_strjoin(temp, *input);
 	(free(temp), free(*input));
 	*input = new;
-	hdoc_envvar(input, skip + i, exit_status);
+	hdoc_envvar(input, skip + i, exit_status, envp);
 	return (EXIT_SUCCESS);
 }

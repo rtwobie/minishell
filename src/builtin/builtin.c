@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:21:12 by fgroo             #+#    #+#             */
-/*   Updated: 2025/08/26 13:51:43 by fgroo            ###   ########.fr       */
+/*   Updated: 2025/09/09 16:39:24 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #include <stdbool.h>
 #include <readline/readline.h>
 
-static char	*ft_getenv(char **envp, const char *name)
+char	*ft_getenv(char **envp, const char *name)
 {
 	size_t	name_len;
 	size_t	i;
@@ -89,7 +89,7 @@ int	cd(char **av, t_data *data, ssize_t i)
 			, write(1, "\n", 1), EXIT_SUCCESS);
 	if (av[0][0] == 'c' && av[1] && av[2])
 		return (print_err(ERR_TOOMANY_ARGS, "cd"), 2);
-	if (av[0][0] == 'c' && !av[1] && chdir(getenv("HOME")) != 0)
+	if (av[0][0] == 'c' && !av[1] && chdir(ft_getenv(data->envp, "HOME")) != 0)
 		perror("getcwd in home");
 	if (av[0][0] == 'c' && av[1] && chdir(av[1]) != 0)
 		return (errno = ENOENT, print_err(ENOENT, "cd"), EXIT_FAILURE);
@@ -112,7 +112,7 @@ int	exit_(char **argv, t_data *data)
 	}
 	if (argv[1])
 		status = (unsigned char)ft_strtol(argv[1], &endptr, 10);
-	if (errno == ERANGE || (*endptr != '\0' && argv[1]))
+	if (errno == ERANGE || (argv[1] && *endptr != '\0'))
 	{
 		print_err(ERR_NUM_ARG_REQUIRED, "exit");
 		status = 2;

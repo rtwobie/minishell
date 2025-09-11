@@ -13,11 +13,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "builtin.h"
 #include "libft.h"
 #include "run.h"
 #include "envvar.h"
 
-static char	*_use_getent(char *idx, size_t i)
+static char	*_use_getent(t_data *data, char *idx, size_t i, unsigned int *skip)
 {
 	char	*join;
 	char	*temp;
@@ -25,7 +26,7 @@ static char	*_use_getent(char *idx, size_t i)
 
 	substr = ft_substr(idx, 0, i);
 	temp = ft_substr(idx, (unsigned int)i, ft_strlen(idx));
-	join = getenv(substr);
+	join = ft_getenv(data->envp, substr);
 	free(substr);
 	if (!join && !temp[0])
 		return (free(temp), NULL);
@@ -33,6 +34,7 @@ static char	*_use_getent(char *idx, size_t i)
 		return (temp);
 	else if (!join)
 		return (free(temp), NULL);
+	*skip += (unsigned int)ft_strlen(join);
 	idx = ft_strjoin(join, temp);
 	free(temp);
 	return (idx);
@@ -57,7 +59,7 @@ static char	*rm_braces(char **idx, size_t *j)
 	return (free(temp1), free(temp2), *idx);
 }
 
-static int	_get_env_tok(char **idx)
+static int	_get_env_tok(t_data *data, char **idx, unsigned int *skip)
 {
 	size_t	i;
 	char	*t;
@@ -68,7 +70,7 @@ static int	_get_env_tok(char **idx)
 	{
 		if (rm_braces(idx, &i) == NULL)
 			return (free(*idx), *idx = NULL, EXIT_FAILURE);
-		t = _use_getent(*idx, i);
+		t = _use_getent(data, *idx, i, skip);
 		free(*idx);
 	}
 	else
@@ -76,7 +78,7 @@ static int	_get_env_tok(char **idx)
 		str = (*idx) + 1;
 		while (str[++i] && (ft_isalnum(str[i]) || str[i] == '_'))
 			;
-		t = _use_getent(str, i);
+		t = _use_getent(data, str, i, skip);
 		free(*idx);
 	}
 	if (!t)
@@ -133,7 +135,8 @@ int	envvar(t_token **tokens, unsigned char *exit_status,
 	original_value = (*tokens)->value;
 	(*tokens)->value = ft_substr(val, i, ft_strlen(val));
 	free(original_value);
-	if (free(val), 1 && _get_env_tok(&((*tokens)->value)) == EXIT_FAILURE)
+	if (free(val), 1 && _get_env_tok(data, &((*tokens)->value),
+			&skip) == EXIT_FAILURE)
 		return ((*tokens)->value = temp, EXIT_FAILURE);
 	new = ft_strjoin(temp, (*tokens)->value);
 	(free(temp), free((*tokens)->value));

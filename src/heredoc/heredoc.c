@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
+/*   By: fgorlich <fgorlich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 16:07:09 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/08/22 14:17:10 by rtwobie          ###   ########.fr       */
+/*   Updated: 2025/09/10 18:06:02 by fgorlich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char	*_generate_name(int count)
 	return (tmpfile);
 }
 
-static int	_hdoc_readline(int fd, char *delimiter)
+static int	_hdoc_readline(int fd, char *delimiter, char **envp)
 {
 	char			*input;
 	unsigned char	exit_status;
@@ -58,7 +58,7 @@ static int	_hdoc_readline(int fd, char *delimiter)
 			free(input);
 			break ;
 		}
-		hdoc_envvar(&input, 0, &exit_status);
+		hdoc_envvar(&input, 0, &exit_status, envp);
 		ft_putendl_fd(input, fd);
 		free(input);
 	}
@@ -66,7 +66,8 @@ static int	_hdoc_readline(int fd, char *delimiter)
 	return (exit_status);
 }
 
-static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status)
+static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status,
+char **envp)
 {
 	int		fd;
 	char	*tmpfile;
@@ -85,7 +86,7 @@ static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status)
 		return (unlink(tmpfile), free(tmpfile), close(fd), NULL);
 	}
 	else if (pid == 0)
-		exit(_hdoc_readline(fd, delimiter));
+		exit(_hdoc_readline(fd, delimiter, envp));
 	set_ignore_mode();
 	*exit_status = get_exit_status(pid);
 	set_interactive_mode();
@@ -94,7 +95,7 @@ static char	*_hdoc(char *delimiter, int count, unsigned char *exit_status)
 	return (close(fd), tmpfile);
 }
 
-int	heredoc(t_token **tokens, unsigned char *exit_status)
+int	heredoc(t_token **tokens, unsigned char *exit_status, char **envp)
 {
 	int		count;
 	char	*hdoc;
@@ -109,7 +110,7 @@ int	heredoc(t_token **tokens, unsigned char *exit_status)
 			current = current->next;
 			continue ;
 		}
-		hdoc = _hdoc(current->value, count, exit_status);
+		hdoc = _hdoc(current->value, count, exit_status, envp);
 		if (!hdoc)
 			return (EXIT_FAILURE);
 		free(current->value);
