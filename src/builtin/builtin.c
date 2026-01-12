@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 16:03:30 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/09/11 16:03:48 by rtwobie          ###   ########.fr       */
+/*   Updated: 2026/01/12 22:53:17 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ int	exit_(char **argv, t_data *data)
 	char			*endptr;
 	unsigned char	status;
 
+	endptr = NULL;
 	status = 0;
 	printf("exit\n");
 	if (argv[1] && argv[2])
@@ -112,7 +113,7 @@ int	exit_(char **argv, t_data *data)
 	}
 	if (argv[1])
 		status = (unsigned char)ft_strtol(argv[1], &endptr, 10);
-	if (errno == ERANGE || (argv[1] && *endptr != '\0'))
+	if (errno == ERANGE || (argv[1] && (endptr && *endptr != '\0')))
 	{
 		print_err(ERR_NUM_ARG_REQUIRED, "exit");
 		status = 2;

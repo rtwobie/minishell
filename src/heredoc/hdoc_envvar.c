@@ -16,7 +16,7 @@
 #include "libft.h"
 #include "builtin.h"
 
-static char	*_use_getent(char *idx, size_t i, unsigned int *skip, char **envp)
+static char	*_use_getenv(char *idx, size_t i, unsigned int *skip, char **envp)
 {
 	char	*join;
 	char	*temp;
@@ -68,7 +68,7 @@ static int	_get_env_tok(char **idx, unsigned int *skip, char **envp)
 	{
 		if (rm_braces(idx, &i) == NULL)
 			return (free(*idx), *idx = NULL, EXIT_FAILURE);
-		t = _use_getent(*idx, i, skip, envp);
+		t = _use_getenv(*idx, i, skip, envp);
 		free(*idx);
 	}
 	else
@@ -76,7 +76,7 @@ static int	_get_env_tok(char **idx, unsigned int *skip, char **envp)
 		str = (*idx) + 1;
 		while (str[++i] && (ft_isalnum(str[i]) || str[i] == '_'))
 			;
-		t = _use_getent(str, i, skip, envp);
+		t = _use_getenv(str, i, skip, envp);
 		free(*idx);
 	}
 	if (!t)

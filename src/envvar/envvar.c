@@ -18,7 +18,7 @@
 #include "run.h"
 #include "envvar.h"
 
-static char	*_use_getent(t_data *data, char *idx, size_t i, unsigned int *skip)
+static char	*_use_getenv(t_data *data, char *idx, size_t i, unsigned int *skip)
 {
 	char	*join;
 	char	*temp;
@@ -70,7 +70,7 @@ static int	_get_env_tok(t_data *data, char **idx, unsigned int *skip)
 	{
 		if (rm_braces(idx, &i) == NULL)
 			return (free(*idx), *idx = NULL, EXIT_FAILURE);
-		t = _use_getent(data, *idx, i, skip);
+		t = _use_getenv(data, *idx, i, skip);
 		free(*idx);
 	}
 	else
@@ -78,7 +78,7 @@ static int	_get_env_tok(t_data *data, char **idx, unsigned int *skip)
 		str = (*idx) + 1;
 		while (str[++i] && (ft_isalnum(str[i]) || str[i] == '_'))
 			;
-		t = _use_getent(data, str, i, skip);
+		t = _use_getenv(data, str, i, skip);
 		free(*idx);
 	}
 	if (!t)

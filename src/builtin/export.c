@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtwobie <student@42>                       +#+  +:+       +#+        */
+/*   By: fgroo <student@42.eu>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 16:03:13 by rtwobie           #+#    #+#             */
-/*   Updated: 2025/09/11 16:03:14 by rtwobie          ###   ########.fr       */
+/*   Updated: 2026/01/12 23:16:10 by fgroo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	gillette(char **a, char *part[4], size_t *i, size_t l)
 	part[1] = ft_strtrim(part[2], "\"");
 	if (free(part[2]), 1 && !part[1])
 		return (free(part[0]), EXIT_FAILURE);
-	part[2] = ft_calloc(1, l + 1);
+	part[2] = ft_calloc(1, l + 3);
 	if (!part[2])
 		return (free(part[0]), EXIT_FAILURE);
 	return (free(*a), *a = NULL, EXIT_SUCCESS);
@@ -66,13 +66,17 @@ static int	refactor_arg(char **arg, size_t len, int *exit_status)
 	else if (*arg)
 		return (EXIT_SUCCESS);
 	i = ULONG_MAX;
+	part[2][0] = '"';
 	while (part[1][++i])
 	{
 		if (part[1][i] == '"' || part[1][i] == '\'')
 			continue ;
-		part[2][i] = part[1][i];
+		part[2][i + 1] = part[1][i];
 	}
-	part[3] = ft_strjoin(part[0], part[2]);
+	free(part[1]);
+	part[2][++i] = '"';
+	part[1] = ft_substr(part[2], 0, i + 1);
+	part[3] = ft_strjoin(part[0], part[1]);
 	return (*arg = part[3], free(part[0]),
 		free(part[1]), free(part[2]), EXIT_SUCCESS);
 }
@@ -97,10 +101,8 @@ static void	print_env(char **env, size_t len)
 			if (tmp[i[1]][i[3]] < tmp[i[2]][i[3]])
 				i[2] = i[1];
 		}
-		write(1, "declare -x ", 11);
-		write(1, tmp[i[2]], (size_t)(ft_strchr(tmp[i[2]], '=')
-				- tmp[i[2]]) + 1);
-		printf("\"%s\"\n", ft_strchr(tmp[i[2]], '=') + 1);
+		refactor_arg(&tmp[i[2]], ft_strlen(tmp[i[2]]), &(int){0});
+		printf("declare -x %s\n", tmp[i[2]]);
 		tmp[i[2]][0] = 127;
 	}
 	free_args(tmp);
